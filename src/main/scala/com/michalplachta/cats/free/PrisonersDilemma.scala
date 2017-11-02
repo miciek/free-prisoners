@@ -10,7 +10,8 @@ object PrisonersDilemma {
 
   final case class Verdict(years: Int)
 
-  def verdict(prisonerDecision: Decision, otherPrisonerDecision: Decision): Verdict = {
+  def verdict(prisonerDecision: Decision,
+              otherPrisonerDecision: Decision): Verdict = {
     if (prisonerDecision == Silence && otherPrisonerDecision == Silence)
       Verdict(1)
     else if (prisonerDecision == Guilty && otherPrisonerDecision == Silence)

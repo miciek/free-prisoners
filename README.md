@@ -19,7 +19,7 @@ Use `sbt run` and choose `HotSeatGame`, `SinglePlayerGame` or `LocalMultiplayerG
 
 To run [Multiplayer Game](src/main/scala/com/michalplachta/cats/free/MultiplayerGame.scala) you will need three separate `sbt` sessions:
 
-1. `sbt "run-main com.michalplachta.cats.free.MultiplayerServer"` - to run the server on default server port (see [server.conf](src/main/resources/server.conf))
-1. `sbt "run-main com.michalplachta.cats.free.MultiplayerGame"` - to run the first player session on default client port (see [client.conf](src/main/resources/client.conf))
-1. `CLIENT_TCP_PORT=2554 sbt "run-main com.michalplachta.cats.free.MultiplayerGame"` - to run the second player session on port `2554`.
+1. `sbt "runMain com.michalplachta.cats.free.MultiplayerServer"` - to run the server on default server port (see [server.conf](src/main/resources/server.conf))
+1. `sbt "runMain com.michalplachta.cats.free.MultiplayerGame"` - to run the first player session on default client port (see [client.conf](src/main/resources/client.conf))
+1. `CLIENT_TCP_PORT=2554 sbt "runMain com.michalplachta.cats.free.MultiplayerGame"` - to run the second player session on port `2554`.
 

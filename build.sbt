@@ -12,16 +12,20 @@ libraryDependencies ++= {
   val catsV = "1.0.0-MF"
   val akkaV = "2.5.6"
   val configV = "1.3.1"
-  val scalatest = "3.0.1"
+  val scalatestV = "3.0.1"
   Seq(
     "org.typelevel" %% "cats-free" % catsV,
     "com.typesafe.akka" %% "akka-actor" % akkaV,
     "com.typesafe.akka" %% "akka-remote" % akkaV,
     "com.typesafe" % "config" % configV,
-    "org.scalatest" %% "scalatest" % scalatest % Test,
+    "org.scalatest" %% "scalatest" % scalatestV % Test,
     "com.typesafe.akka" %% "akka-testkit" % akkaV % Test
   )
 }
 
+scalacOptions += "-language:higherKinds"
+
 fork := true
 connectInput in run := true
+scalafmtVersion in ThisBuild := "1.3.0"
+scalafmtOnCompile in ThisBuild := true
