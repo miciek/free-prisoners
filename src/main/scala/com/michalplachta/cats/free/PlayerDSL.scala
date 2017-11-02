@@ -9,8 +9,6 @@ import com.michalplachta.cats.free.PrisonersDilemma.{
   Verdict
 }
 
-import scala.language.higherKinds
-
 object PlayerDSL {
   sealed trait Player[A]
   final case class MeetPrisoner(introduction: String) extends Player[Prisoner]

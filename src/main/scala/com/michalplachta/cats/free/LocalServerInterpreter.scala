@@ -16,8 +16,8 @@ import com.michalplachta.cats.free.ServerDSL.{
   Server
 }
 
-import scala.concurrent.duration._
 import scala.concurrent.Future
+import scala.concurrent.duration._
 
 object LocalServerInterpreter extends (Server ~> Future) {
   final case class GetVerdict(prisoner: Prisoner,

@@ -1,6 +1,6 @@
 package com.michalplachta.cats.free
 
-import akka.actor.{Actor, ActorSelection, ActorSystem}
+import akka.actor.{ActorSelection, ActorSystem}
 import akka.pattern.ask
 import cats.~>
 import com.michalplachta.cats.free.PrisonersDilemma.{Prisoner, Verdict}

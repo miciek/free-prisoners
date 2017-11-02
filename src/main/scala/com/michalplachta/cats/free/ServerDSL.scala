@@ -2,12 +2,7 @@ package com.michalplachta.cats.free
 
 import cats.:<:
 import cats.free.Free
-import com.michalplachta.cats.free.PrisonersDilemma.{
-  Decision,
-  OtherPrisoner,
-  Prisoner,
-  Verdict
-}
+import com.michalplachta.cats.free.PrisonersDilemma._
 
 object ServerDSL {
   sealed trait Server[A]

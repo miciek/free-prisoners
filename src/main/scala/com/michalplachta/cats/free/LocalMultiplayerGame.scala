@@ -3,19 +3,19 @@ package com.michalplachta.cats.free
 import cats.data.EitherK
 import cats.free.Free
 import cats.implicits.catsStdInstancesForFuture
-import cats.{Id, ~>}
 import com.michalplachta.cats.free.PlayerDSL.Player
 import com.michalplachta.cats.free.ServerDSL.Server
 
+import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
-import scala.concurrent.{Await, Future}
 
 object LocalMultiplayerGame extends App {
   type Multiplayer[A] = EitherK[Player, Server, A]
   def program(playerOps: Player.Ops[Multiplayer],
               serverOps: Server.Ops[Multiplayer]): Free[Multiplayer, Unit] = {
-    import playerOps._, serverOps._
+    import playerOps._
+    import serverOps._
     for {
       player <- meetPrisoner("Welcome to Multiplayer Game")
       opponent <- getOpponentFor(player)
@@ -25,16 +25,12 @@ object LocalMultiplayerGame extends App {
     } yield ()
   }
 
-  val idToFuture = new (Id ~> Future) {
-    def apply[A](i: Id[A]): Future[A] = Future.successful(i)
-  }
-
   try {
     val gameResult = program(
       new Player.Ops[Multiplayer],
       new Server.Ops[Multiplayer]
     ).foldMap(
-      PlayerConsoleInterpreter.andThen(idToFuture) or LocalServerInterpreter)
+      PlayerConsoleInterpreter.andThen(IdToFuture) or LocalServerInterpreter)
     Await.result(gameResult, 60.seconds)
   } finally {
     LocalServerInterpreter.terminate()

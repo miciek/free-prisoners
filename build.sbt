@@ -23,7 +23,9 @@ libraryDependencies ++= {
   )
 }
 
-scalacOptions += "-language:higherKinds"
+scalacOptions ++= List("-language:higherKinds",
+                       "-Ywarn-unused-import",
+                       "-Xfatal-warnings")
 
 fork := true
 connectInput in run := true

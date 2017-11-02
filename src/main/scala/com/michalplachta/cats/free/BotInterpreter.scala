@@ -1,12 +1,7 @@
 package com.michalplachta.cats.free
 
 import cats.{Id, ~>}
-import com.michalplachta.cats.free.BotDSL.{
-  Bot,
-  CreateBot,
-  GetDecision,
-  Strategy
-}
+import com.michalplachta.cats.free.BotDSL._
 import com.michalplachta.cats.free.PrisonersDilemma.{Prisoner, Silence}
 
 object BotInterpreter extends (Bot ~> Id) {
