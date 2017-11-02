@@ -1,6 +1,6 @@
 package com.michalplachta.cats.free
 
-import cats.data.Coproduct
+import cats.data.EitherK
 import cats.free.Free
 import cats.implicits.catsStdInstancesForFuture
 import cats.{ Id, ~> }
@@ -12,7 +12,7 @@ import scala.concurrent.duration._
 import scala.concurrent.{ Await, Future }
 
 object LocalMultiplayerGame extends App {
-  type Multiplayer[A] = Coproduct[Player, Server, A]
+  type Multiplayer[A] = EitherK[Player, Server, A]
   def program(playerOps: Player.Ops[Multiplayer], serverOps: Server.Ops[Multiplayer]): Free[Multiplayer, Unit] = {
     import playerOps._, serverOps._
     for {

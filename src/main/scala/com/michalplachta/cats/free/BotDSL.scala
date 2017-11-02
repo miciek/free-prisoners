@@ -1,6 +1,7 @@
 package com.michalplachta.cats.free
 
-import cats.free.{ :<:, Free }
+import cats.:<:
+import cats.free.Free
 import com.michalplachta.cats.free.PrisonersDilemma._
 
 object BotDSL {

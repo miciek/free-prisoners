@@ -1,7 +1,8 @@
 package com.michalplachta.cats.free
 
-import cats.free.{ :<:, Free }
-import com.michalplachta.cats.free.PrisonersDilemma.{ Decision, OtherPrisoner, Prisoner, Verdict }
+import cats.:<:
+import cats.free.Free
+import com.michalplachta.cats.free.PrisonersDilemma.{Decision, OtherPrisoner, Prisoner, Verdict}
 
 import scala.language.higherKinds
 
