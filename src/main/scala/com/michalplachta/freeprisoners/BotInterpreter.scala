@@ -1,7 +1,7 @@
 package com.michalplachta.freeprisoners
 
 import cats.{Id, ~>}
-import com.michalplachta.freeprisoners.BotDSL.{
+import com.michalplachta.freeprisoners.algebras.BotDSL.{
   Bot,
   CreateBot,
   GetDecision,

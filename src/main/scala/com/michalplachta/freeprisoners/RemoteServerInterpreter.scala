@@ -5,7 +5,7 @@ import akka.pattern.ask
 import cats.~>
 import com.michalplachta.freeprisoners.MultiplayerServer._
 import com.michalplachta.freeprisoners.PrisonersDilemma.Prisoner
-import com.michalplachta.freeprisoners.ServerDSL.{
+import com.michalplachta.freeprisoners.algebras.ServerDSL.{
   GetDecision,
   GetOpponentFor,
   SendDecision,

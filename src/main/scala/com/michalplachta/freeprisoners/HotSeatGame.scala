@@ -1,8 +1,8 @@
 package com.michalplachta.freeprisoners
 
 import cats.free.Free
-import com.michalplachta.freeprisoners.PlayerDSL.Player
-import com.michalplachta.freeprisoners.PlayerDSL.Player.Ops
+import com.michalplachta.freeprisoners.algebras.PlayerDSL.Player
+import com.michalplachta.freeprisoners.algebras.PlayerDSL.Player.Ops
 
 object HotSeatGame extends App {
   def program(playerOps: Ops[Player]): Free[Player, Unit] = {

@@ -1,7 +1,7 @@
 package com.michalplachta.freeprisoners
 
 import cats.{Id, ~>}
-import com.michalplachta.freeprisoners.PlayerDSL.{
+import com.michalplachta.freeprisoners.algebras.PlayerDSL.{
   DisplayVerdict,
   MeetPrisoner,
   Player,

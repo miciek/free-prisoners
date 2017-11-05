@@ -2,8 +2,8 @@ package com.michalplachta.freeprisoners
 
 import cats.implicits.catsStdInstancesForFuture
 import com.michalplachta.freeprisoners.LocalMultiplayerGame.Multiplayer
-import com.michalplachta.freeprisoners.PlayerDSL.Player
-import com.michalplachta.freeprisoners.ServerDSL.Server
+import com.michalplachta.freeprisoners.algebras.PlayerDSL.Player
+import com.michalplachta.freeprisoners.algebras.ServerDSL.Server
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
