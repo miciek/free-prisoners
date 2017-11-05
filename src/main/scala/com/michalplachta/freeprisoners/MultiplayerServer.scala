@@ -1,7 +1,7 @@
-package com.michalplachta.cats.free
+package com.michalplachta.freeprisoners
 
 import akka.actor.{Actor, ActorLogging, ActorSystem, Props}
-import com.michalplachta.cats.free.PrisonersDilemma._
+import com.michalplachta.freeprisoners.PrisonersDilemma.Decision
 import com.typesafe.config.ConfigFactory
 
 object MultiplayerServer extends App {

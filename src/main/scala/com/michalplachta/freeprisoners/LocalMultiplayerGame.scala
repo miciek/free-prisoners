@@ -1,10 +1,10 @@
-package com.michalplachta.cats.free
+package com.michalplachta.freeprisoners
 
 import cats.data.EitherK
 import cats.free.Free
 import cats.implicits.catsStdInstancesForFuture
-import com.michalplachta.cats.free.PlayerDSL.Player
-import com.michalplachta.cats.free.ServerDSL.Server
+import com.michalplachta.freeprisoners.PlayerDSL.Player
+import com.michalplachta.freeprisoners.ServerDSL.Server
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global

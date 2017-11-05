@@ -1,4 +1,4 @@
-package com.michalplachta.cats.free
+package com.michalplachta.freeprisoners
 
 object PrisonersDilemma {
   final case class Prisoner(name: String)

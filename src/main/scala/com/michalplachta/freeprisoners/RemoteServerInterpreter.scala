@@ -1,11 +1,16 @@
-package com.michalplachta.cats.free
+package com.michalplachta.freeprisoners
 
 import akka.actor.{ActorSelection, ActorSystem}
 import akka.pattern.ask
 import cats.~>
-import com.michalplachta.cats.free.MultiplayerServer._
-import com.michalplachta.cats.free.PrisonersDilemma.Prisoner
-import com.michalplachta.cats.free.ServerDSL._
+import com.michalplachta.freeprisoners.MultiplayerServer._
+import com.michalplachta.freeprisoners.PrisonersDilemma.Prisoner
+import com.michalplachta.freeprisoners.ServerDSL.{
+  GetDecision,
+  GetOpponentFor,
+  SendDecision,
+  Server
+}
 import com.typesafe.config.ConfigFactory
 
 import scala.concurrent.ExecutionContext.Implicits.global

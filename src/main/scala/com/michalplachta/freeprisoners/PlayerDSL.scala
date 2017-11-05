@@ -1,8 +1,8 @@
-package com.michalplachta.cats.free
+package com.michalplachta.freeprisoners
 
 import cats.:<:
 import cats.free.Free
-import com.michalplachta.cats.free.PrisonersDilemma.{
+import com.michalplachta.freeprisoners.PrisonersDilemma.{
   Decision,
   OtherPrisoner,
   Prisoner,

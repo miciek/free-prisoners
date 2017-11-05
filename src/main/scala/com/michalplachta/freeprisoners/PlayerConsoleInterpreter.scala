@@ -1,13 +1,17 @@
-package com.michalplachta.cats.free
+package com.michalplachta.freeprisoners
 
 import cats.{Id, ~>}
-import com.michalplachta.cats.free.PlayerDSL.{
+import com.michalplachta.freeprisoners.PlayerDSL.{
   DisplayVerdict,
   MeetPrisoner,
   Player,
   QuestionPrisoner
 }
-import com.michalplachta.cats.free.PrisonersDilemma.{Guilty, Prisoner, Silence}
+import com.michalplachta.freeprisoners.PrisonersDilemma.{
+  Guilty,
+  Prisoner,
+  Silence
+}
 
 object PlayerConsoleInterpreter extends (Player ~> Id) {
   def say(what: String): Unit = println(what)

@@ -1,8 +1,8 @@
-package com.michalplachta.cats.free
+package com.michalplachta.freeprisoners
 
 import cats.:<:
 import cats.free.Free
-import com.michalplachta.cats.free.PrisonersDilemma._
+import com.michalplachta.freeprisoners.PrisonersDilemma._
 
 object BotDSL {
   type Strategy = OtherPrisoner => Decision

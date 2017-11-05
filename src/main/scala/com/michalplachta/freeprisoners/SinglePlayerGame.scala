@@ -1,9 +1,9 @@
-package com.michalplachta.cats.free
+package com.michalplachta.freeprisoners
 
 import cats.data.EitherK
 import cats.free.Free
-import com.michalplachta.cats.free.BotDSL.{Bot, Strategies}
-import com.michalplachta.cats.free.PlayerDSL.Player
+import com.michalplachta.freeprisoners.BotDSL.{Bot, Strategies}
+import com.michalplachta.freeprisoners.PlayerDSL.Player
 
 object SinglePlayerGame extends App {
   type SinglePlayer[A] = EitherK[Player, Bot, A]

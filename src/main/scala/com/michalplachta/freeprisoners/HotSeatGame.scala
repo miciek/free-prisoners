@@ -1,10 +1,11 @@
-package com.michalplachta.cats.free
+package com.michalplachta.freeprisoners
 
 import cats.free.Free
-import com.michalplachta.cats.free.PlayerDSL.Player
+import com.michalplachta.freeprisoners.PlayerDSL.Player
+import com.michalplachta.freeprisoners.PlayerDSL.Player.Ops
 
 object HotSeatGame extends App {
-  def program(playerOps: Player.Ops[Player]): Free[Player, Unit] = {
+  def program(playerOps: Ops[Player]): Free[Player, Unit] = {
     import playerOps._
     for {
       prisonerA <- meetPrisoner("Welcome to Hot Seat Game, Prisoner A!")
