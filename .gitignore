@@ -2,3 +2,4 @@
 target
 .ensime_cache
 .ensime
+ensime.sbt

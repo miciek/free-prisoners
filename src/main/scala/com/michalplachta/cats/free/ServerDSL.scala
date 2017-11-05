@@ -7,10 +7,13 @@ import com.michalplachta.cats.free.PrisonersDilemma._
 object ServerDSL {
   sealed trait Server[A]
   final case class GetOpponentFor(prisoner: Prisoner) extends Server[Prisoner]
+
   final case class SendDecision(prisoner: Prisoner,
                                 otherPrisoner: OtherPrisoner,
                                 decision: Decision)
-      extends Server[Verdict]
+      extends Server[Unit]
+
+  final case class GetDecision(prisoner: Prisoner) extends Server[Decision]
 
   object Server {
     class Ops[S[_]](implicit s: Server :<: S) {
@@ -19,8 +22,11 @@ object ServerDSL {
 
       def sendDecision(prisoner: Prisoner,
                        otherPrisoner: OtherPrisoner,
-                       decision: Decision): Free[S, Verdict] =
+                       decision: Decision): Free[S, Unit] =
         Free.liftF(s.inj(SendDecision(prisoner, otherPrisoner, decision)))
+
+      def getDecision(prisoner: Prisoner): Free[S, Decision] =
+        Free.liftF(s.inj(GetDecision(prisoner)))
     }
   }
 }

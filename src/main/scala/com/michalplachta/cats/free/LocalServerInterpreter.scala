@@ -4,13 +4,9 @@ import akka.actor.{Actor, ActorLogging, ActorRef, ActorSystem, Props}
 import akka.pattern.ask
 import cats.~>
 import com.michalplachta.cats.free.BotDSL.Strategies
-import com.michalplachta.cats.free.PrisonersDilemma.{
-  Decision,
-  OtherPrisoner,
-  Prisoner,
-  Verdict
-}
+import com.michalplachta.cats.free.PrisonersDilemma._
 import com.michalplachta.cats.free.ServerDSL.{
+  GetDecision,
   GetOpponentFor,
   SendDecision,
   Server
@@ -20,21 +16,28 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 
 object LocalServerInterpreter extends (Server ~> Future) {
-  final case class GetVerdict(prisoner: Prisoner,
-                              otherPrisoner: OtherPrisoner,
-                              decision: Decision)
+  private final case class SendPlayerDecision(decision: Decision)
+  private final case class GetPrisonerDecision(prisoner: Prisoner)
+
   class ServerActor extends Actor with ActorLogging {
     val bot = Prisoner("Gulliver")
+    var playerDecision: Option[Decision] = None
 
     def receive: Receive = {
       case prisoner: Prisoner =>
         log.info(s"Registering new prisoner $prisoner. Opponent: $bot")
+        playerDecision = None
         sender ! bot
 
-      case GetVerdict(prisoner, _, decision) =>
-        val botDecision = Strategies.alwaysBlame(prisoner)
-        log.info(s"Bot $bot decision: $botDecision")
-        sender ! PrisonersDilemma.verdict(decision, botDecision)
+      case SendPlayerDecision(decision) =>
+        playerDecision = Some(decision)
+
+      case GetPrisonerDecision(prisoner) =>
+        if (prisoner == bot) {
+          val botDecision = Strategies.alwaysBlame(prisoner)
+          log.info(s"Bot $bot decision: $botDecision")
+          sender ! botDecision
+        }
     }
   }
 
@@ -44,10 +47,15 @@ object LocalServerInterpreter extends (Server ~> Future) {
   def apply[A](i: Server[A]): Future[A] = i match {
     case GetOpponentFor(prisoner) =>
       server.ask(prisoner)(5.seconds).mapTo[Prisoner]
+
     case SendDecision(prisoner, otherPrisoner, decision) =>
+      server ! SendPlayerDecision(decision)
+      Future.successful(())
+
+    case GetDecision(prisoner) =>
       server
-        .ask(GetVerdict(prisoner, otherPrisoner, decision))(5.seconds)
-        .mapTo[Verdict]
+        .ask(GetPrisonerDecision(prisoner))(5.seconds)
+        .mapTo[Decision]
   }
 
   def terminate(): Unit = system.terminate()

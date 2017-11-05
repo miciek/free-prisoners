@@ -3,39 +3,44 @@ package com.michalplachta.cats.free
 import akka.actor.{ActorSelection, ActorSystem}
 import akka.pattern.ask
 import cats.~>
-import com.michalplachta.cats.free.PrisonersDilemma.{Prisoner, Verdict}
-import com.michalplachta.cats.free.ServerDSL.{
-  GetOpponentFor,
-  SendDecision,
-  Server
-}
+import com.michalplachta.cats.free.MultiplayerServer._
+import com.michalplachta.cats.free.PrisonersDilemma.Prisoner
+import com.michalplachta.cats.free.ServerDSL._
 import com.typesafe.config.ConfigFactory
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.duration._
+import scala.reflect.ClassTag
 
 object RemoteServerInterpreter extends (Server ~> Future) {
   val system = ActorSystem("gameClient", ConfigFactory.load("client"))
   val server: ActorSelection = system.actorSelection(
     "akka.tcp://prisonersDilemma@127.0.0.1:2552/user/server")
 
-  /*
-   * Note: the protocol between client and remote server uses Strings only.
-   */
+  private def askServer[T: ClassTag](message: ServerProtocol[T],
+                                     retries: Int = 0): Future[T] = {
+    println(s"Asking server: $message, retry $retries")
+    val futurePrisoner =
+      server.ask(message)(2.seconds).mapTo[T]
+    if (retries < 20) {
+      futurePrisoner.recoverWith({
+        case _ => askServer(message, retries + 1)
+      })
+    } else futurePrisoner
+  }
+
   def apply[A](i: Server[A]): Future[A] = i match {
     case GetOpponentFor(prisoner) =>
-      server
-        .ask(prisoner.name)(60.seconds)
-        .mapTo[String]
-        .map(Prisoner)
+      server ! RegisterPlayer(prisoner.name)
+      askServer(GetPlayerOpponent(prisoner.name)).map(Prisoner)
 
     case SendDecision(prisoner, otherPrisoner, decision) =>
-      // FIXME: this doesn't work properly with the current MultiplayerServer implementation
-      server
-        .ask((prisoner.name, otherPrisoner.name, decision.toString))(60.seconds)
-        .mapTo[Int]
-        .map(Verdict)
+      server ! RegisterDecision(prisoner.name, decision)
+      Future.successful(())
+
+    case GetDecision(prisoner) =>
+      askServer(GetRegisteredDecision(prisoner.name))
   }
 
   def terminate(): Unit = system.terminate()

@@ -20,8 +20,11 @@ object LocalMultiplayerGame extends App {
       player <- meetPrisoner("Welcome to Multiplayer Game")
       opponent <- getOpponentFor(player)
       playerDecision <- questionPrisoner(player, otherPrisoner = opponent)
-      verdict <- sendDecision(player, opponent, playerDecision)
-      _ <- displayVerdict(player, verdict)
+      _ <- sendDecision(player, opponent, playerDecision)
+      opponentDecision <- getDecision(opponent)
+      _ <- displayVerdict(
+        player,
+        PrisonersDilemma.verdict(playerDecision, opponentDecision))
     } yield ()
   }
 

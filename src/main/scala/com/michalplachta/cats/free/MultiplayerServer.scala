@@ -1,85 +1,69 @@
 package com.michalplachta.cats.free
 
-import akka.actor.{Actor, ActorLogging, ActorRef, ActorSystem, Props}
+import akka.actor.{Actor, ActorLogging, ActorSystem, Props}
 import com.michalplachta.cats.free.PrisonersDilemma._
 import com.typesafe.config.ConfigFactory
 
 object MultiplayerServer extends App {
-  final case class PrisonerPlayer(name: String,
-                                  actorRef: ActorRef,
-                                  decision: Option[Decision])
+  sealed trait ServerProtocol[A]
+  final case class RegisterPlayer(name: String) extends ServerProtocol[Unit]
+  final case class GetPlayerOpponent(name: String)
+      extends ServerProtocol[String]
+  final case class RegisterDecision(playerName: String, decision: Decision)
+      extends ServerProtocol[Unit]
+  final case class GetRegisteredDecision(playerName: String)
+      extends ServerProtocol[Decision]
 
-  class Server extends Actor with ActorLogging {
-    var playerA: Option[PrisonerPlayer] = None
-    var playerB: Option[PrisonerPlayer] = None
+  private final case class PlayingPrisoner(playerName: String,
+                                           opponentName: String,
+                                           decision: Option[Decision])
+
+  private class Server extends Actor with ActorLogging {
+    private var waitingPlayers = Set.empty[String]
+    private var playingPrisoners = Map.empty[String, PlayingPrisoner]
 
     def receive: Receive = {
-      case playerName: String =>
-        endGameIfAllPlayersDefined()
-        val newPlayer = PrisonerPlayer(playerName, sender, None)
-        if (playerA.isEmpty) {
-          playerA = Some(newPlayer)
-        } else {
-          playerB = Some(newPlayer)
-          announcePlayers()
-        }
-        log.info(s"Registered $playerName")
-
-      case (playerName: String, opponentName: String, decisionStr: String) =>
-        def playerWithDecision(player: Option[PrisonerPlayer],
-                               opponent: Option[PrisonerPlayer],
-                               playerDecision: Decision) =
-          if (player.exists(_.name == playerName))
-            player.map(_.copy(decision = Some(playerDecision)))
-          else player
-
-        val playerDecision = if (decisionStr == "Guilty") Guilty else Silence
-        playerA = playerWithDecision(playerA, playerB, playerDecision)
-        playerB = playerWithDecision(playerB, playerA, playerDecision)
-
-        endGameIfAllDecisionsReceived()
+      case RegisterPlayer(name) =>
+        waitingPlayers += name
+        playingPrisoners = playingPrisoners.filterKeys(_ != name)
         log.info(
-          s"Received decision of $playerName against $opponentName: $decisionStr ($playerDecision)")
-    }
+          s"Registered $name. Waiting: ${waitingPlayers.mkString(", ")}. Playing: $playingPrisoners")
 
-    private def announcePlayers(): Unit = {
-      def announcePlayer(maybePlayer: Option[PrisonerPlayer],
-                         maybeOpponent: Option[PrisonerPlayer]) =
-        for {
-          player <- maybePlayer
-          opponent <- maybeOpponent
-        } yield player.actorRef ! opponent.name
-      announcePlayer(playerA, playerB)
-      announcePlayer(playerB, playerA)
-    }
-
-    private def endGameIfAllDecisionsReceived(): Unit =
-      if (playerA.exists(_.decision.isDefined)
-          && playerB.exists(_.decision.isDefined)) endGame()
-
-    private def endGameIfAllPlayersDefined(): Unit =
-      if (playerA.isDefined && playerB.isDefined) endGame()
-
-    private def endGame(): Unit = {
-      resolveGame()
-      playerA = None
-      playerB = None
-    }
-
-    private def resolveGame(): Unit = {
-      def decision(player: Option[PrisonerPlayer]) =
-        player.flatMap(_.decision).getOrElse(Silence)
-      def sendVerdict(player: Option[PrisonerPlayer],
-                      opponent: Option[PrisonerPlayer]): Unit =
-        player.foreach {
-          _.actorRef ! verdict(decision(player), decision(opponent)).years
+      case GetPlayerOpponent(name) =>
+        if (playingPrisoners.contains(name)) {
+          playingPrisoners.get(name).foreach(sender ! _.opponentName)
+        } else if (waitingPlayers.contains(name) && waitingPlayers.size > 1) {
+          val otherPrisoners = waitingPlayers.filterNot(_ == name)
+          val opponentName = otherPrisoners.head
+          val opponentPlayer = PlayingPrisoner(opponentName, name, None)
+          val prisonerPlayer = PlayingPrisoner(name, opponentName, None)
+          playingPrisoners ++= Map(name -> prisonerPlayer,
+                                   opponentName -> opponentPlayer)
+          waitingPlayers = otherPrisoners.tail
+          sender ! opponentName
         }
-      sendVerdict(playerA, playerB)
-      sendVerdict(playerB, playerA)
-      log.info(s"Resolved game between $playerA and $playerB")
+
+      case RegisterDecision(name, decision) =>
+        if (playingPrisoners.contains(name)) {
+          val updatedPrisoner = playingPrisoners
+            .get(name)
+            .map(name -> _.copy(decision = Some(decision)))
+            .toMap
+          playingPrisoners ++= updatedPrisoner
+          log.info(s"Received decision of $name: $decision")
+        } else {
+          log.info(s"Received decision for unknown player $name")
+        }
+
+      case GetRegisteredDecision(name) =>
+        playingPrisoners
+          .get(name)
+          .flatMap(_.decision)
+          .foreach(sender ! _)
     }
   }
 
-  val system = ActorSystem("prisonersDilemma", ConfigFactory.load("server"))
-  val server = system.actorOf(Props[Server], "server")
+  private val system =
+    ActorSystem("prisonersDilemma", ConfigFactory.load("server"))
+  system.actorOf(Props[Server], "server")
 }
