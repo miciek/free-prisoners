@@ -1,16 +1,16 @@
-package com.michalplachta.freeprisoners
+package com.michalplachta.freeprisoners.interpreters
 
 import cats.{Id, ~>}
+import com.michalplachta.freeprisoners.PrisonersDilemma.{
+  Guilty,
+  Prisoner,
+  Silence
+}
 import com.michalplachta.freeprisoners.algebras.PlayerDSL.{
   DisplayVerdict,
   MeetPrisoner,
   Player,
   QuestionPrisoner
-}
-import com.michalplachta.freeprisoners.PrisonersDilemma.{
-  Guilty,
-  Prisoner,
-  Silence
 }
 
 object PlayerConsoleInterpreter extends (Player ~> Id) {

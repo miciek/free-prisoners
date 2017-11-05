@@ -5,6 +5,11 @@ import cats.free.Free
 import cats.implicits.catsStdInstancesForFuture
 import com.michalplachta.freeprisoners.algebras.PlayerDSL.Player
 import com.michalplachta.freeprisoners.algebras.ServerDSL.Server
+import com.michalplachta.freeprisoners.interpreters.{
+  IdToFuture,
+  LocalServerInterpreter,
+  PlayerConsoleInterpreter
+}
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global

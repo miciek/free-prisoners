@@ -1,4 +1,4 @@
-package com.michalplachta.freeprisoners
+package com.michalplachta.freeprisoners.interpreters
 
 import akka.actor.{ActorSelection, ActorSystem}
 import akka.pattern.ask

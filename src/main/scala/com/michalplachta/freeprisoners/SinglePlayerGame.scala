@@ -4,6 +4,10 @@ import cats.data.EitherK
 import cats.free.Free
 import com.michalplachta.freeprisoners.algebras.BotDSL.{Bot, Strategies}
 import com.michalplachta.freeprisoners.algebras.PlayerDSL.Player
+import com.michalplachta.freeprisoners.interpreters.{
+  BotInterpreter,
+  PlayerConsoleInterpreter
+}
 
 object SinglePlayerGame extends App {
   type SinglePlayer[A] = EitherK[Player, Bot, A]

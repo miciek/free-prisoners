@@ -1,10 +1,10 @@
-package com.michalplachta.freeprisoners
+package com.michalplachta.freeprisoners.interpreters
 
 import akka.actor.{Actor, ActorLogging, ActorRef, ActorSystem, Props}
 import akka.pattern.ask
 import cats.~>
-import com.michalplachta.freeprisoners.algebras.BotDSL.Strategies
 import com.michalplachta.freeprisoners.PrisonersDilemma.{Decision, Prisoner}
+import com.michalplachta.freeprisoners.algebras.BotDSL.Strategies
 import com.michalplachta.freeprisoners.algebras.ServerDSL.{
   GetDecision,
   GetOpponentFor,

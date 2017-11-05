@@ -1,13 +1,13 @@
-package com.michalplachta.freeprisoners
+package com.michalplachta.freeprisoners.interpreters
 
 import cats.{Id, ~>}
+import com.michalplachta.freeprisoners.PrisonersDilemma.{Prisoner, Silence}
 import com.michalplachta.freeprisoners.algebras.BotDSL.{
   Bot,
   CreateBot,
   GetDecision,
   Strategy
 }
-import com.michalplachta.freeprisoners.PrisonersDilemma.{Prisoner, Silence}
 
 object BotInterpreter extends (Bot ~> Id) {
   var bots = Map.empty[Prisoner, Strategy]
