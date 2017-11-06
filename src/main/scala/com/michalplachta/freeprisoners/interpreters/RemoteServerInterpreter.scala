@@ -20,8 +20,8 @@ import scala.reflect.ClassTag
 
 object RemoteServerInterpreter extends (Server ~> Future) {
   val system = ActorSystem("gameClient", ConfigFactory.load("client"))
-  val server: ActorSelection = system.actorSelection(
-    "akka.tcp://prisonersDilemma@127.0.0.1:2552/user/server")
+  val server: ActorSelection =
+    system.actorSelection("akka://prisonersDilemma@127.0.0.1:2552/user/server")
 
   private def askServer[T: ClassTag](message: ServerProtocol[T],
                                      retries: Int = 0): Future[T] = {
