@@ -1,8 +1,9 @@
-package com.michalplachta.freeprisoners
+package com.michalplachta.freeprisoners.programs
 
 import cats.data.EitherK
 import cats.free.Free
 import cats.implicits.catsStdInstancesForFuture
+import com.michalplachta.freeprisoners.PrisonersDilemma
 import com.michalplachta.freeprisoners.algebras.PlayerOps.Player
 import com.michalplachta.freeprisoners.algebras.ServerOps.Server
 import com.michalplachta.freeprisoners.interpreters.{

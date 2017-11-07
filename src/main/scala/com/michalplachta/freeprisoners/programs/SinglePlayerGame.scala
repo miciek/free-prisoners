@@ -1,7 +1,8 @@
-package com.michalplachta.freeprisoners
+package com.michalplachta.freeprisoners.programs
 
 import cats.data.EitherK
 import cats.free.Free
+import com.michalplachta.freeprisoners.PrisonersDilemma
 import com.michalplachta.freeprisoners.algebras.BotOps.{Bot, Strategies}
 import com.michalplachta.freeprisoners.algebras.PlayerOps.Player
 import com.michalplachta.freeprisoners.interpreters.{
@@ -14,7 +15,8 @@ object SinglePlayerGame extends App {
 
   def program(playerOps: Player.Ops[SinglePlayer],
               botOps: Bot.Ops[SinglePlayer]): Free[SinglePlayer, Unit] = {
-    import playerOps._, botOps._
+    import botOps._
+    import playerOps._
     for {
       playerPrisoner <- meetPrisoner("Welcome to Single Player Game")
       botPrisoner <- createBot("Romain", Strategies.alwaysBlame)

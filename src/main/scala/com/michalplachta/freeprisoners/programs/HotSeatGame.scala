@@ -1,6 +1,7 @@
-package com.michalplachta.freeprisoners
+package com.michalplachta.freeprisoners.programs
 
 import cats.free.Free
+import com.michalplachta.freeprisoners.PrisonersDilemma
 import com.michalplachta.freeprisoners.algebras.PlayerOps.Player
 import com.michalplachta.freeprisoners.algebras.PlayerOps.Player.Ops
 import com.michalplachta.freeprisoners.interpreters.PlayerConsoleInterpreter
