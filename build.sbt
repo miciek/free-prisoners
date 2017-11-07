@@ -4,7 +4,7 @@ organization := "miciek"
 
 version := "1.0-SNAPSHOT"
 
-scalaVersion := "2.12.4"
+scalaVersion := "2.12.3"
 
 resolvers += Resolver.jcenterRepo
 
@@ -23,9 +23,10 @@ libraryDependencies ++= {
   )
 }
 
-scalacOptions ++= List("-language:higherKinds",
+scalacOptions ++= List("-unchecked",
                        "-Ywarn-unused-import",
-                       "-Xfatal-warnings")
+                       "-Xfatal-warnings",
+                       "-language:higherKinds")
 
 fork := true
 connectInput in run := true
