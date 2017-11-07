@@ -8,7 +8,7 @@ import com.michalplachta.freeprisoners.PrisonersDilemma.{
   Prisoner
 }
 
-object ServerDSL {
+object ServerOps {
   sealed trait Server[A]
   final case class GetOpponentFor(prisoner: Prisoner) extends Server[Prisoner]
 

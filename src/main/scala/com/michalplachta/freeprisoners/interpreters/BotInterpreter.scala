@@ -2,7 +2,7 @@ package com.michalplachta.freeprisoners.interpreters
 
 import cats.{Id, ~>}
 import com.michalplachta.freeprisoners.PrisonersDilemma.{Prisoner, Silence}
-import com.michalplachta.freeprisoners.algebras.BotDSL.{
+import com.michalplachta.freeprisoners.algebras.BotOps.{
   Bot,
   CreateBot,
   GetDecision,

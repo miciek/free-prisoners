@@ -3,8 +3,8 @@ package com.michalplachta.freeprisoners
 import cats.data.EitherK
 import cats.free.Free
 import cats.implicits.catsStdInstancesForFuture
-import com.michalplachta.freeprisoners.algebras.PlayerDSL.Player
-import com.michalplachta.freeprisoners.algebras.ServerDSL.Server
+import com.michalplachta.freeprisoners.algebras.PlayerOps.Player
+import com.michalplachta.freeprisoners.algebras.ServerOps.Server
 import com.michalplachta.freeprisoners.interpreters.{
   IdToFuture,
   PlayerConsoleInterpreter,
@@ -17,6 +17,7 @@ import scala.concurrent.duration._
 
 object MultiplayerGame extends App {
   type Multiplayer[A] = EitherK[Player, Server, A]
+
   def program(playerOps: Player.Ops[Multiplayer],
               serverOps: Server.Ops[Multiplayer]): Free[Multiplayer, Unit] = {
     import playerOps._

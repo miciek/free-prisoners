@@ -6,7 +6,7 @@ import com.michalplachta.freeprisoners.PrisonersDilemma.{
   Prisoner,
   Silence
 }
-import com.michalplachta.freeprisoners.algebras.PlayerDSL.{
+import com.michalplachta.freeprisoners.algebras.PlayerOps.{
   DisplayVerdict,
   MeetPrisoner,
   Player,

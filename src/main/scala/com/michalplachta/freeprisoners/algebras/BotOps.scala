@@ -4,7 +4,7 @@ import cats.:<:
 import cats.free.Free
 import com.michalplachta.freeprisoners.PrisonersDilemma._
 
-object BotDSL {
+object BotOps {
   type Strategy = OtherPrisoner => Decision
   object Strategies {
     val alwaysBlame: Strategy = _ => Guilty

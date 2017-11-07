@@ -9,7 +9,7 @@ import com.michalplachta.freeprisoners.PrisonersDilemma.{
   Verdict
 }
 
-object PlayerDSL {
+object PlayerOps {
   sealed trait Player[A]
   final case class MeetPrisoner(introduction: String) extends Player[Prisoner]
   final case class QuestionPrisoner(prisoner: Prisoner,

@@ -2,8 +2,8 @@ package com.michalplachta.freeprisoners
 
 import cats.data.EitherK
 import cats.free.Free
-import com.michalplachta.freeprisoners.algebras.BotDSL.{Bot, Strategies}
-import com.michalplachta.freeprisoners.algebras.PlayerDSL.Player
+import com.michalplachta.freeprisoners.algebras.BotOps.{Bot, Strategies}
+import com.michalplachta.freeprisoners.algebras.PlayerOps.Player
 import com.michalplachta.freeprisoners.interpreters.{
   BotInterpreter,
   PlayerConsoleInterpreter
