@@ -1,6 +1,6 @@
 package com.michalplachta.freeprisoners.interpreters
 
-import akka.actor.{ActorSelection, ActorSystem}
+import akka.actor.ActorSystem
 import akka.pattern.ask
 import cats.~>
 import com.michalplachta.freeprisoners.MultiplayerServer._
@@ -19,9 +19,9 @@ import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
 object RemoteServerInterpreter extends (Server ~> Future) {
-  val system = ActorSystem("gameClient", ConfigFactory.load("client"))
-  val server: ActorSelection =
-    system.actorSelection("akka://prisonersDilemma@127.0.0.1:2552/user/server")
+  private val system = ActorSystem("gameClient")
+  private val server =
+    system.actorSelection(ConfigFactory.load.getString("app.game-server-path"))
 
   private def askServer[T: ClassTag](message: ServerProtocol[T],
                                      retries: Int = 0): Future[T] = {

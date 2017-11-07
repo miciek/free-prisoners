@@ -16,8 +16,8 @@ Use `sbt run` and choose `HotSeatGame` or `SinglePlayerGame`.
 
 To run [Multiplayer Game](src/main/scala/com/michalplachta/cats/free/MultiplayerGame.scala) you will need three separate `sbt` sessions:
 
-1. `sbt "runMain com.michalplachta.freeprisoners.MultiplayerServer"` - to run the server on default server port (see [server.conf](src/main/resources/server.conf))
-1. `sbt "runMain com.michalplachta.freeprisoners.MultiplayerGame"` - to run the first player session (see [client.conf](src/main/resources/client.conf))
-1. `sbt "runMain com.michalplachta.freeprisoners.MultiplayerGame"` - to run the second player session
+1. `BIND_PORT=2552 sbt "runMain com.michalplachta.freeprisoners.MultiplayerServer"` - to run the server on specified server port,
+1. `sbt "runMain com.michalplachta.freeprisoners.MultiplayerGame"` - to run the first player session,
+1. `sbt "runMain com.michalplachta.freeprisoners.MultiplayerGame"` - to run the second player session.
 
-
+See [application.conf](src/main/resources/application.conf) for more details about the configuration of all 3 actor systems.

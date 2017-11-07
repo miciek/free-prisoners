@@ -2,7 +2,6 @@ package com.michalplachta.freeprisoners
 
 import akka.actor.{Actor, ActorSystem, Props}
 import com.michalplachta.freeprisoners.PrisonersDilemma.Decision
-import com.typesafe.config.ConfigFactory
 
 object MultiplayerServer extends App {
   sealed trait ServerProtocol[A]
@@ -63,8 +62,7 @@ object MultiplayerServer extends App {
     }
   }
 
-  private val system =
-    ActorSystem("prisonersDilemma", ConfigFactory.load("server"))
+  private val system = ActorSystem("gameServer")
   system.actorOf(Props[Server], "server")
   println("Server is running...")
 }
