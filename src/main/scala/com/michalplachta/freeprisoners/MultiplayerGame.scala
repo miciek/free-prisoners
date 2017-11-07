@@ -33,14 +33,15 @@ object MultiplayerGame extends App {
     } yield ()
   }
 
+  val playerInterpreter = PlayerConsoleInterpreter.andThen(IdToFuture)
+  val serverInterpreter = new RemoteServerInterpreter()
   try {
     val gameResult = program(
       new Player.Ops[Multiplayer],
       new Server.Ops[Multiplayer]
-    ).foldMap(
-      PlayerConsoleInterpreter.andThen(IdToFuture) or RemoteServerInterpreter)
+    ).foldMap(playerInterpreter or serverInterpreter)
     Await.result(gameResult, 60.seconds)
   } finally {
-    RemoteServerInterpreter.terminate()
+    serverInterpreter.terminate()
   }
 }

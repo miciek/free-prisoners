@@ -18,7 +18,7 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
-object RemoteServerInterpreter extends (Server ~> Future) {
+class RemoteServerInterpreter extends (Server ~> Future) {
   private val system = ActorSystem("gameClient")
   private val server =
     system.actorSelection(ConfigFactory.load.getString("app.game-server-path"))
