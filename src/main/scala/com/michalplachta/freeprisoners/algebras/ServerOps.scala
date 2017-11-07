@@ -2,18 +2,14 @@ package com.michalplachta.freeprisoners.algebras
 
 import cats.:<:
 import cats.free.Free
-import com.michalplachta.freeprisoners.PrisonersDilemma.{
-  Decision,
-  OtherPrisoner,
-  Prisoner
-}
+import com.michalplachta.freeprisoners.PrisonersDilemma.{Decision, Prisoner}
 
 object ServerOps {
   sealed trait Server[A]
   final case class GetOpponentFor(prisoner: Prisoner) extends Server[Prisoner]
 
   final case class SendDecision(prisoner: Prisoner,
-                                otherPrisoner: OtherPrisoner,
+                                otherPrisoner: Prisoner,
                                 decision: Decision)
       extends Server[Unit]
 
@@ -25,7 +21,7 @@ object ServerOps {
         Free.liftF(s.inj(GetOpponentFor(prisoner)))
 
       def sendDecision(prisoner: Prisoner,
-                       otherPrisoner: OtherPrisoner,
+                       otherPrisoner: Prisoner,
                        decision: Decision): Free[S, Unit] =
         Free.liftF(s.inj(SendDecision(prisoner, otherPrisoner, decision)))
 

@@ -2,7 +2,6 @@ package com.michalplachta.freeprisoners
 
 object PrisonersDilemma {
   final case class Prisoner(name: String)
-  type OtherPrisoner = Prisoner
 
   sealed trait Decision
   case object Guilty extends Decision
