@@ -1,6 +1,6 @@
 package com.michalplachta.freeprisoners
 
-import akka.actor.{Actor, ActorLogging, ActorSystem, Props}
+import akka.actor.{Actor, ActorSystem, Props}
 import com.michalplachta.freeprisoners.PrisonersDilemma.Decision
 import com.typesafe.config.ConfigFactory
 
@@ -18,7 +18,7 @@ object MultiplayerServer extends App {
                                            opponentName: String,
                                            decision: Option[Decision])
 
-  private class Server extends Actor with ActorLogging {
+  private class Server extends Actor {
     private var waitingPlayers = Set.empty[String]
     private var playingPrisoners = Map.empty[String, PlayingPrisoner]
 
@@ -26,7 +26,7 @@ object MultiplayerServer extends App {
       case RegisterPlayer(name) =>
         waitingPlayers += name
         playingPrisoners = playingPrisoners.filterKeys(_ != name)
-        log.info(
+        println(
           s"Registered $name. Waiting: ${waitingPlayers.mkString(", ")}. Playing: $playingPrisoners")
 
       case GetPlayerOpponent(name) =>
@@ -50,9 +50,9 @@ object MultiplayerServer extends App {
             .map(name -> _.copy(decision = Some(decision)))
             .toMap
           playingPrisoners ++= updatedPrisoner
-          log.info(s"Received decision of $name: $decision")
+          println(s"Received decision of $name: $decision")
         } else {
-          log.info(s"Received decision for unknown player $name")
+          println(s"Received decision for unknown player $name")
         }
 
       case GetRegisteredDecision(name) =>
@@ -66,4 +66,5 @@ object MultiplayerServer extends App {
   private val system =
     ActorSystem("prisonersDilemma", ConfigFactory.load("server"))
   system.actorOf(Props[Server], "server")
+  println("Server is running...")
 }
