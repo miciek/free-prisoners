@@ -8,21 +8,21 @@ import scala.concurrent.duration.FiniteDuration
 
 object MatchmakingOps {
   sealed trait Matchmaking[A]
+  final case class GetWaitingOpponents() extends Matchmaking[Seq[Int]]
+  final case class JoinWaitingOpponent(waitingOpponentId: Int)
+      extends Matchmaking[Option[Prisoner]]
+  final case class WaitForOpponent(waitTime: FiniteDuration)
+      extends Matchmaking[Option[Prisoner]]
 
   object Matchmaking {
-    sealed trait MatchmakingResult
-    final case class OpponentFound(opponent: Prisoner) extends MatchmakingResult
-    final case object OpponentNotFound extends MatchmakingResult
-
     class Ops[S[_]](implicit s: Matchmaking :<: S) {
-      def waitForOpponent(
-          prisoner: Prisoner,
-          waitTime: FiniteDuration): Free[S, MatchmakingResult] =
-        ???
+      def getWaitingOpponents(): Free[S, Seq[Int]] =
+        Free.liftF(s.inj(GetWaitingOpponents()))
       def joinWaitingOpponent(
-          prisoner: Prisoner,
-          waitTime: FiniteDuration): Free[S, MatchmakingResult] =
-        ???
+          waitingOpponentId: Int): Free[S, Option[Prisoner]] =
+        Free.liftF(s.inj(JoinWaitingOpponent(waitingOpponentId)))
+      def waitForOpponent(waitTime: FiniteDuration): Free[S, Option[Prisoner]] =
+        Free.liftF(s.inj(WaitForOpponent(waitTime)))
     }
 
     object Ops {
