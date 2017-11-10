@@ -3,8 +3,17 @@ package com.michalplachta.freeprisoners.programs
 import cats.data.State
 import cats.~>
 import com.michalplachta.freeprisoners.PrisonersDilemma._
-import com.michalplachta.freeprisoners.algebras.PlayerOps.{DisplayVerdict, MeetPrisoner, Player, QuestionPrisoner}
-import com.michalplachta.freeprisoners.programs.HotSeatGameTest.{FakePrisoner, GameState, MockedEnvironment}
+import com.michalplachta.freeprisoners.algebras.PlayerOps.{
+  DisplayVerdict,
+  MeetPrisoner,
+  Player,
+  QuestionPrisoner
+}
+import com.michalplachta.freeprisoners.programs.HotSeatGameTest.{
+  FakePrisoner,
+  GameState,
+  MockedEnvironment
+}
 import org.scalatest.{Matchers, WordSpec}
 
 class HotSeatGameTest extends WordSpec with Matchers {
@@ -22,7 +31,8 @@ class HotSeatGameTest extends WordSpec with Matchers {
         .value
 
       result.verdicts should be(
-        Map(blamingPrisoner.prisoner -> Verdict(0), silentPrisoner.prisoner -> Verdict(3)))
+        Map(blamingPrisoner.prisoner -> Verdict(0),
+            silentPrisoner.prisoner -> Verdict(3)))
     }
   }
 
