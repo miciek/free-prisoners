@@ -3,19 +3,19 @@ package com.michalplachta.freeprisoners.programs
 import cats.data.EitherK
 import cats.free.Free
 import com.michalplachta.freeprisoners.PrisonersDilemma.Prisoner
-import com.michalplachta.freeprisoners.algebras.MatchOps.Match
+import com.michalplachta.freeprisoners.algebras.GameOps.Game
 import com.michalplachta.freeprisoners.algebras.MatchmakingOps.Matchmaking
 import com.michalplachta.freeprisoners.algebras.PlayerOps.Player
 
 import scala.concurrent.duration._
 
 object MultiplayerGameV2 {
-  type MatchmakingMatch[A] = EitherK[Matchmaking, Match, A]
+  type MatchmakingMatch[A] = EitherK[Matchmaking, Game, A]
   type Multiplayer[A] = EitherK[Player, MatchmakingMatch, A]
 
   def program(implicit playerOps: Player.Ops[Multiplayer],
               matchmakingOps: Matchmaking.Ops[Multiplayer],
-              matchOps: Match.Ops[Multiplayer]): Free[Multiplayer, Unit] = {
+              gameOps: Game.Ops[Multiplayer]): Free[Multiplayer, Unit] = {
     import playerOps._
     for {
       player <- meetPrisoner("Welcome to Multiplayer Game")
@@ -38,7 +38,7 @@ object MultiplayerGameV2 {
 
   def playTheGame[S[_]](player: Prisoner, opponent: Prisoner)(
       implicit playerOps: Player.Ops[S],
-      matchOps: Match.Ops[S]): Free[S, Unit] = {
+      gameOps: Game.Ops[S]): Free[S, Unit] = {
     ???
   }
 }
