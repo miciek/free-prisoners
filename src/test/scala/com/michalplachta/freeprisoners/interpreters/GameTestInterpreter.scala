@@ -8,21 +8,22 @@ import com.michalplachta.freeprisoners.algebras.GameOps.{
   GetOpponentDecision,
   SendDecision
 }
-import com.michalplachta.freeprisoners.interpreters.GameTestInterpreter.DecisionState
+import com.michalplachta.freeprisoners.interpreters.GameTestInterpreter.GameStateA
 
-class GameTestInterpreter extends (Game ~> DecisionState) {
-  def apply[A](game: Game[A]): DecisionState[A] = game match {
+class GameTestInterpreter extends (Game ~> GameStateA) {
+  def apply[A](game: Game[A]): GameStateA[A] = game match {
     case SendDecision(player, opponent, decision) =>
       State { state =>
-        (state + (player -> decision), ())
+        (state.copy(decisions = state.decisions + (player -> decision)), ())
       }
     case GetOpponentDecision(player, opponent, waitTime) =>
       State { state =>
-        (state, state.get(opponent))
+        (state, state.decisions.get(opponent).get)
       }
   }
 }
 
 object GameTestInterpreter {
-  type DecisionState[A] = State[Map[Prisoner, Decision], A]
+  final case class GameState(decisions: Map[Prisoner, Decision])
+  type GameStateA[A] = State[GameState, A]
 }
