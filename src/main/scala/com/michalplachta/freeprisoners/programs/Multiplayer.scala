@@ -10,7 +10,7 @@ import com.michalplachta.freeprisoners.algebras.PlayerOps.Player
 
 import scala.concurrent.duration._
 
-object MultiplayerGameV2 {
+object Multiplayer {
   type MatchmakingMatch[A] = EitherK[Matchmaking, Game, A]
   type Multiplayer[A] = EitherK[Player, MatchmakingMatch, A]
 

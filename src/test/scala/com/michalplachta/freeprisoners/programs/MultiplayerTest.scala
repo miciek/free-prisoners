@@ -21,7 +21,7 @@ import com.michalplachta.freeprisoners.interpreters.{
 }
 import org.scalatest.{Matchers, WordSpec}
 
-class MultiplayerGameTest extends WordSpec with Matchers {
+class MultiplayerTest extends WordSpec with Matchers {
   "Multiplayer game" should {
     "have matchmaking module which" should {
       "be able to create a match when there is one opponent waiting" in {
@@ -29,7 +29,7 @@ class MultiplayerGameTest extends WordSpec with Matchers {
           new MatchmakingTestInterpreter(waiting = Seq(Prisoner("A")),
                                          willJoin = None)
         val player = Prisoner("Player")
-        val opponent: Option[Prisoner] = MultiplayerGameV2
+        val opponent: Option[Prisoner] = Multiplayer
           .findOpponent(player)(new Matchmaking.Ops[Matchmaking])
           .foldMap(interpreter)
         opponent should contain(Prisoner("A"))
@@ -40,7 +40,7 @@ class MultiplayerGameTest extends WordSpec with Matchers {
           new MatchmakingTestInterpreter(waiting = Seq.empty,
                                          willJoin = Some(Prisoner("B")))
         val player = Prisoner("Player")
-        val opponent: Option[Prisoner] = MultiplayerGameV2
+        val opponent: Option[Prisoner] = Multiplayer
           .findOpponent(player)(new Matchmaking.Ops[Matchmaking])
           .foldMap(interpreter)
         opponent should contain(Prisoner("B"))
@@ -50,7 +50,7 @@ class MultiplayerGameTest extends WordSpec with Matchers {
         val interpreter =
           new MatchmakingTestInterpreter(waiting = Seq.empty, willJoin = None)
         val player = Prisoner("Player")
-        val opponent: Option[Prisoner] = MultiplayerGameV2
+        val opponent: Option[Prisoner] = Multiplayer
           .findOpponent(player)(new Matchmaking.Ops[Matchmaking])
           .foldMap(interpreter)
         opponent should be(None)
@@ -68,7 +68,7 @@ class MultiplayerGameTest extends WordSpec with Matchers {
                                       Map(player -> Guilty),
                                       Map.empty),
                           GameState(Map(opponent -> Silence)))
-        val result: PlayerGameState = MultiplayerGameV2
+        val result: PlayerGameState = Multiplayer
           .playTheGame(player, opponent)(new Player.Ops[PlayerGame],
                                          new Game.Ops[PlayerGame])
           .foldMap(new PlayerGameTestInterpreter)
@@ -88,7 +88,7 @@ class MultiplayerGameTest extends WordSpec with Matchers {
                                       Map.empty),
                           GameState(Map.empty))
 
-        val result: PlayerGameState = MultiplayerGameV2
+        val result: PlayerGameState = Multiplayer
           .playTheGame(player, opponent)(new Player.Ops[PlayerGame],
                                          new Game.Ops[PlayerGame])
           .foldMap(new PlayerGameTestInterpreter)
