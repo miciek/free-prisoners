@@ -77,6 +77,26 @@ class MultiplayerGameTest extends WordSpec with Matchers {
 
         result.playerState.verdicts.get(player) should contain(Verdict(0))
       }
+
+      "is not able to produce verdict if the opponent doesn't make a decision" in {
+        val player = Prisoner("Player")
+        val opponent = Prisoner("Opponent")
+
+        val initialState =
+          PlayerGameState(PlayerState(Set.empty,
+                                      Map(player -> Guilty),
+                                      Map.empty),
+                          GameState(Map.empty))
+
+        val result: PlayerGameState = MultiplayerGameV2
+          .playTheGame(player, opponent)(new Player.Ops[PlayerGame],
+                                         new Game.Ops[PlayerGame])
+          .foldMap(new PlayerGameTestInterpreter)
+          .runS(initialState)
+          .value
+
+        result.playerState.verdicts should be(Map.empty)
+      }
     }
   }
 }

@@ -14,6 +14,10 @@ object MultiplayerGameV2 {
   type MatchmakingMatch[A] = EitherK[Matchmaking, Game, A]
   type Multiplayer[A] = EitherK[Player, MatchmakingMatch, A]
 
+  sealed trait GameResult
+  case object GameFinishedSuccessfully extends GameResult
+  case object NoDecisionFromOpponent extends GameResult
+
   def program(implicit playerOps: Player.Ops[Multiplayer],
               matchmakingOps: Matchmaking.Ops[Multiplayer],
               gameOps: Game.Ops[Multiplayer]): Free[Multiplayer, Unit] = {
@@ -39,15 +43,22 @@ object MultiplayerGameV2 {
 
   def playTheGame[S[_]](player: Prisoner, opponent: Prisoner)(
       implicit playerOps: Player.Ops[S],
-      gameOps: Game.Ops[S]): Free[S, Unit] = {
+      gameOps: Game.Ops[S]): Free[S, GameResult] = {
     import playerOps._
     import gameOps._
     for {
       decision <- questionPrisoner(player, opponent)
       _ <- sendDecision(player, opponent, decision)
-      opponentDecision <- getOpponentDecision(player, opponent, 60.seconds)
-      _ <- displayVerdict(player,
-                          PrisonersDilemma.verdict(decision, opponentDecision))
-    } yield ()
+      maybeOpponentDecision <- getOpponentDecision(player, opponent, 60.seconds)
+      result <- maybeOpponentDecision match {
+        case Some(opponentDecision) =>
+          for {
+            _ <- displayVerdict(
+              player,
+              PrisonersDilemma.verdict(decision, opponentDecision))
+          } yield GameFinishedSuccessfully
+        case None => Free.pure[S, GameResult](NoDecisionFromOpponent)
+      }
+    } yield result
   }
 }

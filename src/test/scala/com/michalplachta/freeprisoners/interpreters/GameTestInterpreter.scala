@@ -18,7 +18,7 @@ class GameTestInterpreter extends (Game ~> GameStateA) {
       }
     case GetOpponentDecision(player, opponent, waitTime) =>
       State { state =>
-        (state, state.decisions.get(opponent).get)
+        (state, state.decisions.get(opponent))
       }
   }
 }

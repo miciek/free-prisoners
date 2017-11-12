@@ -15,7 +15,7 @@ object GameOps {
   final case class GetOpponentDecision(player: Prisoner,
                                        opponent: Prisoner,
                                        waitTime: FiniteDuration)
-      extends Game[Decision]
+      extends Game[Option[Decision]]
 
   object Game {
     class Ops[S[_]](implicit s: Game :<: S) {
@@ -23,9 +23,10 @@ object GameOps {
                        opponent: Prisoner,
                        decision: Decision): Free[S, Unit] =
         Free.liftF(s.inj(SendDecision(player, opponent, decision)))
-      def getOpponentDecision(player: Prisoner,
-                              opponent: Prisoner,
-                              waitTime: FiniteDuration): Free[S, Decision] =
+      def getOpponentDecision(
+          player: Prisoner,
+          opponent: Prisoner,
+          waitTime: FiniteDuration): Free[S, Option[Decision]] =
         Free.liftF(s.inj(GetOpponentDecision(player, opponent, waitTime)))
     }
 
