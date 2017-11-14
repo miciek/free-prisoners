@@ -41,7 +41,7 @@ object Multiplayer {
         .filterNot(_.prisoner == player)
         .headOption
         .map(joinWaitingPlayer)
-        .getOrElse(pure[S, Option[Prisoner]](None))
+        .getOrElse(waitForOpponentToJoin(60.seconds))
       _ <- unregisterPlayer(player)
     } yield opponent
   }

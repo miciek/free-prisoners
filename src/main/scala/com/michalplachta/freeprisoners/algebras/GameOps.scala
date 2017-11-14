@@ -23,6 +23,7 @@ object GameOps {
                        opponent: Prisoner,
                        decision: Decision): Free[S, Unit] =
         Free.liftF(s.inj(SendDecision(player, opponent, decision)))
+
       def getOpponentDecision(
           player: Prisoner,
           opponent: Prisoner,

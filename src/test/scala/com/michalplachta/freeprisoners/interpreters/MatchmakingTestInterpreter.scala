@@ -28,12 +28,21 @@ class MatchmakingTestInterpreter extends (Matchmaking ~> MatchmakingStateA) {
         State { state =>
           (state, state.waitingPlayers.find(_ == player.prisoner))
         }
+      case WaitForPlayerToJoin(_) =>
+        State { state =>
+          (state, state.joiningPlayer)
+        }
     }
 }
 
 object MatchmakingTestInterpreter {
   final case class MatchmakingState(waitingPlayers: Set[Prisoner],
+                                    joiningPlayer: Option[Prisoner],
                                     metPlayers: Set[Prisoner])
+
+  object MatchmakingState {
+    val empty = MatchmakingState(Set.empty, None, Set.empty)
+  }
 
   type MatchmakingStateA[A] = State[MatchmakingState, A]
 }

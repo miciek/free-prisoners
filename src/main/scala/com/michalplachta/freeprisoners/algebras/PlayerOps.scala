@@ -20,9 +20,11 @@ object PlayerOps {
     class Ops[S[_]](implicit s: Player :<: S) {
       def meetPrisoner(introduction: String): Free[S, Prisoner] =
         Free.liftF(s.inj(MeetPrisoner(introduction)))
+
       def questionPrisoner(prisoner: Prisoner,
                            otherPrisoner: Prisoner): Free[S, Decision] =
         Free.liftF(s.inj(QuestionPrisoner(prisoner, otherPrisoner)))
+
       def displayVerdict(prisoner: Prisoner, verdict: Verdict): Free[S, Unit] =
         Free.liftF(s.inj(DisplayVerdict(prisoner, verdict)))
     }
