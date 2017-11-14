@@ -1,5 +1,6 @@
 package com.michalplachta.freeprisoners.programs
 
+import cats.free.Free
 import com.michalplachta.freeprisoners.PrisonersDilemma.{
   Guilty,
   Prisoner,
@@ -10,6 +11,7 @@ import com.michalplachta.freeprisoners.algebras.GameOps.Game
 import com.michalplachta.freeprisoners.algebras.MatchmakingOps._
 import com.michalplachta.freeprisoners.algebras.PlayerOps.Player
 import com.michalplachta.freeprisoners.interpreters.GameTestInterpreter.GameState
+import com.michalplachta.freeprisoners.interpreters.MatchmakingTestInterpreter.MatchmakingState
 import com.michalplachta.freeprisoners.interpreters.PlayerGameTestInterpreter.{
   PlayerGame,
   PlayerGameState
@@ -19,43 +21,54 @@ import com.michalplachta.freeprisoners.interpreters.{
   MatchmakingTestInterpreter,
   PlayerGameTestInterpreter
 }
+import com.michalplachta.freeprisoners.programs.Multiplayer.findOpponent
 import org.scalatest.{Matchers, WordSpec}
 
 class MultiplayerTest extends WordSpec with Matchers {
   "Multiplayer game" should {
     "have matchmaking module which" should {
-      "be able to create a match when there is one opponent waiting" in {
-        val interpreter =
-          new MatchmakingTestInterpreter(waiting = Seq(Prisoner("A")),
-                                         willJoin = None)
-        val player = Prisoner("Player")
-        val opponent: Option[Prisoner] = Multiplayer
-          .findOpponent(player)(new Matchmaking.Ops[Matchmaking])
-          .foldMap(interpreter)
-        opponent should contain(Prisoner("A"))
-      }
+      implicit val matchmakingOps: Matchmaking.Ops[Matchmaking] =
+        new Matchmaking.Ops[Matchmaking]
 
-      "be able to create a match when there is one opponent that would like to join" in {
-        val interpreter =
-          new MatchmakingTestInterpreter(waiting = Seq.empty,
-                                         willJoin = Some(Prisoner("B")))
+      "be able to create a match when there is one opponent registered" in {
         val player = Prisoner("Player")
-        val opponent: Option[Prisoner] = Multiplayer
-          .findOpponent(player)(new Matchmaking.Ops[Matchmaking])
-          .foldMap(interpreter)
-        opponent should contain(Prisoner("B"))
+        val registeredOpponent = Prisoner("Opponent")
+
+        val program: Free[Matchmaking, Option[Prisoner]] = for {
+          _ <- matchmakingOps.registerAsWaiting(registeredOpponent)
+          opponent <- findOpponent(player)
+        } yield opponent
+
+        val opponent: Option[Prisoner] = program
+          .foldMap(new MatchmakingTestInterpreter)
+          .runA(MatchmakingState(Set.empty, Set.empty))
+          .value
+
+        opponent should contain(Prisoner("Opponent"))
       }
 
       "not be able to create a match when there are no opponents" in {
-        val interpreter =
-          new MatchmakingTestInterpreter(waiting = Seq.empty, willJoin = None)
         val player = Prisoner("Player")
-        val opponent: Option[Prisoner] = Multiplayer
-          .findOpponent(player)(new Matchmaking.Ops[Matchmaking])
-          .foldMap(interpreter)
+
+        val opponent: Option[Prisoner] = findOpponent(player)
+          .foldMap(new MatchmakingTestInterpreter)
+          .runA(MatchmakingState(Set.empty, Set.empty))
+          .value
+
         opponent should be(None)
       }
 
+      "keep count of registered and unregistered players" in {
+        val player = Prisoner("Player")
+
+        val state: MatchmakingState = findOpponent(player)
+          .foldMap(new MatchmakingTestInterpreter)
+          .runS(MatchmakingState(Set.empty, Set.empty))
+          .value
+
+        state.waitingPlayers.size should be(0)
+        state.metPlayers should be(Set(player))
+      }
     }
 
     "have game module which" should {

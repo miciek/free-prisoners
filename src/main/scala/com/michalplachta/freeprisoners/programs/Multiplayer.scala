@@ -2,6 +2,7 @@ package com.michalplachta.freeprisoners.programs
 
 import cats.data.EitherK
 import cats.free.Free
+import cats.free.Free.pure
 import com.michalplachta.freeprisoners.PrisonersDilemma
 import com.michalplachta.freeprisoners.PrisonersDilemma.Prisoner
 import com.michalplachta.freeprisoners.algebras.GameOps.Game
@@ -34,10 +35,14 @@ object Multiplayer {
     : Free[S, Option[Prisoner]] = {
     import matchmakingOps._
     for {
-      waitingOpponents <- getWaitingOpponents()
-      opponent <- waitingOpponents.headOption
-        .map(joinWaitingOpponent)
-        .getOrElse(waitForOpponent(60.seconds))
+      _ <- registerAsWaiting(player)
+      waitingPlayers <- getWaitingPlayers()
+      opponent <- waitingPlayers
+        .filterNot(_.prisoner == player)
+        .headOption
+        .map(joinWaitingPlayer)
+        .getOrElse(pure[S, Option[Prisoner]](None))
+      _ <- unregisterPlayer(player)
     } yield opponent
   }
 
@@ -57,7 +62,7 @@ object Multiplayer {
               player,
               PrisonersDilemma.verdict(decision, opponentDecision))
           } yield GameFinishedSuccessfully
-        case None => Free.pure[S, GameResult](NoDecisionFromOpponent)
+        case None => pure[S, GameResult](NoDecisionFromOpponent)
       }
     } yield result
   }
