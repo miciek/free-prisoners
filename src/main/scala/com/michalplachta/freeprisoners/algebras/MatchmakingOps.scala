@@ -12,9 +12,11 @@ object MatchmakingOps {
   final case class RegisterAsWaiting(player: Prisoner) extends Matchmaking[Unit]
   final case class UnregisterPlayer(player: Prisoner) extends Matchmaking[Unit]
   final case class GetWaitingPlayers() extends Matchmaking[Set[WaitingPlayer]]
-  final case class JoinWaitingPlayer(waitingPlayer: WaitingPlayer)
+  final case class JoinWaitingPlayer(player: Prisoner,
+                                     waitingPlayer: WaitingPlayer)
       extends Matchmaking[Option[Prisoner]]
-  final case class WaitForPlayerToJoin(maxWaitTime: FiniteDuration)
+  final case class WaitForOpponentToJoin(player: Prisoner,
+                                         maxWaitTime: FiniteDuration)
       extends Matchmaking[Option[Prisoner]]
 
   object Matchmaking {
@@ -29,12 +31,14 @@ object MatchmakingOps {
         Free.liftF(s.inj(GetWaitingPlayers()))
 
       def joinWaitingPlayer(
+          player: Prisoner,
           waitingPlayer: WaitingPlayer): Free[S, Option[Prisoner]] =
-        Free.liftF(s.inj(JoinWaitingPlayer(waitingPlayer)))
+        Free.liftF(s.inj(JoinWaitingPlayer(player, waitingPlayer)))
 
       def waitForOpponentToJoin(
+          player: Prisoner,
           maxWaitTime: FiniteDuration): Free[S, Option[Prisoner]] =
-        Free.liftF(s.inj(WaitForPlayerToJoin(maxWaitTime)))
+        Free.liftF(s.inj(WaitForOpponentToJoin(player, maxWaitTime)))
     }
 
     object Ops {

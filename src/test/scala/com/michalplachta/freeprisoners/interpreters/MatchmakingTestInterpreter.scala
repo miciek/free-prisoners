@@ -24,11 +24,11 @@ class MatchmakingTestInterpreter extends (Matchmaking ~> MatchmakingStateA) {
         State { state =>
           (state, state.waitingPlayers.map(WaitingPlayer))
         }
-      case JoinWaitingPlayer(player) =>
+      case JoinWaitingPlayer(player, waitingPlayer) =>
         State { state =>
-          (state, state.waitingPlayers.find(_ == player.prisoner))
+          (state, state.waitingPlayers.find(_ == waitingPlayer.prisoner))
         }
-      case WaitForPlayerToJoin(_) =>
+      case WaitForOpponentToJoin(_, _) =>
         State { state =>
           (state, state.joiningPlayer)
         }

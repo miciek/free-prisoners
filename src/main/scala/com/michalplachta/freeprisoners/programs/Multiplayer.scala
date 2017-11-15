@@ -3,8 +3,7 @@ package com.michalplachta.freeprisoners.programs
 import cats.data.EitherK
 import cats.free.Free
 import cats.free.Free.pure
-import com.michalplachta.freeprisoners.PrisonersDilemma
-import com.michalplachta.freeprisoners.PrisonersDilemma.Prisoner
+import com.michalplachta.freeprisoners.PrisonersDilemma.{Prisoner, verdict}
 import com.michalplachta.freeprisoners.algebras.GameOps.Game
 import com.michalplachta.freeprisoners.algebras.MatchmakingOps.Matchmaking
 import com.michalplachta.freeprisoners.algebras.PlayerOps.Player
@@ -40,8 +39,8 @@ object Multiplayer {
       opponent <- waitingPlayers
         .filterNot(_.prisoner == player)
         .headOption
-        .map(joinWaitingPlayer)
-        .getOrElse(waitForOpponentToJoin(60.seconds))
+        .map(joinWaitingPlayer(player, _))
+        .getOrElse(waitForOpponentToJoin(player, 60.seconds))
       _ <- unregisterPlayer(player)
     } yield opponent
   }
@@ -49,8 +48,8 @@ object Multiplayer {
   def playTheGame[S[_]](player: Prisoner, opponent: Prisoner)(
       implicit playerOps: Player.Ops[S],
       gameOps: Game.Ops[S]): Free[S, GameResult] = {
-    import playerOps._
     import gameOps._
+    import playerOps._
     for {
       decision <- questionPrisoner(player, opponent)
       _ <- sendDecision(player, opponent, decision)
@@ -58,9 +57,7 @@ object Multiplayer {
       result <- maybeOpponentDecision match {
         case Some(opponentDecision) =>
           for {
-            _ <- displayVerdict(
-              player,
-              PrisonersDilemma.verdict(decision, opponentDecision))
+            _ <- displayVerdict(player, verdict(decision, opponentDecision))
           } yield GameFinishedSuccessfully
         case None => pure[S, GameResult](NoDecisionFromOpponent)
       }
