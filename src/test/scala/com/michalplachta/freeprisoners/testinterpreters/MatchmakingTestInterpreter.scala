@@ -1,11 +1,11 @@
-package com.michalplachta.freeprisoners.interpreters
+package com.michalplachta.freeprisoners.testinterpreters
 
 import cats.data.State
 import cats.~>
 import com.michalplachta.freeprisoners.PrisonersDilemma.Prisoner
 import com.michalplachta.freeprisoners.algebras.MatchmakingOps.Matchmaking.WaitingPlayer
 import com.michalplachta.freeprisoners.algebras.MatchmakingOps._
-import com.michalplachta.freeprisoners.interpreters.MatchmakingTestInterpreter.MatchmakingStateA
+import com.michalplachta.freeprisoners.testinterpreters.MatchmakingTestInterpreter.MatchmakingStateA
 
 class MatchmakingTestInterpreter extends (Matchmaking ~> MatchmakingStateA) {
   def apply[A](matchmaking: Matchmaking[A]): MatchmakingStateA[A] =

@@ -1,4 +1,4 @@
-package com.michalplachta.freeprisoners.interpreters
+package com.michalplachta.freeprisoners.testinterpreters
 
 import cats.data.State
 import cats.~>
@@ -8,7 +8,7 @@ import com.michalplachta.freeprisoners.algebras.GameOps.{
   GetOpponentDecision,
   SendDecision
 }
-import com.michalplachta.freeprisoners.interpreters.GameTestInterpreter.GameStateA
+import com.michalplachta.freeprisoners.testinterpreters.GameTestInterpreter.GameStateA
 
 class GameTestInterpreter extends (Game ~> GameStateA) {
   def apply[A](game: Game[A]): GameStateA[A] = game match {

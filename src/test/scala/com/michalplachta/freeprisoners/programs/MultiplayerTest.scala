@@ -10,18 +10,19 @@ import com.michalplachta.freeprisoners.PrisonersDilemma.{
 import com.michalplachta.freeprisoners.algebras.GameOps.Game
 import com.michalplachta.freeprisoners.algebras.MatchmakingOps._
 import com.michalplachta.freeprisoners.algebras.PlayerOps.Player
-import com.michalplachta.freeprisoners.interpreters.GameTestInterpreter.GameState
-import com.michalplachta.freeprisoners.interpreters.MatchmakingTestInterpreter.MatchmakingState
-import com.michalplachta.freeprisoners.interpreters.PlayerGameTestInterpreter.{
+import com.michalplachta.freeprisoners.testinterpreters.GameTestInterpreter.GameState
+import com.michalplachta.freeprisoners.testinterpreters.MatchmakingTestInterpreter.MatchmakingState
+import com.michalplachta.freeprisoners.testinterpreters.PlayerGameTestInterpreter.{
   PlayerGame,
   PlayerGameState
 }
-import com.michalplachta.freeprisoners.interpreters.PlayerTestInterpreter.PlayerState
-import com.michalplachta.freeprisoners.interpreters.{
+import com.michalplachta.freeprisoners.testinterpreters.PlayerTestInterpreter.PlayerState
+import com.michalplachta.freeprisoners.testinterpreters.PlayerGameTestInterpreter
+import com.michalplachta.freeprisoners.programs.Multiplayer.findOpponent
+import com.michalplachta.freeprisoners.testinterpreters.{
   MatchmakingTestInterpreter,
   PlayerGameTestInterpreter
 }
-import com.michalplachta.freeprisoners.programs.Multiplayer.findOpponent
 import org.scalatest.{Matchers, WordSpec}
 
 class MultiplayerTest extends WordSpec with Matchers {

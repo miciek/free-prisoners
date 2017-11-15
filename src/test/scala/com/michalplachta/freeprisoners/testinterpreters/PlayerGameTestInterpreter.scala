@@ -1,19 +1,19 @@
-package com.michalplachta.freeprisoners.interpreters
+package com.michalplachta.freeprisoners.testinterpreters
 
 import cats.data.{EitherK, State}
 import cats.~>
 import com.michalplachta.freeprisoners.algebras.GameOps.Game
 import com.michalplachta.freeprisoners.algebras.PlayerOps.Player
-import com.michalplachta.freeprisoners.interpreters.GameTestInterpreter.{
+import com.michalplachta.freeprisoners.testinterpreters.GameTestInterpreter.{
   GameState,
   GameStateA
 }
-import com.michalplachta.freeprisoners.interpreters.PlayerGameTestInterpreter.{
+import com.michalplachta.freeprisoners.testinterpreters.PlayerGameTestInterpreter.{
   PlayerGame,
   PlayerGameState,
   PlayerGameStateA
 }
-import com.michalplachta.freeprisoners.interpreters.PlayerTestInterpreter.{
+import com.michalplachta.freeprisoners.testinterpreters.PlayerTestInterpreter.{
   PlayerState,
   PlayerStateA
 }
