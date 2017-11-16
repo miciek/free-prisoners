@@ -15,15 +15,15 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class MatchmakingServerInterpreter extends (Matchmaking ~> Future) {
   private val system = ActorSystem("matchmakingClient")
-  private val config = ConfigFactory.load
-  private val maxRetries = config.getInt("app.matchmaking-client.max-retries")
+  private val config = ConfigFactory.load().atPath("app.matchmaking")
+  private val maxRetries = config.getInt("client.max-retries")
   private val retryTimeout = Timeout(
-    config.getDuration("app.matchmaking-client.retry-timeout").toMillis,
+    config.getDuration("client.retry-timeout").toMillis,
     TimeUnit.MILLISECONDS)
   implicit val executionContext: ExecutionContext = system.dispatcher
 
   private val server =
-    system.actorSelection(config.getString("app.game-server-path"))
+    system.actorSelection(config.getString("server.path"))
 
   def apply[A](matchmaking: Matchmaking[A]): Future[A] = matchmaking match {
     case RegisterAsWaiting(player) =>

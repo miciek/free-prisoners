@@ -17,7 +17,6 @@ import com.michalplachta.freeprisoners.testinterpreters.PlayerGameTestInterprete
   PlayerGameState
 }
 import com.michalplachta.freeprisoners.testinterpreters.PlayerTestInterpreter.PlayerState
-import com.michalplachta.freeprisoners.testinterpreters.PlayerGameTestInterpreter
 import com.michalplachta.freeprisoners.programs.Multiplayer.findOpponent
 import com.michalplachta.freeprisoners.testinterpreters.{
   MatchmakingTestInterpreter,
