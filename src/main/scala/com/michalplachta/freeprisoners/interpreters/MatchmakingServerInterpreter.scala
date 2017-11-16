@@ -11,8 +11,7 @@ import com.michalplachta.freeprisoners.algebras.MatchmakingOps.Matchmaking.Waiti
 import com.michalplachta.freeprisoners.algebras.MatchmakingOps._
 import com.typesafe.config.ConfigFactory
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class MatchmakingServerInterpreter extends (Matchmaking ~> Future) {
   private val system = ActorSystem("matchmakingClient")
@@ -21,6 +20,7 @@ class MatchmakingServerInterpreter extends (Matchmaking ~> Future) {
   private val retryTimeout = Timeout(
     config.getDuration("app.matchmaking-client.retry-timeout").toMillis,
     TimeUnit.MILLISECONDS)
+  implicit val executionContext: ExecutionContext = system.dispatcher
 
   private val server =
     system.actorSelection(config.getString("app.game-server-path"))
