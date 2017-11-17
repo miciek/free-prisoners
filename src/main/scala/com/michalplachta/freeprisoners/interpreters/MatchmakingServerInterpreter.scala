@@ -9,7 +9,7 @@ import com.michalplachta.freeprisoners.PrisonersDilemma.Prisoner
 import com.michalplachta.freeprisoners.actors.MatchmakingServerActor._
 import com.michalplachta.freeprisoners.algebras.MatchmakingOps.Matchmaking.WaitingPlayer
 import com.michalplachta.freeprisoners.algebras.MatchmakingOps._
-import com.michalplachta.freeprisoners.actors.Communication._
+import com.michalplachta.freeprisoners.actors.ServerCommunication._
 import com.typesafe.config.ConfigFactory
 
 import scala.concurrent.{ExecutionContext, Future}

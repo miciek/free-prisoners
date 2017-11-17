@@ -3,7 +3,7 @@ package com.michalplachta.freeprisoners.actors
 import akka.actor.{ActorSelection, ActorSystem, Props}
 import akka.testkit.TestKit
 import com.michalplachta.freeprisoners.actors.MatchmakingServerActor._
-import com.michalplachta.freeprisoners.actors.Communication._
+import com.michalplachta.freeprisoners.actors.ServerCommunication._
 import org.scalatest.{AsyncWordSpecLike, Matchers}
 
 import scala.concurrent.duration._

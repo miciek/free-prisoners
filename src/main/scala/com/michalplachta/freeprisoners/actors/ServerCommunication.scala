@@ -7,7 +7,7 @@ import akka.util.Timeout
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
 
-object Communication {
+object ServerCommunication {
   def askServer[P[_], T: ClassTag](
       server: ActorSelection,
       message: P[T],
