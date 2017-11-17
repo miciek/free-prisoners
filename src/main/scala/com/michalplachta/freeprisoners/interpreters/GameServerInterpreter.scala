@@ -7,6 +7,7 @@ import akka.util.Timeout
 import cats.~>
 import com.michalplachta.freeprisoners.actors.ServerCommunication._
 import com.michalplachta.freeprisoners.actors.GameServer.{
+  ClearSavedDecisions,
   GetSavedDecision,
   SaveDecision
 }
@@ -36,7 +37,7 @@ class GameServerInterpreter extends (Game ~> Future) {
     case SendDecision(player, opponent, decision) =>
       tellServer(server, SaveDecision(player, opponent, decision))
     case ClearPlayerDecisions(player) =>
-      Future.successful(()) // TODO
+      tellServer(server, ClearSavedDecisions(player))
     case GetOpponentDecision(player, opponent, maxWaitTime) =>
       askServer(server,
                 GetSavedDecision(opponent, player),

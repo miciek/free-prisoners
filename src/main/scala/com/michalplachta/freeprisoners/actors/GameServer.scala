@@ -3,6 +3,7 @@ package com.michalplachta.freeprisoners.actors
 import akka.actor.Actor
 import com.michalplachta.freeprisoners.PrisonersDilemma.{Decision, Prisoner}
 import com.michalplachta.freeprisoners.actors.GameServer.{
+  ClearSavedDecisions,
   GetSavedDecision,
   SaveDecision
 }
@@ -15,6 +16,10 @@ class GameServer extends Actor {
       savedDecisions += ((player, against) -> decision)
     case GetSavedDecision(player, against) =>
       sender ! savedDecisions.get((player, against))
+    case ClearSavedDecisions(player) =>
+      savedDecisions = savedDecisions.filterKeys({
+        case (playerA, playerB) => playerA != player && playerB != player
+      })
   }
 }
 
@@ -26,4 +31,6 @@ object GameServer {
       extends ServerProtocol[Unit]
   final case class GetSavedDecision(player: Prisoner, against: Prisoner)
       extends ServerProtocol[Option[Decision]]
+  final case class ClearSavedDecisions(player: Prisoner)
+      extends ServerProtocol[Unit]
 }
