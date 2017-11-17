@@ -14,7 +14,7 @@ object GameOps {
       extends Game[Unit]
   final case class GetOpponentDecision(player: Prisoner,
                                        opponent: Prisoner,
-                                       waitTime: FiniteDuration)
+                                       maxWaitTime: FiniteDuration)
       extends Game[Option[Decision]]
 
   object Game {

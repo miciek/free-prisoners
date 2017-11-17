@@ -1,12 +1,7 @@
 package com.michalplachta.freeprisoners.actors
 
-import akka.actor.{Actor, ActorSelection}
-import akka.pattern.ask
-import akka.util.Timeout
+import akka.actor.Actor
 import com.michalplachta.freeprisoners.actors.MatchmakingServerActor._
-
-import scala.concurrent.{ExecutionContext, Future}
-import scala.reflect.ClassTag
 
 class MatchmakingServerActor extends Actor {
   private var waitingList = Set.empty[String]
@@ -42,25 +37,4 @@ object MatchmakingServerActor {
       extends ServerProtocol[Unit]
   final case class GetOpponentName(player: String)
       extends ServerProtocol[Option[String]]
-
-  def askServer[T: ClassTag](
-      server: ActorSelection,
-      message: ServerProtocol[T],
-      maxRetries: Int,
-      retryTimeout: Timeout)(implicit ec: ExecutionContext): Future[T] = {
-    def loop(retries: Int = maxRetries): Future[T] = {
-      println(s"Asking server: $message, retries left: $retries")
-      val response = server.ask(message)(retryTimeout).mapTo[T]
-      if (retries > 0) {
-        response.recoverWith({ case _ => loop(retries - 1) })
-      } else response
-    }
-    loop(maxRetries)
-  }
-
-  def tellServer(server: ActorSelection, message: ServerProtocol[Unit])(
-      implicit ec: ExecutionContext): Future[Unit] = {
-    server ! message
-    Future.successful(())
-  }
 }
