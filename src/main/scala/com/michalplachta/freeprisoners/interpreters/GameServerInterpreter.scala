@@ -11,6 +11,7 @@ import com.michalplachta.freeprisoners.actors.GameServer.{
   SaveDecision
 }
 import com.michalplachta.freeprisoners.algebras.GameOps.{
+  ClearPlayerDecisions,
   Game,
   GetOpponentDecision,
   SendDecision
@@ -34,6 +35,8 @@ class GameServerInterpreter extends (Game ~> Future) {
   def apply[A](game: Game[A]): Future[A] = game match {
     case SendDecision(player, opponent, decision) =>
       tellServer(server, SaveDecision(player, opponent, decision))
+    case ClearPlayerDecisions(player) =>
+      Future.successful(()) // TODO
     case GetOpponentDecision(player, opponent, maxWaitTime) =>
       askServer(server,
                 GetSavedDecision(opponent, player),

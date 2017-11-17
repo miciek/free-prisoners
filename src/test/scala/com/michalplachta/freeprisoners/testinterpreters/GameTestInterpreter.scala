@@ -4,6 +4,7 @@ import cats.data.State
 import cats.~>
 import com.michalplachta.freeprisoners.PrisonersDilemma.{Decision, Prisoner}
 import com.michalplachta.freeprisoners.algebras.GameOps.{
+  ClearPlayerDecisions,
   Game,
   GetOpponentDecision,
   SendDecision
@@ -15,6 +16,10 @@ class GameTestInterpreter extends (Game ~> GameStateA) {
     case SendDecision(player, opponent, decision) =>
       State { state =>
         (state.copy(decisions = state.decisions + (player -> decision)), ())
+      }
+    case ClearPlayerDecisions(player) =>
+      State { state =>
+        (state.copy(decisions = state.decisions.filterKeys(_ != player)), ())
       }
     case GetOpponentDecision(player, opponent, waitTime) =>
       State { state =>

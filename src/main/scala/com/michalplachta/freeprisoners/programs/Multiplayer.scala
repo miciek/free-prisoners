@@ -61,6 +61,7 @@ object Multiplayer {
           } yield GameFinishedSuccessfully
         case None => pure[S, GameResult](NoDecisionFromOpponent)
       }
+      _ <- clearPlayerDecisions(player)
     } yield result
   }
 }

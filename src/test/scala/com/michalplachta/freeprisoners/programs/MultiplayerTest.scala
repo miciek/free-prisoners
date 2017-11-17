@@ -10,6 +10,7 @@ import com.michalplachta.freeprisoners.PrisonersDilemma.{
 import com.michalplachta.freeprisoners.algebras.GameOps.Game
 import com.michalplachta.freeprisoners.algebras.MatchmakingOps._
 import com.michalplachta.freeprisoners.algebras.PlayerOps.Player
+import com.michalplachta.freeprisoners.programs.Multiplayer.findOpponent
 import com.michalplachta.freeprisoners.testinterpreters.GameTestInterpreter.GameState
 import com.michalplachta.freeprisoners.testinterpreters.MatchmakingTestInterpreter.MatchmakingState
 import com.michalplachta.freeprisoners.testinterpreters.PlayerGameTestInterpreter.{
@@ -17,7 +18,6 @@ import com.michalplachta.freeprisoners.testinterpreters.PlayerGameTestInterprete
   PlayerGameState
 }
 import com.michalplachta.freeprisoners.testinterpreters.PlayerTestInterpreter.PlayerState
-import com.michalplachta.freeprisoners.programs.Multiplayer.findOpponent
 import com.michalplachta.freeprisoners.testinterpreters.{
   MatchmakingTestInterpreter,
   PlayerGameTestInterpreter
@@ -124,6 +124,26 @@ class MultiplayerTest extends WordSpec with Matchers {
           .value
 
         result.playerState.verdicts should be(Map.empty)
+      }
+
+      "should clear the player's decision after the game" in {
+        val player = Prisoner("Player")
+        val opponent = Prisoner("Opponent")
+
+        val initialState =
+          PlayerGameState(PlayerState(Set.empty,
+                                      Map(player -> Guilty),
+                                      Map.empty),
+                          GameState(Map(opponent -> Guilty)))
+
+        val resultState: PlayerGameState = Multiplayer
+          .playTheGame(player, opponent)(new Player.Ops[PlayerGame],
+                                         new Game.Ops[PlayerGame])
+          .foldMap(new PlayerGameTestInterpreter)
+          .runS(initialState)
+          .value
+
+        resultState.gameState.decisions.get(player) should be(None)
       }
     }
   }
