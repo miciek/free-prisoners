@@ -1,9 +1,9 @@
 package com.michalplachta.freeprisoners.actors
 
 import akka.actor.Actor
-import com.michalplachta.freeprisoners.actors.MatchmakingServerActor._
+import com.michalplachta.freeprisoners.actors.MatchmakingServer._
 
-class MatchmakingServerActor extends Actor {
+class MatchmakingServer extends Actor {
   private var waitingList = Set.empty[String]
   private var matches = Set.empty[Set[String]]
 
@@ -27,7 +27,7 @@ class MatchmakingServerActor extends Actor {
   }
 }
 
-object MatchmakingServerActor {
+object MatchmakingServer {
   sealed trait ServerProtocol[A]
   final case class AddToWaitingList(name: String) extends ServerProtocol[Unit]
   final case class RemoveFromMatchmaking(name: String)

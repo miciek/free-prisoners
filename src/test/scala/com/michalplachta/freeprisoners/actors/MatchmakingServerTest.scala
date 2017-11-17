@@ -2,13 +2,13 @@ package com.michalplachta.freeprisoners.actors
 
 import akka.actor.{ActorSelection, ActorSystem, Props}
 import akka.testkit.TestKit
-import com.michalplachta.freeprisoners.actors.MatchmakingServerActor._
+import com.michalplachta.freeprisoners.actors.MatchmakingServer._
 import com.michalplachta.freeprisoners.actors.ServerCommunication._
 import org.scalatest.{AsyncWordSpecLike, Matchers}
 
 import scala.concurrent.duration._
 
-class MatchmakingServerActorTest
+class MatchmakingServerTest
     extends TestKit(ActorSystem("matchmakingTest"))
     with AsyncWordSpecLike
     with Matchers {
@@ -61,5 +61,5 @@ class MatchmakingServerActorTest
   }
 
   private def createServer() =
-    ActorSelection(system.actorOf(Props[MatchmakingServerActor]), "/")
+    ActorSelection(system.actorOf(Props[MatchmakingServer]), "/")
 }
