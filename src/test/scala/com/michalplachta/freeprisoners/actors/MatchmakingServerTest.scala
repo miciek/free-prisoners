@@ -9,10 +9,10 @@ import org.scalatest.{AsyncWordSpecLike, Matchers}
 import scala.concurrent.duration._
 
 class MatchmakingServerTest
-    extends TestKit(ActorSystem("matchmakingTest"))
+    extends TestKit(ActorSystem("matchmakingServerTest"))
     with AsyncWordSpecLike
     with Matchers {
-  "Matchmaking server actor" should {
+  "MatchmakingServer actor" should {
     "add player names to the waiting list" in {
       val server = createServer()
       tellServer(server, AddToWaitingList("a"))

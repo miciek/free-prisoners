@@ -16,7 +16,7 @@ class GameServerTest
     extends TestKit(ActorSystem("gameServerTest"))
     with AsyncWordSpecLike
     with Matchers {
-  "Game server actor" should {
+  "GameServer actor" should {
     "save the decision of the player" in {
       val player = Prisoner("Player")
       val opponent = Prisoner("Opponent")

@@ -87,7 +87,7 @@ class MultiplayerTest extends WordSpec with Matchers {
     }
 
     "have game module which" should {
-      "is able to produce verdict if both players make decisions" in {
+      "be able to produce verdict if both players make decisions" in {
         val player = Prisoner("Player")
         val opponent = Prisoner("Opponent")
 
@@ -106,7 +106,7 @@ class MultiplayerTest extends WordSpec with Matchers {
         result.playerState.verdicts.get(player) should contain(Verdict(0))
       }
 
-      "is not able to produce verdict if the opponent doesn't make a decision" in {
+      "be not able to produce verdict if the opponent doesn't make a decision" in {
         val player = Prisoner("Player")
         val opponent = Prisoner("Opponent")
 
