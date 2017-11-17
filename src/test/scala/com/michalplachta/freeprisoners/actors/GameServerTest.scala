@@ -4,7 +4,7 @@ import akka.actor.{ActorSelection, ActorSystem, Props}
 import akka.testkit.TestKit
 import com.michalplachta.freeprisoners.PrisonersDilemma.{Guilty, Prisoner}
 import com.michalplachta.freeprisoners.actors.ServerCommunication._
-import com.michalplachta.freeprisoners.actors.GameServerActor.{
+import com.michalplachta.freeprisoners.actors.GameServer.{
   GetSavedDecision,
   SaveDecision
 }
@@ -12,7 +12,7 @@ import org.scalatest.{AsyncWordSpecLike, Matchers}
 
 import scala.concurrent.duration._
 
-class GameServerActorTest
+class GameServerTest
     extends TestKit(ActorSystem("gameServerTest"))
     with AsyncWordSpecLike
     with Matchers {
@@ -29,5 +29,5 @@ class GameServerActorTest
   }
 
   private def createServer() =
-    ActorSelection(system.actorOf(Props[GameServerActor]), "/")
+    ActorSelection(system.actorOf(Props[GameServer]), "/")
 }

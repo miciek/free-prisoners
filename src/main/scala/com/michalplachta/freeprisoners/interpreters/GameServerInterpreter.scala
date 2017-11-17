@@ -6,7 +6,7 @@ import akka.actor.ActorSystem
 import akka.util.Timeout
 import cats.~>
 import com.michalplachta.freeprisoners.actors.ServerCommunication._
-import com.michalplachta.freeprisoners.actors.GameServerActor.{
+import com.michalplachta.freeprisoners.actors.GameServer.{
   GetSavedDecision,
   SaveDecision
 }
