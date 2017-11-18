@@ -5,8 +5,6 @@ import cats.free.Free
 import com.michalplachta.freeprisoners.PrisonersDilemma.Prisoner
 import com.michalplachta.freeprisoners.algebras.MatchmakingOps.Matchmaking.WaitingPlayer
 
-import scala.concurrent.duration.FiniteDuration
-
 object MatchmakingOps {
   sealed trait Matchmaking[A]
   final case class RegisterAsWaiting(player: Prisoner) extends Matchmaking[Unit]
@@ -15,8 +13,7 @@ object MatchmakingOps {
   final case class JoinWaitingPlayer(player: Prisoner,
                                      waitingPlayer: WaitingPlayer)
       extends Matchmaking[Option[Prisoner]]
-  final case class WaitForOpponentToJoin(player: Prisoner,
-                                         maxWaitTime: FiniteDuration)
+  final case class CheckIfOpponentJoined(player: Prisoner)
       extends Matchmaking[Option[Prisoner]]
 
   object Matchmaking {
@@ -35,10 +32,8 @@ object MatchmakingOps {
           waitingPlayer: WaitingPlayer): Free[S, Option[Prisoner]] =
         Free.liftF(s.inj(JoinWaitingPlayer(player, waitingPlayer)))
 
-      def waitForOpponentToJoin(
-          player: Prisoner,
-          maxWaitTime: FiniteDuration): Free[S, Option[Prisoner]] =
-        Free.liftF(s.inj(WaitForOpponentToJoin(player, maxWaitTime)))
+      def checkIfOpponentJoined(player: Prisoner): Free[S, Option[Prisoner]] =
+        Free.liftF(s.inj(CheckIfOpponentJoined(player)))
     }
 
     object Ops {

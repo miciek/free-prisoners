@@ -13,7 +13,7 @@ import com.michalplachta.freeprisoners.testinterpreters.GameTestInterpreter.Game
 
 class GameTestInterpreter extends (Game ~> GameStateA) {
   def apply[A](game: Game[A]): GameStateA[A] = game match {
-    case SendDecision(player, opponent, decision) =>
+    case SendDecision(player, _, decision) =>
       State { state =>
         (state.copy(decisions = state.decisions + (player -> decision)), ())
       }
@@ -21,7 +21,7 @@ class GameTestInterpreter extends (Game ~> GameStateA) {
       State { state =>
         (state.copy(decisions = state.decisions.filterKeys(_ != player)), ())
       }
-    case GetOpponentDecision(player, opponent, waitTime) =>
+    case GetOpponentDecision(_, opponent) =>
       State { state =>
         (state, state.decisions.get(opponent))
       }

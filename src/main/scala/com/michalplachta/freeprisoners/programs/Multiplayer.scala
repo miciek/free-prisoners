@@ -8,8 +8,6 @@ import com.michalplachta.freeprisoners.algebras.GameOps.Game
 import com.michalplachta.freeprisoners.algebras.MatchmakingOps.Matchmaking
 import com.michalplachta.freeprisoners.algebras.PlayerOps.Player
 
-import scala.concurrent.duration._
-
 object Multiplayer {
   type MatchmakingMatch[A] = EitherK[Matchmaking, Game, A]
   type Multiplayer[A] = EitherK[Player, MatchmakingMatch, A]
@@ -40,7 +38,7 @@ object Multiplayer {
         .filterNot(_.prisoner == player)
         .headOption
         .map(joinWaitingPlayer(player, _))
-        .getOrElse(waitForOpponentToJoin(player, 60.seconds))
+        .getOrElse(checkIfOpponentJoined(player))
       _ <- unregisterPlayer(player)
     } yield opponent
   }
@@ -53,7 +51,7 @@ object Multiplayer {
     for {
       decision <- questionPrisoner(player, opponent)
       _ <- sendDecision(player, opponent, decision)
-      maybeOpponentDecision <- getOpponentDecision(player, opponent, 60.seconds)
+      maybeOpponentDecision <- getOpponentDecision(player, opponent)
       result <- maybeOpponentDecision match {
         case Some(opponentDecision) =>
           for {

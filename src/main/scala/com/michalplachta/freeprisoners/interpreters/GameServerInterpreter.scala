@@ -38,10 +38,10 @@ class GameServerInterpreter extends (Game ~> Future) {
       tellServer(server, SaveDecision(player, opponent, decision))
     case ClearPlayerDecisions(player) =>
       tellServer(server, ClearSavedDecisions(player))
-    case GetOpponentDecision(player, opponent, maxWaitTime) =>
+    case GetOpponentDecision(player, opponent) =>
       askServer(server,
                 GetSavedDecision(opponent, player),
-                (maxWaitTime / retryTimeout.duration).toInt,
+                maxRetries,
                 retryTimeout)
   }
 

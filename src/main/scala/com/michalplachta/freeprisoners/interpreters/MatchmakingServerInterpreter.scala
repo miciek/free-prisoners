@@ -39,11 +39,9 @@ class MatchmakingServerInterpreter extends (Matchmaking ~> Future) {
                  RegisterMatch(player.name, waitingPlayer.prisoner.name))
       askServer(server, GetOpponentName(player.name), maxRetries, retryTimeout)
         .map(_.map(Prisoner))
-    case WaitForOpponentToJoin(player, maxWaitTime) =>
-      askServer(server,
-                GetOpponentName(player.name),
-                (maxWaitTime / retryTimeout.duration).toInt,
-                retryTimeout).map(_.map(Prisoner))
+    case CheckIfOpponentJoined(player) =>
+      askServer(server, GetOpponentName(player.name), maxRetries, retryTimeout)
+        .map(_.map(Prisoner))
   }
 
   def terminate(): Unit = system.terminate()

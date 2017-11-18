@@ -28,7 +28,7 @@ class MatchmakingTestInterpreter extends (Matchmaking ~> MatchmakingStateA) {
         State { state =>
           (state, state.waitingPlayers.find(_ == waitingPlayer.prisoner))
         }
-      case WaitForOpponentToJoin(_, _) =>
+      case CheckIfOpponentJoined(_) =>
         State { state =>
           (state, state.joiningPlayer)
         }

@@ -4,8 +4,6 @@ import cats.:<:
 import cats.free.Free
 import com.michalplachta.freeprisoners.PrisonersDilemma.{Decision, Prisoner}
 
-import scala.concurrent.duration.FiniteDuration
-
 object GameOps {
   sealed trait Game[A]
   final case class SendDecision(player: Prisoner,
@@ -13,9 +11,7 @@ object GameOps {
                                 decision: Decision)
       extends Game[Unit]
   final case class ClearPlayerDecisions(player: Prisoner) extends Game[Unit]
-  final case class GetOpponentDecision(player: Prisoner,
-                                       opponent: Prisoner,
-                                       maxWaitTime: FiniteDuration)
+  final case class GetOpponentDecision(player: Prisoner, opponent: Prisoner)
       extends Game[Option[Decision]]
 
   object Game {
@@ -28,11 +24,9 @@ object GameOps {
       def clearPlayerDecisions(player: Prisoner): Free[S, Unit] =
         Free.liftF(s.inj(ClearPlayerDecisions(player)))
 
-      def getOpponentDecision(
-          player: Prisoner,
-          opponent: Prisoner,
-          waitTime: FiniteDuration): Free[S, Option[Decision]] =
-        Free.liftF(s.inj(GetOpponentDecision(player, opponent, waitTime)))
+      def getOpponentDecision(player: Prisoner,
+                              opponent: Prisoner): Free[S, Option[Decision]] =
+        Free.liftF(s.inj(GetOpponentDecision(player, opponent)))
     }
 
     object Ops {
