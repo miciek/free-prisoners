@@ -60,7 +60,7 @@ class MultiplayerTest extends WordSpec with Matchers {
           MatchmakingState(waitingPlayers = Set(registeredOpponent),
                            joiningPlayer = None,
                            metPlayers = Set.empty,
-                           delayResponseInCalls = 10)
+                           delayWaitingPlayers = 10)
 
         val opponent: Option[Prisoner] = program
           .foldMap(new MatchmakingTestInterpreter)
@@ -95,12 +95,30 @@ class MultiplayerTest extends WordSpec with Matchers {
 
       "wait for another player to join" in {
         val player = Prisoner("Player")
+        val joiningOpponent = Prisoner("Opponent")
+
+        val initialState = MatchmakingState(waitingPlayers = Set.empty,
+                                            joiningPlayer =
+                                              Some(joiningOpponent),
+                                            metPlayers = Set.empty)
+
+        val opponent: Option[Prisoner] = findOpponent(player)
+          .foldMap(new MatchmakingTestInterpreter)
+          .runA(initialState)
+          .value
+
+        opponent should contain(joiningOpponent)
+      }
+
+      "wait for another player who joins late" in {
+        val player = Prisoner("Player")
         val lateJoiningOpponent = Prisoner("Opponent")
 
         val initialState = MatchmakingState(waitingPlayers = Set.empty,
                                             joiningPlayer =
                                               Some(lateJoiningOpponent),
-                                            metPlayers = Set.empty)
+                                            metPlayers = Set.empty,
+                                            delayJoiningPlayer = 10)
 
         val opponent: Option[Prisoner] = findOpponent(player)
           .foldMap(new MatchmakingTestInterpreter)

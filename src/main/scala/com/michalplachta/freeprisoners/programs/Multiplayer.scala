@@ -45,7 +45,10 @@ object Multiplayer {
         .filterNot(_.prisoner == player)
         .headOption
         .map(joinWaitingPlayer(player, _))
-        .getOrElse(checkIfOpponentJoined(player))
+        .getOrElse(
+          retry[S, Option[Prisoner]](checkIfOpponentJoined(player),
+                                     until = _.isDefined,
+                                     maxRetries = 100))
       _ <- unregisterPlayer(player)
     } yield opponent
   }
