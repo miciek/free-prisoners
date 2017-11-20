@@ -10,6 +10,7 @@ import com.michalplachta.freeprisoners.PrisonersDilemma.{
 }
 import com.michalplachta.freeprisoners.algebras.GameOps.Game
 import com.michalplachta.freeprisoners.algebras.MatchmakingOps.Matchmaking
+import com.michalplachta.freeprisoners.algebras.MatchmakingOps.Matchmaking.WaitingPlayer
 import com.michalplachta.freeprisoners.algebras.PlayerOps.Player
 
 object Multiplayer {
@@ -37,7 +38,9 @@ object Multiplayer {
     import matchmakingOps._
     for {
       _ <- registerAsWaiting(player)
-      waitingPlayers <- getWaitingPlayers()
+      waitingPlayers <- retry[S, Set[WaitingPlayer]](getWaitingPlayers(),
+                                                     until = _.nonEmpty,
+                                                     maxRetries = 100)
       opponent <- waitingPlayers
         .filterNot(_.prisoner == player)
         .headOption

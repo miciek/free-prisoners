@@ -22,7 +22,11 @@ class MatchmakingTestInterpreter extends (Matchmaking ~> MatchmakingStateA) {
         }
       case GetWaitingPlayers() =>
         State { state =>
-          (state, state.waitingPlayers.map(WaitingPlayer))
+          if (state.delayResponseInCalls <= 0) {
+            (state, state.waitingPlayers.map(WaitingPlayer))
+          } else
+            (state.copy(delayResponseInCalls = state.delayResponseInCalls - 1),
+             Set.empty)
         }
       case JoinWaitingPlayer(player, waitingPlayer) =>
         State { state =>
@@ -30,7 +34,12 @@ class MatchmakingTestInterpreter extends (Matchmaking ~> MatchmakingStateA) {
         }
       case CheckIfOpponentJoined(_) =>
         State { state =>
-          (state, state.joiningPlayer)
+          if (state.delayResponseInCalls <= 0) {
+            (state, state.joiningPlayer)
+          } else {
+            (state.copy(delayResponseInCalls = state.delayResponseInCalls - 1),
+             None)
+          }
         }
     }
 }
@@ -38,10 +47,11 @@ class MatchmakingTestInterpreter extends (Matchmaking ~> MatchmakingStateA) {
 object MatchmakingTestInterpreter {
   final case class MatchmakingState(waitingPlayers: Set[Prisoner],
                                     joiningPlayer: Option[Prisoner],
-                                    metPlayers: Set[Prisoner])
+                                    metPlayers: Set[Prisoner],
+                                    delayResponseInCalls: Int = 0)
 
   object MatchmakingState {
-    val empty = MatchmakingState(Set.empty, None, Set.empty)
+    val empty = MatchmakingState(Set.empty, None, Set.empty, 0)
   }
 
   type MatchmakingStateA[A] = State[MatchmakingState, A]

@@ -47,6 +47,29 @@ class MultiplayerTest extends WordSpec with Matchers {
         opponent should contain(Prisoner("Opponent"))
       }
 
+      "be able to create a match even when an opponent registers late" in {
+        val player = Prisoner("Player")
+        val registeredOpponent = Prisoner("Opponent")
+
+        val program: Free[Matchmaking, Option[Prisoner]] = for {
+          _ <- matchmakingOps.registerAsWaiting(registeredOpponent)
+          opponent <- findOpponent(player)
+        } yield opponent
+
+        val initialState =
+          MatchmakingState(waitingPlayers = Set(registeredOpponent),
+                           joiningPlayer = None,
+                           metPlayers = Set.empty,
+                           delayResponseInCalls = 10)
+
+        val opponent: Option[Prisoner] = program
+          .foldMap(new MatchmakingTestInterpreter)
+          .runA(initialState)
+          .value
+
+        opponent should contain(Prisoner("Opponent"))
+      }
+
       "not be able to create a match when there are no opponents" in {
         val player = Prisoner("Player")
 
@@ -70,16 +93,18 @@ class MultiplayerTest extends WordSpec with Matchers {
         state.metPlayers should be(Set(player))
       }
 
-      "wait for another player to join later" in {
+      "wait for another player to join" in {
         val player = Prisoner("Player")
         val lateJoiningOpponent = Prisoner("Opponent")
 
+        val initialState = MatchmakingState(waitingPlayers = Set.empty,
+                                            joiningPlayer =
+                                              Some(lateJoiningOpponent),
+                                            metPlayers = Set.empty)
+
         val opponent: Option[Prisoner] = findOpponent(player)
           .foldMap(new MatchmakingTestInterpreter)
-          .runA(
-            MatchmakingState(waitingPlayers = Set.empty,
-                             joiningPlayer = Some(lateJoiningOpponent),
-                             metPlayers = Set.empty))
+          .runA(initialState)
           .value
 
         opponent should contain(lateJoiningOpponent)
