@@ -1,6 +1,8 @@
 package com.michalplachta.freeprisoners.programs
 
+import cats.data.EitherK
 import cats.free.Free
+import cats.~>
 import com.michalplachta.freeprisoners.PrisonersDilemma.{
   Guilty,
   Prisoner,
@@ -10,37 +12,49 @@ import com.michalplachta.freeprisoners.PrisonersDilemma.{
 import com.michalplachta.freeprisoners.algebras.GameOps.Game
 import com.michalplachta.freeprisoners.algebras.MatchmakingOps._
 import com.michalplachta.freeprisoners.algebras.PlayerOps.Player
+import com.michalplachta.freeprisoners.algebras.TimingOps.Timing
 import com.michalplachta.freeprisoners.programs.Multiplayer.findOpponent
 import com.michalplachta.freeprisoners.testinterpreters.GameTestInterpreter.GameState
-import com.michalplachta.freeprisoners.testinterpreters.MatchmakingTestInterpreter.MatchmakingState
+import com.michalplachta.freeprisoners.testinterpreters.MatchmakingTestInterpreter.{
+  MatchmakingState,
+  MatchmakingStateA
+}
+import com.michalplachta.freeprisoners.testinterpreters.{
+  MatchmakingTestInterpreter,
+  PlayerGameTestInterpreter,
+  TimingTestInterpreter
+}
 import com.michalplachta.freeprisoners.testinterpreters.PlayerGameTestInterpreter.{
   PlayerGame,
   PlayerGameState
 }
 import com.michalplachta.freeprisoners.testinterpreters.PlayerTestInterpreter.PlayerState
-import com.michalplachta.freeprisoners.testinterpreters.{
-  MatchmakingTestInterpreter,
-  PlayerGameTestInterpreter
-}
 import org.scalatest.{Matchers, WordSpec}
 
 class MultiplayerTest extends WordSpec with Matchers {
   "Multiplayer game" should {
     "have matchmaking module which" should {
-      implicit val matchmakingOps: Matchmaking.Ops[Matchmaking] =
-        new Matchmaking.Ops[Matchmaking]
+      type TimedMatchmaking[A] = EitherK[Timing, Matchmaking, A]
+      implicit val matchmakingOps: Matchmaking.Ops[TimedMatchmaking] =
+        new Matchmaking.Ops[TimedMatchmaking]
+
+      implicit val timingOps: Timing.Ops[TimedMatchmaking] =
+        new Timing.Ops[TimedMatchmaking]
+
+      val interpreter: TimedMatchmaking ~> MatchmakingStateA =
+        new TimingTestInterpreter[MatchmakingStateA] or new MatchmakingTestInterpreter
 
       "be able to create a match when there is one opponent registered" in {
         val player = Prisoner("Player")
         val registeredOpponent = Prisoner("Opponent")
 
-        val program: Free[Matchmaking, Option[Prisoner]] = for {
+        val program: Free[TimedMatchmaking, Option[Prisoner]] = for {
           _ <- matchmakingOps.registerAsWaiting(registeredOpponent)
           opponent <- findOpponent(player)
         } yield opponent
 
         val opponent: Option[Prisoner] = program
-          .foldMap(new MatchmakingTestInterpreter)
+          .foldMap(interpreter)
           .runA(MatchmakingState.empty)
           .value
 
@@ -51,7 +65,7 @@ class MultiplayerTest extends WordSpec with Matchers {
         val player = Prisoner("Player")
         val registeredOpponent = Prisoner("Opponent")
 
-        val program: Free[Matchmaking, Option[Prisoner]] = for {
+        val program: Free[TimedMatchmaking, Option[Prisoner]] = for {
           _ <- matchmakingOps.registerAsWaiting(registeredOpponent)
           opponent <- findOpponent(player)
         } yield opponent
@@ -63,7 +77,7 @@ class MultiplayerTest extends WordSpec with Matchers {
                            delayWaitingPlayers = 10)
 
         val opponent: Option[Prisoner] = program
-          .foldMap(new MatchmakingTestInterpreter)
+          .foldMap(interpreter)
           .runA(initialState)
           .value
 
@@ -74,7 +88,7 @@ class MultiplayerTest extends WordSpec with Matchers {
         val player = Prisoner("Player")
 
         val opponent: Option[Prisoner] = findOpponent(player)
-          .foldMap(new MatchmakingTestInterpreter)
+          .foldMap(interpreter)
           .runA(MatchmakingState.empty)
           .value
 
@@ -85,7 +99,7 @@ class MultiplayerTest extends WordSpec with Matchers {
         val player = Prisoner("Player")
 
         val state: MatchmakingState = findOpponent(player)
-          .foldMap(new MatchmakingTestInterpreter)
+          .foldMap(interpreter)
           .runS(MatchmakingState.empty)
           .value
 
@@ -103,7 +117,7 @@ class MultiplayerTest extends WordSpec with Matchers {
                                             metPlayers = Set.empty)
 
         val opponent: Option[Prisoner] = findOpponent(player)
-          .foldMap(new MatchmakingTestInterpreter)
+          .foldMap(interpreter)
           .runA(initialState)
           .value
 
@@ -121,7 +135,7 @@ class MultiplayerTest extends WordSpec with Matchers {
                                             delayJoiningPlayer = 10)
 
         val opponent: Option[Prisoner] = findOpponent(player)
-          .foldMap(new MatchmakingTestInterpreter)
+          .foldMap(interpreter)
           .runA(initialState)
           .value
 
@@ -130,6 +144,11 @@ class MultiplayerTest extends WordSpec with Matchers {
     }
 
     "have game module which" should {
+      implicit val playerOps = new Player.Ops[PlayerGame]
+      implicit val gameOps = new Game.Ops[PlayerGame]
+      implicit val timingOps = new Timing.Ops[PlayerGame]
+      val interpreter = new PlayerGameTestInterpreter
+
       "be able to produce verdict if both players make decisions" in {
         val player = Prisoner("Player")
         val opponent = Prisoner("Opponent")
@@ -140,9 +159,8 @@ class MultiplayerTest extends WordSpec with Matchers {
                                       Map.empty),
                           GameState(Map(opponent -> Silence)))
         val result: PlayerGameState = Multiplayer
-          .playTheGame(player, opponent)(new Player.Ops[PlayerGame],
-                                         new Game.Ops[PlayerGame])
-          .foldMap(new PlayerGameTestInterpreter)
+          .playTheGame(player, opponent)
+          .foldMap(interpreter)
           .runS(initialState)
           .value
 
@@ -160,9 +178,8 @@ class MultiplayerTest extends WordSpec with Matchers {
                           GameState(Map.empty))
 
         val result: PlayerGameState = Multiplayer
-          .playTheGame(player, opponent)(new Player.Ops[PlayerGame],
-                                         new Game.Ops[PlayerGame])
-          .foldMap(new PlayerGameTestInterpreter)
+          .playTheGame(player, opponent)
+          .foldMap(interpreter)
           .runS(initialState)
           .value
 
@@ -180,9 +197,8 @@ class MultiplayerTest extends WordSpec with Matchers {
                           GameState(Map(opponent -> Guilty), delayInCalls = 10))
 
         val result: PlayerGameState = Multiplayer
-          .playTheGame(player, opponent)(new Player.Ops[PlayerGame],
-                                         new Game.Ops[PlayerGame])
-          .foldMap(new PlayerGameTestInterpreter)
+          .playTheGame(player, opponent)
+          .foldMap(interpreter)
           .runS(initialState)
           .value
 
@@ -200,9 +216,8 @@ class MultiplayerTest extends WordSpec with Matchers {
                           GameState(Map(opponent -> Guilty)))
 
         val resultState: PlayerGameState = Multiplayer
-          .playTheGame(player, opponent)(new Player.Ops[PlayerGame],
-                                         new Game.Ops[PlayerGame])
-          .foldMap(new PlayerGameTestInterpreter)
+          .playTheGame(player, opponent)
+          .foldMap(interpreter)
           .runS(initialState)
           .value
 

@@ -12,10 +12,14 @@ import com.michalplachta.freeprisoners.algebras.GameOps.Game
 import com.michalplachta.freeprisoners.algebras.MatchmakingOps.Matchmaking
 import com.michalplachta.freeprisoners.algebras.MatchmakingOps.Matchmaking.WaitingPlayer
 import com.michalplachta.freeprisoners.algebras.PlayerOps.Player
+import com.michalplachta.freeprisoners.algebras.TimingOps.Timing
+
+import scala.concurrent.duration._
 
 object Multiplayer {
-  type MatchmakingMatch[A] = EitherK[Matchmaking, Game, A]
-  type Multiplayer[A] = EitherK[Player, MatchmakingMatch, A]
+  type Multiplayer0[A] = EitherK[Matchmaking, Game, A]
+  type Multiplayer1[A] = EitherK[Multiplayer0, Player, A]
+  type Multiplayer[A] = EitherK[Multiplayer1, Timing, A]
 
   sealed trait GameResult
   case object GameFinishedSuccessfully extends GameResult
@@ -23,7 +27,8 @@ object Multiplayer {
 
   def program(implicit playerOps: Player.Ops[Multiplayer],
               matchmakingOps: Matchmaking.Ops[Multiplayer],
-              gameOps: Game.Ops[Multiplayer]): Free[Multiplayer, Unit] = {
+              gameOps: Game.Ops[Multiplayer],
+              timingOps: Timing.Ops[Multiplayer]): Free[Multiplayer, Unit] = {
     import playerOps._
     for {
       player <- meetPrisoner("Welcome to Multiplayer Game")
@@ -33,36 +38,39 @@ object Multiplayer {
   }
 
   def findOpponent[S[_]](player: Prisoner)(
-      implicit matchmakingOps: Matchmaking.Ops[S])
-    : Free[S, Option[Prisoner]] = {
+      implicit matchmakingOps: Matchmaking.Ops[S],
+      timingOps: Timing.Ops[S]): Free[S, Option[Prisoner]] = {
     import matchmakingOps._
     for {
       _ <- registerAsWaiting(player)
-      waitingPlayers <- retry[S, Set[WaitingPlayer]](getWaitingPlayers(),
-                                                     until = _.nonEmpty,
-                                                     maxRetries = 100)
+      waitingPlayers <- retry[S, Set[WaitingPlayer]](
+        deferred(getWaitingPlayers(), 1.second),
+        until = _.nonEmpty,
+        maxRetries = 100)
       opponent <- waitingPlayers
         .filterNot(_.prisoner == player)
         .headOption
         .map(joinWaitingPlayer(player, _))
         .getOrElse(
-          retry[S, Option[Prisoner]](checkIfOpponentJoined(player),
-                                     until = _.isDefined,
-                                     maxRetries = 100))
+          retry[S, Option[Prisoner]](
+            deferred(checkIfOpponentJoined(player), 1.second),
+            until = _.isDefined,
+            maxRetries = 100))
       _ <- unregisterPlayer(player)
     } yield opponent
   }
 
   def playTheGame[S[_]](player: Prisoner, opponent: Prisoner)(
       implicit playerOps: Player.Ops[S],
-      gameOps: Game.Ops[S]): Free[S, GameResult] = {
+      gameOps: Game.Ops[S],
+      timingOps: Timing.Ops[S]): Free[S, GameResult] = {
     import gameOps._
     import playerOps._
     for {
       decision <- questionPrisoner(player, opponent)
       _ <- sendDecision(player, opponent, decision)
       maybeOpponentDecision <- retry[S, Option[Decision]](
-        getOpponentDecision(player, opponent),
+        deferred(getOpponentDecision(player, opponent), 1.second),
         until = _.isDefined,
         maxRetries = 100)
       result <- maybeOpponentDecision match {
@@ -87,5 +95,14 @@ object Multiplayer {
         else loop(retries - 1)
       } yield result
     loop(maxRetries)
+  }
+
+  def deferred[S[_], A](program: Free[S, A], deferFor: FiniteDuration)(
+      implicit timingOps: Timing.Ops[S]): Free[S, A] = {
+    import timingOps._
+    for {
+      _ <- pause(deferFor)
+      result <- program
+    } yield result
   }
 }
