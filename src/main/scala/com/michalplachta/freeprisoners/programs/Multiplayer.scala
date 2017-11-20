@@ -3,7 +3,11 @@ package com.michalplachta.freeprisoners.programs
 import cats.data.EitherK
 import cats.free.Free
 import cats.free.Free.pure
-import com.michalplachta.freeprisoners.PrisonersDilemma.{Prisoner, verdict}
+import com.michalplachta.freeprisoners.PrisonersDilemma.{
+  Decision,
+  Prisoner,
+  verdict
+}
 import com.michalplachta.freeprisoners.algebras.GameOps.Game
 import com.michalplachta.freeprisoners.algebras.MatchmakingOps.Matchmaking
 import com.michalplachta.freeprisoners.algebras.PlayerOps.Player
@@ -51,7 +55,10 @@ object Multiplayer {
     for {
       decision <- questionPrisoner(player, opponent)
       _ <- sendDecision(player, opponent, decision)
-      maybeOpponentDecision <- getOpponentDecision(player, opponent)
+      maybeOpponentDecision <- retry[S, Option[Decision]](
+        getOpponentDecision(player, opponent),
+        until = _.isDefined,
+        maxRetries = 100)
       result <- maybeOpponentDecision match {
         case Some(opponentDecision) =>
           for {
@@ -61,5 +68,18 @@ object Multiplayer {
       }
       _ <- clearPlayerDecisions(player)
     } yield result
+  }
+
+  def retry[S[_], A](program: Free[S, A],
+                     until: A => Boolean,
+                     maxRetries: Int): Free[S, A] = {
+    def loop(retries: Int): Free[S, A] =
+      for {
+        possibleResult <- program
+        result <- if (until(possibleResult) || retries <= 0)
+          pure[S, A](possibleResult)
+        else loop(retries - 1)
+      } yield result
+    loop(maxRetries)
   }
 }

@@ -23,12 +23,17 @@ class GameTestInterpreter extends (Game ~> GameStateA) {
       }
     case GetOpponentDecision(_, opponent) =>
       State { state =>
-        (state, state.decisions.get(opponent))
+        if (state.delayInCalls <= 0) {
+          (state, state.decisions.get(opponent))
+        } else {
+          (state.copy(delayInCalls = state.delayInCalls - 1), None)
+        }
       }
   }
 }
 
 object GameTestInterpreter {
-  final case class GameState(decisions: Map[Prisoner, Decision])
+  final case class GameState(decisions: Map[Prisoner, Decision],
+                             delayInCalls: Int = 0)
   type GameStateA[A] = State[GameState, A]
 }
