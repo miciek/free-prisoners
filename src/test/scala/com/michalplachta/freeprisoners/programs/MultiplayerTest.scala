@@ -1,7 +1,6 @@
 package com.michalplachta.freeprisoners.programs
 
 import cats.data.EitherK
-import cats.free.Free
 import cats.~>
 import com.michalplachta.freeprisoners.PrisonersDilemma.{
   Guilty,
@@ -16,19 +15,20 @@ import com.michalplachta.freeprisoners.algebras.TimingOps.Timing
 import com.michalplachta.freeprisoners.programs.Multiplayer.findOpponent
 import com.michalplachta.freeprisoners.testinterpreters.GameTestInterpreter.GameState
 import com.michalplachta.freeprisoners.testinterpreters.MatchmakingTestInterpreter.{
+  DelayedPrisoner,
   MatchmakingState,
   MatchmakingStateA
-}
-import com.michalplachta.freeprisoners.testinterpreters.{
-  MatchmakingTestInterpreter,
-  PlayerGameTestInterpreter,
-  TimingTestInterpreter
 }
 import com.michalplachta.freeprisoners.testinterpreters.PlayerGameTestInterpreter.{
   PlayerGame,
   PlayerGameState
 }
 import com.michalplachta.freeprisoners.testinterpreters.PlayerTestInterpreter.PlayerState
+import com.michalplachta.freeprisoners.testinterpreters.{
+  MatchmakingTestInterpreter,
+  PlayerGameTestInterpreter,
+  TimingTestInterpreter
+}
 import org.scalatest.{Matchers, WordSpec}
 
 class MultiplayerTest extends WordSpec with Matchers {
@@ -46,42 +46,36 @@ class MultiplayerTest extends WordSpec with Matchers {
 
       "be able to create a match when there is one opponent registered" in {
         val player = Prisoner("Player")
-        val registeredOpponent = Prisoner("Opponent")
-
-        val program: Free[TimedMatchmaking, Option[Prisoner]] = for {
-          _ <- matchmakingOps.registerAsWaiting(registeredOpponent)
-          opponent <- findOpponent(player)
-        } yield opponent
-
-        val opponent: Option[Prisoner] = program
-          .foldMap(interpreter)
-          .runA(MatchmakingState.empty)
-          .value
-
-        opponent should contain(Prisoner("Opponent"))
-      }
-
-      "be able to create a match even when an opponent registers late" in {
-        val player = Prisoner("Player")
-        val registeredOpponent = Prisoner("Opponent")
-
-        val program: Free[TimedMatchmaking, Option[Prisoner]] = for {
-          _ <- matchmakingOps.registerAsWaiting(registeredOpponent)
-          opponent <- findOpponent(player)
-        } yield opponent
+        val registeredOpponent = DelayedPrisoner(Prisoner("Opponent"), 0)
 
         val initialState =
           MatchmakingState(waitingPlayers = Set(registeredOpponent),
                            joiningPlayer = None,
-                           metPlayers = Set.empty,
-                           delayWaitingPlayers = 10)
+                           metPlayers = Set.empty)
 
-        val opponent: Option[Prisoner] = program
+        val opponent: Option[Prisoner] = findOpponent(player)
           .foldMap(interpreter)
           .runA(initialState)
           .value
 
-        opponent should contain(Prisoner("Opponent"))
+        opponent should contain(registeredOpponent.prisoner)
+      }
+
+      "be able to create a match even when an opponent registers late" in {
+        val player = Prisoner("Player")
+        val registeredOpponent = DelayedPrisoner(Prisoner("Opponent"), 10)
+
+        val initialState =
+          MatchmakingState(waitingPlayers = Set(registeredOpponent),
+                           joiningPlayer = None,
+                           metPlayers = Set.empty)
+
+        val opponent: Option[Prisoner] = findOpponent(player)
+          .foldMap(interpreter)
+          .runA(initialState)
+          .value
+
+        opponent should contain(registeredOpponent.prisoner)
       }
 
       "not be able to create a match when there are no opponents" in {
@@ -109,7 +103,7 @@ class MultiplayerTest extends WordSpec with Matchers {
 
       "wait for another player to join" in {
         val player = Prisoner("Player")
-        val joiningOpponent = Prisoner("Opponent")
+        val joiningOpponent = DelayedPrisoner(Prisoner("Opponent"), 0)
 
         val initialState = MatchmakingState(waitingPlayers = Set.empty,
                                             joiningPlayer =
@@ -121,25 +115,24 @@ class MultiplayerTest extends WordSpec with Matchers {
           .runA(initialState)
           .value
 
-        opponent should contain(joiningOpponent)
+        opponent should contain(joiningOpponent.prisoner)
       }
 
       "wait for another player who joins late" in {
         val player = Prisoner("Player")
-        val lateJoiningOpponent = Prisoner("Opponent")
+        val lateJoiningOpponent = DelayedPrisoner(Prisoner("Opponent"), 10)
 
         val initialState = MatchmakingState(waitingPlayers = Set.empty,
                                             joiningPlayer =
                                               Some(lateJoiningOpponent),
-                                            metPlayers = Set.empty,
-                                            delayJoiningPlayer = 10)
+                                            metPlayers = Set.empty)
 
         val opponent: Option[Prisoner] = findOpponent(player)
           .foldMap(interpreter)
           .runA(initialState)
           .value
 
-        opponent should contain(lateJoiningOpponent)
+        opponent should contain(lateJoiningOpponent.prisoner)
       }
     }
 

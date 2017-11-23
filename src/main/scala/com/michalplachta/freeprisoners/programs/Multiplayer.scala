@@ -45,7 +45,7 @@ object Multiplayer {
       _ <- registerAsWaiting(player)
       waitingPlayers <- retry[S, Set[WaitingPlayer]](
         deferred(getWaitingPlayers(), 1.second),
-        until = _.nonEmpty,
+        until = _.exists(_.prisoner != player),
         maxRetries = 100)
       opponent <- waitingPlayers
         .filterNot(_.prisoner == player)
