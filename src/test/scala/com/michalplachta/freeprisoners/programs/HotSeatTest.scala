@@ -9,7 +9,7 @@ import com.michalplachta.freeprisoners.testinterpreters.PlayerTestInterpreter.{
 import com.michalplachta.freeprisoners.testinterpreters.PlayerTestInterpreter
 import org.scalatest.{Matchers, WordSpec}
 
-class HotSeatGameTest extends WordSpec with Matchers {
+class HotSeatTest extends WordSpec with Matchers {
   "Hot seat game" should {
     "question 2 prisoners and give verdicts" in {
       val blamingPrisoner = FakePrisoner(Prisoner("Blaming"), Guilty)
@@ -17,7 +17,7 @@ class HotSeatGameTest extends WordSpec with Matchers {
       val inputState =
         PlayerState(Set(blamingPrisoner, silentPrisoner), Map.empty, Map.empty)
 
-      val result: PlayerState = HotSeatGame
+      val result: PlayerState = HotSeat
         .program(new Player.Ops[Player])
         .foldMap(new PlayerTestInterpreter)
         .runS(inputState)

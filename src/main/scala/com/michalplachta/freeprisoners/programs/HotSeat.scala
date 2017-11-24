@@ -4,9 +4,8 @@ import cats.free.Free
 import com.michalplachta.freeprisoners.PrisonersDilemma
 import com.michalplachta.freeprisoners.algebras.PlayerOps.Player
 import com.michalplachta.freeprisoners.algebras.PlayerOps.Player.Ops
-import com.michalplachta.freeprisoners.interpreters.PlayerConsoleInterpreter
 
-object HotSeatGame extends App {
+object HotSeat {
   def program(playerOps: Ops[Player]): Free[Player, Unit] = {
     import playerOps._
     for {
@@ -20,6 +19,4 @@ object HotSeatGame extends App {
                           PrisonersDilemma.verdict(decisionB, decisionA))
     } yield ()
   }
-
-  program(new Player.Ops[Player]).foldMap(PlayerConsoleInterpreter)
 }
