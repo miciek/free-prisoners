@@ -20,20 +20,16 @@ object GameOps {
   object Game {
     class Ops[S[_]](implicit s: Game :<: S) {
       def getGameHandle(player: Prisoner, opponent: Prisoner): Free[S, UUID] =
-        Free.liftF(s.inj(GetGameHandle(player, opponent)))
+        Free.inject(GetGameHandle(player, opponent))
 
       def sendDecision(gameHandle: UUID,
                        player: Prisoner,
                        decision: Decision): Free[S, Unit] =
-        Free.liftF(s.inj(SendDecision(gameHandle, player, decision)))
+        Free.inject(SendDecision(gameHandle, player, decision))
 
       def getOpponentDecision(gameHandle: UUID,
                               opponent: Prisoner): Free[S, Option[Decision]] =
-        Free.liftF(s.inj(GetOpponentDecision(gameHandle, opponent)))
-    }
-
-    object Ops {
-      def apply[S[_]](implicit s: Game :<: S): Ops[S] = new Ops[S]
+        Free.inject(GetOpponentDecision(gameHandle, opponent))
     }
   }
 }

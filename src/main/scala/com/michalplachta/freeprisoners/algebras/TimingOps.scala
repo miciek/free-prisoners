@@ -12,7 +12,7 @@ object TimingOps {
   object Timing {
     class Ops[S[_]](implicit s: Timing :<: S) {
       def pause(duration: FiniteDuration): Free[S, Unit] =
-        Free.liftF(s.inj(Pause(duration)))
+        Free.inject(Pause(duration))
     }
   }
 }

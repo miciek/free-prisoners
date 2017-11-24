@@ -5,12 +5,6 @@ import cats.free.Free
 import com.michalplachta.freeprisoners.PrisonersDilemma._
 
 object BotOps {
-  type Strategy = Prisoner => Decision
-  object Strategies {
-    val alwaysBlame: Strategy = _ => Guilty
-    val alwaysSilent: Strategy = _ => Silence
-  }
-
   sealed trait Bot[A]
   final case class CreateBot(name: String, strategy: Strategy)
       extends Bot[Prisoner]
@@ -20,11 +14,17 @@ object BotOps {
   object Bot {
     class Ops[S[_]](implicit s: Bot :<: S) {
       def createBot(name: String, strategy: Strategy): Free[S, Prisoner] =
-        Free.liftF(s.inj(CreateBot(name, strategy)))
+        Free.inject(CreateBot(name, strategy))
 
       def getDecision(prisoner: Prisoner,
                       otherPrisoner: Prisoner): Free[S, Decision] =
-        Free.liftF(s.inj(GetDecision(prisoner, otherPrisoner)))
+        Free.inject(GetDecision(prisoner, otherPrisoner))
     }
+  }
+
+  type Strategy = Prisoner => Decision
+  object Strategies {
+    val alwaysBlame: Strategy = _ => Guilty
+    val alwaysSilent: Strategy = _ => Silence
   }
 }

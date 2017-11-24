@@ -19,25 +19,21 @@ object MatchmakingOps {
   object Matchmaking {
     class Ops[S[_]](implicit s: Matchmaking :<: S) {
       def registerAsWaiting(player: Prisoner): Free[S, Unit] =
-        Free.liftF(s.inj(RegisterAsWaiting(player)))
+        Free.inject(RegisterAsWaiting(player))
 
       def unregisterPlayer(player: Prisoner): Free[S, Unit] =
-        Free.liftF(s.inj(UnregisterPlayer(player)))
+        Free.inject(UnregisterPlayer(player))
 
       def getWaitingPlayers(): Free[S, List[WaitingPlayer]] =
-        Free.liftF(s.inj(GetWaitingPlayers()))
+        Free.inject(GetWaitingPlayers())
 
       def joinWaitingPlayer(
           player: Prisoner,
           waitingPlayer: WaitingPlayer): Free[S, Option[Prisoner]] =
-        Free.liftF(s.inj(JoinWaitingPlayer(player, waitingPlayer)))
+        Free.inject(JoinWaitingPlayer(player, waitingPlayer))
 
       def checkIfOpponentJoined(player: Prisoner): Free[S, Option[Prisoner]] =
-        Free.liftF(s.inj(CheckIfOpponentJoined(player)))
-    }
-
-    object Ops {
-      def apply[S[_]](implicit s: Matchmaking :<: S): Ops[S] = new Ops[S]
+        Free.inject(CheckIfOpponentJoined(player))
     }
 
     final case class WaitingPlayer(prisoner: Prisoner)
