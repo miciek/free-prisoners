@@ -134,22 +134,6 @@ class MultiplayerTest extends WordSpec with Matchers {
 
         opponent should contain(lateJoiningOpponent.prisoner)
       }
-
-      "allow the player to obtain the opponent name even if the opponent unregistered" in {
-        val player = Prisoner("Player")
-        val opponent = DelayedPrisoner(Prisoner("Opponent"), 0)
-
-        val initialState = MatchmakingState(waitingPlayers = List.empty,
-                                            joiningPlayer = Some(opponent),
-                                            metPlayers = Set.empty)
-
-        val foundOpponent: Option[Prisoner] = findOpponent(player)
-          .foldMap(interpreter)
-          .runA(initialState)
-          .value
-
-        foundOpponent should contain(opponent.prisoner)
-      }
     }
 
     "have game module which" should {

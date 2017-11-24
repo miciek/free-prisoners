@@ -17,7 +17,7 @@ class GameServerTest
     with Matchers
     with BeforeAndAfterAll {
   "GameServer actor" should {
-    "return the same gameId for player and opponent" in {
+    "return the same game id for the player and his opponent" in {
       val player = Prisoner("Player")
       val opponent = Prisoner("Opponent")
       val server = createServer()
@@ -27,7 +27,7 @@ class GameServerTest
       } yield playerGameId should equal(opponentGameId)
     }
 
-    "return different gameIds for the same match is created twice" in {
+    "return different game ids when the same match is created twice" in {
       val player = Prisoner("Player")
       val opponent = Prisoner("Opponent")
       val server = createServer()
@@ -48,7 +48,7 @@ class GameServerTest
       } yield decision should contain(Guilty)
     }
 
-    "save the decision of the player just for one game" in {
+    "save the decision of the player just for a given game" in {
       val player = Prisoner("Player")
       val opponent = Prisoner("Opponent")
       val server = createServer()
