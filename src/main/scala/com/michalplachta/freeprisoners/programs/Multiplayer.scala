@@ -43,7 +43,7 @@ object Multiplayer {
     import matchmakingOps._
     for {
       _ <- registerAsWaiting(player)
-      waitingPlayers <- retry[S, Set[WaitingPlayer]](
+      waitingPlayers <- retry[S, List[WaitingPlayer]](
         deferred(getWaitingPlayers(), 1.second),
         until = _.exists(_.prisoner != player),
         maxRetries = 5)

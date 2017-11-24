@@ -9,7 +9,7 @@ object MatchmakingOps {
   sealed trait Matchmaking[A]
   final case class RegisterAsWaiting(player: Prisoner) extends Matchmaking[Unit]
   final case class UnregisterPlayer(player: Prisoner) extends Matchmaking[Unit]
-  final case class GetWaitingPlayers() extends Matchmaking[Set[WaitingPlayer]]
+  final case class GetWaitingPlayers() extends Matchmaking[List[WaitingPlayer]]
   final case class JoinWaitingPlayer(player: Prisoner,
                                      waitingPlayer: WaitingPlayer)
       extends Matchmaking[Option[Prisoner]]
@@ -24,7 +24,7 @@ object MatchmakingOps {
       def unregisterPlayer(player: Prisoner): Free[S, Unit] =
         Free.liftF(s.inj(UnregisterPlayer(player)))
 
-      def getWaitingPlayers(): Free[S, Set[WaitingPlayer]] =
+      def getWaitingPlayers(): Free[S, List[WaitingPlayer]] =
         Free.liftF(s.inj(GetWaitingPlayers()))
 
       def joinWaitingPlayer(

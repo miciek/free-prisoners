@@ -4,16 +4,16 @@ import akka.actor.Actor
 import com.michalplachta.freeprisoners.actors.MatchmakingServer._
 
 class MatchmakingServer extends Actor {
-  private var waitingList = Set.empty[String]
+  private var waitingList = List.empty[String]
   private var matches = Set.empty[Set[String]]
 
   def receive: Receive = {
     case AddToWaitingList(name) =>
       matches = matches.filterNot(_.contains(name))
-      waitingList = waitingList + name
+      waitingList = name :: waitingList
 
     case RemoveFromWaitingList(name) =>
-      waitingList = waitingList - name
+      waitingList = waitingList.filter(_ != name)
 
     case GetWaitingList() =>
       sender ! waitingList
@@ -32,7 +32,7 @@ object MatchmakingServer {
   final case class AddToWaitingList(name: String) extends ServerProtocol[Unit]
   final case class RemoveFromWaitingList(name: String)
       extends ServerProtocol[Unit]
-  final case class GetWaitingList() extends ServerProtocol[Set[String]]
+  final case class GetWaitingList() extends ServerProtocol[List[String]]
   final case class RegisterMatch(playerA: String, playerB: String)
       extends ServerProtocol[Unit]
   final case class GetOpponentNameFor(player: String)

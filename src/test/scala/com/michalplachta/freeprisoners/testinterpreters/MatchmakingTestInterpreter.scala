@@ -1,7 +1,9 @@
 package com.michalplachta.freeprisoners.testinterpreters
 
 import cats.data.State
-import cats.~>
+import cats.implicits.catsStdInstancesForList
+import cats.implicits.catsStdInstancesForOption
+import cats.{Functor, ~>}
 import com.michalplachta.freeprisoners.PrisonersDilemma.Prisoner
 import com.michalplachta.freeprisoners.algebras.MatchmakingOps.Matchmaking.WaitingPlayer
 import com.michalplachta.freeprisoners.algebras.MatchmakingOps._
@@ -15,16 +17,16 @@ class MatchmakingTestInterpreter extends (Matchmaking ~> MatchmakingStateA) {
     matchmaking match {
       case RegisterAsWaiting(player) =>
         State { state =>
-          (state.copy(waitingPlayers = (state.waitingPlayers +
-                        DelayedPrisoner(player, 0)),
-                      metPlayers = (state.metPlayers + player)),
+          (state.copy(
+             waitingPlayers = (DelayedPrisoner(player, 0) :: state.waitingPlayers),
+             metPlayers = (state.metPlayers + player)),
            ())
         }
       case UnregisterPlayer(player) =>
         State { state =>
           (state.copy(
-             waitingPlayers = (state.waitingPlayers -
-               DelayedPrisoner(player, 0))),
+             waitingPlayers =
+               (state.waitingPlayers.filter(_ != DelayedPrisoner(player, 0)))),
            ())
         }
       case GetWaitingPlayers() =>
@@ -51,14 +53,9 @@ class MatchmakingTestInterpreter extends (Matchmaking ~> MatchmakingStateA) {
         }
     }
 
-  def updateCalls(fakePrisoners: Set[DelayedPrisoner]): Set[DelayedPrisoner] = {
-    fakePrisoners.map(p =>
-      p.copy(callsBeforeAvailable = Math.max(0, p.callsBeforeAvailable - 1)))
-  }
-
-  def updateCalls(
-      fakePrisoners: Option[DelayedPrisoner]): Option[DelayedPrisoner] = {
-    fakePrisoners.map(p =>
+  def updateCalls[F[_]: Functor](
+      fakePrisoners: F[DelayedPrisoner]): F[DelayedPrisoner] = {
+    Functor[F].map(fakePrisoners)(p =>
       p.copy(callsBeforeAvailable = Math.max(0, p.callsBeforeAvailable - 1)))
   }
 }
@@ -67,12 +64,12 @@ object MatchmakingTestInterpreter {
   final case class DelayedPrisoner(prisoner: Prisoner,
                                    callsBeforeAvailable: Int)
 
-  final case class MatchmakingState(waitingPlayers: Set[DelayedPrisoner],
+  final case class MatchmakingState(waitingPlayers: List[DelayedPrisoner],
                                     joiningPlayer: Option[DelayedPrisoner],
                                     metPlayers: Set[Prisoner])
 
   object MatchmakingState {
-    val empty = MatchmakingState(Set.empty, None, Set.empty)
+    val empty = MatchmakingState(List.empty, None, Set.empty)
   }
 
   type MatchmakingStateA[A] = State[MatchmakingState, A]

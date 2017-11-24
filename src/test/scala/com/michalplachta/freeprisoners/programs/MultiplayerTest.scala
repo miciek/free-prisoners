@@ -49,7 +49,7 @@ class MultiplayerTest extends WordSpec with Matchers {
         val registeredOpponent = DelayedPrisoner(Prisoner("Opponent"), 0)
 
         val initialState =
-          MatchmakingState(waitingPlayers = Set(registeredOpponent),
+          MatchmakingState(waitingPlayers = List(registeredOpponent),
                            joiningPlayer = None,
                            metPlayers = Set.empty)
 
@@ -66,7 +66,7 @@ class MultiplayerTest extends WordSpec with Matchers {
         val registeredOpponent = DelayedPrisoner(Prisoner("Opponent"), 3)
 
         val initialState =
-          MatchmakingState(waitingPlayers = Set(registeredOpponent),
+          MatchmakingState(waitingPlayers = List(registeredOpponent),
                            joiningPlayer = None,
                            metPlayers = Set.empty)
 
@@ -105,7 +105,7 @@ class MultiplayerTest extends WordSpec with Matchers {
         val player = Prisoner("Player")
         val joiningOpponent = DelayedPrisoner(Prisoner("Opponent"), 0)
 
-        val initialState = MatchmakingState(waitingPlayers = Set.empty,
+        val initialState = MatchmakingState(waitingPlayers = List.empty,
                                             joiningPlayer =
                                               Some(joiningOpponent),
                                             metPlayers = Set.empty)
@@ -122,7 +122,7 @@ class MultiplayerTest extends WordSpec with Matchers {
         val player = Prisoner("Player")
         val lateJoiningOpponent = DelayedPrisoner(Prisoner("Opponent"), 10)
 
-        val initialState = MatchmakingState(waitingPlayers = Set.empty,
+        val initialState = MatchmakingState(waitingPlayers = List.empty,
                                             joiningPlayer =
                                               Some(lateJoiningOpponent),
                                             metPlayers = Set.empty)
@@ -139,7 +139,7 @@ class MultiplayerTest extends WordSpec with Matchers {
         val player = Prisoner("Player")
         val opponent = DelayedPrisoner(Prisoner("Opponent"), 0)
 
-        val initialState = MatchmakingState(waitingPlayers = Set.empty,
+        val initialState = MatchmakingState(waitingPlayers = List.empty,
                                             joiningPlayer = Some(opponent),
                                             metPlayers = Set.empty)
 

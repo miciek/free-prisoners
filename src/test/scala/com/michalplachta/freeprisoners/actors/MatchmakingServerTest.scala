@@ -17,7 +17,7 @@ class MatchmakingServerTest
       tellServer(server, AddToWaitingList("a"))
       tellServer(server, AddToWaitingList("b"))
       askServer(server, GetWaitingList())
-        .map(_ should be(Set("a", "b")))
+        .map(_.toSet should be(Set("a", "b")))
     }
 
     "remove player name from the waiting list when it's removed from matchmaking" in {
@@ -26,7 +26,7 @@ class MatchmakingServerTest
       tellServer(server, AddToWaitingList("b"))
       tellServer(server, RemoveFromWaitingList("a"))
       askServer(server, GetWaitingList())
-        .map(_ should be(Set("b")))
+        .map(_.toSet should be(Set("b")))
     }
 
     "respond with the opponent after match is registered" in {
