@@ -213,25 +213,6 @@ class MultiplayerTest extends WordSpec with Matchers {
 
         result.playerState.verdicts.get(player) should contain(Verdict(3))
       }
-
-      "should clear the player's decision after the game" in {
-        val player = Prisoner("Player")
-        val opponent = Prisoner("Opponent")
-
-        val initialState =
-          PlayerGameState(PlayerState(Set.empty,
-                                      Map(player -> Guilty),
-                                      Map.empty),
-                          GameState(Map(opponent -> Guilty)))
-
-        val resultState: PlayerGameState = Multiplayer
-          .playTheGame(player, opponent)
-          .foldMap(interpreter)
-          .runS(initialState)
-          .value
-
-        resultState.gameState.decisions.get(player) should be(None)
-      }
     }
   }
 }

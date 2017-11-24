@@ -5,18 +5,13 @@ import java.util.concurrent.TimeUnit
 import akka.actor.ActorSystem
 import akka.util.Timeout
 import cats.~>
-import com.michalplachta.freeprisoners.actors.ServerCommunication._
 import com.michalplachta.freeprisoners.actors.GameServer.{
-  ClearSavedDecisions,
+  CreateNewGame,
   GetSavedDecision,
   SaveDecision
 }
-import com.michalplachta.freeprisoners.algebras.GameOps.{
-  ClearPlayerDecisions,
-  Game,
-  GetOpponentDecision,
-  SendDecision
-}
+import com.michalplachta.freeprisoners.actors.ServerCommunication._
+import com.michalplachta.freeprisoners.algebras.GameOps._
 import com.typesafe.config.ConfigFactory
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,13 +29,16 @@ class GameServerInterpreter extends (Game ~> Future) {
     system.actorSelection(config.getString("server.path"))
 
   def apply[A](game: Game[A]): Future[A] = game match {
-    case SendDecision(player, opponent, decision) =>
-      tellServer(server, SaveDecision(player, opponent, decision))
-    case ClearPlayerDecisions(player) =>
-      tellServer(server, ClearSavedDecisions(player))
-    case GetOpponentDecision(player, opponent) =>
+    case GetGameHandle(player, opponent) =>
       askServer(server,
-                GetSavedDecision(opponent, player),
+                CreateNewGame(player, opponent),
+                maxRetries,
+                retryTimeout)
+    case SendDecision(handle, player, decision) =>
+      tellServer(server, SaveDecision(handle, player, decision))
+    case GetOpponentDecision(handle, opponent) =>
+      askServer(server,
+                GetSavedDecision(handle, opponent),
                 maxRetries,
                 retryTimeout)
   }

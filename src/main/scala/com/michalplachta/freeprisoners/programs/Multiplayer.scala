@@ -67,10 +67,11 @@ object Multiplayer {
     import gameOps._
     import playerOps._
     for {
+      handle <- getGameHandle(player, opponent)
       decision <- questionPrisoner(player, opponent)
-      _ <- sendDecision(player, opponent, decision)
+      _ <- sendDecision(handle, player, decision)
       maybeOpponentDecision <- retry[S, Option[Decision]](
-        deferred(getOpponentDecision(player, opponent), 1.second),
+        deferred(getOpponentDecision(handle, opponent), 1.second),
         until = _.isDefined,
         maxRetries = 100)
       result <- maybeOpponentDecision match {
@@ -80,7 +81,6 @@ object Multiplayer {
           } yield GameFinishedSuccessfully
         case None => pure[S, GameResult](NoDecisionFromOpponent)
       }
-      _ <- clearPlayerDecisions(player)
     } yield result
   }
 

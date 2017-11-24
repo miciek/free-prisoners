@@ -2,17 +2,13 @@ package com.michalplachta.freeprisoners.actors
 
 import akka.actor.{ActorSelection, ActorSystem, Props}
 import akka.testkit.TestKit
-import com.michalplachta.freeprisoners.PrisonersDilemma.{
-  Guilty,
-  Prisoner,
-  Silence
-}
-import com.michalplachta.freeprisoners.actors.ServerCommunication._
+import com.michalplachta.freeprisoners.PrisonersDilemma.{Guilty, Prisoner}
 import com.michalplachta.freeprisoners.actors.GameServer.{
-  ClearSavedDecisions,
+  CreateNewGame,
   GetSavedDecision,
   SaveDecision
 }
+import com.michalplachta.freeprisoners.actors.ServerCommunication._
 import org.scalatest.{AsyncWordSpecLike, Matchers}
 
 import scala.concurrent.duration._
@@ -22,29 +18,75 @@ class GameServerTest
     with AsyncWordSpecLike
     with Matchers {
   "GameServer actor" should {
+    "return the same gameId for player and opponent" in {
+      val player = Prisoner("Player")
+      val opponent = Prisoner("Opponent")
+      val server = createServer()
+      for {
+        playerGameId <- askServer(server,
+                                  CreateNewGame(player, opponent),
+                                  maxRetries = 1,
+                                  retryTimeout = 1.second)
+        opponentGameId <- askServer(server,
+                                    CreateNewGame(opponent, player),
+                                    maxRetries = 1,
+                                    retryTimeout = 1.second)
+      } yield playerGameId should equal(opponentGameId)
+    }
+
+    "return different gameIds for the same match is created twice" in {
+      val player = Prisoner("Player")
+      val opponent = Prisoner("Opponent")
+      val server = createServer()
+      for {
+        firstGameId <- askServer(server,
+                                 CreateNewGame(player, opponent),
+                                 maxRetries = 1,
+                                 retryTimeout = 1.second)
+        secondGameId <- askServer(server,
+                                  CreateNewGame(player, opponent),
+                                  maxRetries = 1,
+                                  retryTimeout = 1.second)
+      } yield firstGameId shouldNot equal(secondGameId)
+    }
+
     "save the decision of the player" in {
       val player = Prisoner("Player")
       val opponent = Prisoner("Opponent")
       val server = createServer()
-
-      tellServer(server, SaveDecision(player, opponent, Guilty))
-      askServer(server, GetSavedDecision(player, opponent), 1, 1.second)
-        .map(_ should contain(Guilty))
+      for {
+        gameId <- askServer(server,
+                            CreateNewGame(player, opponent),
+                            maxRetries = 1,
+                            retryTimeout = 1.second)
+        _ <- tellServer(server, SaveDecision(gameId, player, Guilty))
+        decision <- askServer(server,
+                              GetSavedDecision(gameId, player),
+                              maxRetries = 1,
+                              retryTimeout = 1.second)
+      } yield decision should contain(Guilty)
     }
 
-    "clear the decisions of the player" in {
+    "save the decision of the player just for one game" in {
       val player = Prisoner("Player")
-      val opponentA = Prisoner("OpponentA")
-      val opponentB = Prisoner("OpponentB")
+      val opponent = Prisoner("Opponent")
       val server = createServer()
 
-      tellServer(server, SaveDecision(player, opponentA, Guilty))
-      tellServer(server, SaveDecision(player, opponentB, Silence))
-      tellServer(server, ClearSavedDecisions(player))
-      askServer(server, GetSavedDecision(player, opponentA), 1, 1.second)
-        .map(_ should be(None))
-      askServer(server, GetSavedDecision(player, opponentB), 1, 1.second)
-        .map(_ should be(None))
+      for {
+        gameId <- askServer(server,
+                            CreateNewGame(player, opponent),
+                            maxRetries = 1,
+                            retryTimeout = 1.second)
+        _ <- tellServer(server, SaveDecision(gameId, player, Guilty))
+        differentGameId <- askServer(server,
+                                     CreateNewGame(player, opponent),
+                                     maxRetries = 1,
+                                     retryTimeout = 1.second)
+        decision <- askServer(server,
+                              GetSavedDecision(differentGameId, player),
+                              maxRetries = 1,
+                              retryTimeout = 1.second)
+      } yield decision should be(None)
     }
   }
 
