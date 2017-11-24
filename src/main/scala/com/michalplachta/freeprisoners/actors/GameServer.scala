@@ -11,7 +11,7 @@ class GameServer extends Actor {
   private var savedDecisions = Map.empty[(String, Prisoner), Decision]
 
   def receive: Receive = {
-    case CreateNewGame(player, opponent) =>
+    case GetGameId(player, opponent) =>
       val gameId: String =
         createdGames.get(player).filter(_.owner == opponent) match {
           case Some(existingGame) =>
@@ -34,7 +34,7 @@ object GameServer {
   final case class Game(id: String, owner: Prisoner, opponent: Prisoner)
 
   sealed trait ServerProtocol[A]
-  final case class CreateNewGame(player: Prisoner, opponent: Prisoner)
+  final case class GetGameId(player: Prisoner, opponent: Prisoner)
       extends ServerProtocol[String]
   final case class SaveDecision(gameId: String,
                                 player: Prisoner,

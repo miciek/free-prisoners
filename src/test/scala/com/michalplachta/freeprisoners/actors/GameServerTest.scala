@@ -4,7 +4,7 @@ import akka.actor.{ActorSelection, ActorSystem, Props}
 import akka.testkit.TestKit
 import com.michalplachta.freeprisoners.PrisonersDilemma.{Guilty, Prisoner}
 import com.michalplachta.freeprisoners.actors.GameServer.{
-  CreateNewGame,
+  GetGameId,
   GetSavedDecision,
   SaveDecision
 }
@@ -22,8 +22,8 @@ class GameServerTest
       val opponent = Prisoner("Opponent")
       val server = createServer()
       for {
-        playerGameId <- askServer(server, CreateNewGame(player, opponent))
-        opponentGameId <- askServer(server, CreateNewGame(opponent, player))
+        playerGameId <- askServer(server, GetGameId(player, opponent))
+        opponentGameId <- askServer(server, GetGameId(opponent, player))
       } yield playerGameId should equal(opponentGameId)
     }
 
@@ -32,8 +32,8 @@ class GameServerTest
       val opponent = Prisoner("Opponent")
       val server = createServer()
       for {
-        firstGameId <- askServer(server, CreateNewGame(player, opponent))
-        secondGameId <- askServer(server, CreateNewGame(player, opponent))
+        firstGameId <- askServer(server, GetGameId(player, opponent))
+        secondGameId <- askServer(server, GetGameId(player, opponent))
       } yield firstGameId shouldNot equal(secondGameId)
     }
 
@@ -42,7 +42,7 @@ class GameServerTest
       val opponent = Prisoner("Opponent")
       val server = createServer()
       for {
-        gameId <- askServer(server, CreateNewGame(player, opponent))
+        gameId <- askServer(server, GetGameId(player, opponent))
         _ <- tellServer(server, SaveDecision(gameId, player, Guilty))
         decision <- askServer(server, GetSavedDecision(gameId, player))
       } yield decision should contain(Guilty)
@@ -54,9 +54,9 @@ class GameServerTest
       val server = createServer()
 
       for {
-        gameId <- askServer(server, CreateNewGame(player, opponent))
+        gameId <- askServer(server, GetGameId(player, opponent))
         _ <- tellServer(server, SaveDecision(gameId, player, Guilty))
-        differentGameId <- askServer(server, CreateNewGame(player, opponent))
+        differentGameId <- askServer(server, GetGameId(player, opponent))
         decision <- askServer(server, GetSavedDecision(differentGameId, player))
       } yield decision should be(None)
     }

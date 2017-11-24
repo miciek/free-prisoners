@@ -6,7 +6,7 @@ import akka.actor.ActorSystem
 import akka.util.Timeout
 import cats.~>
 import com.michalplachta.freeprisoners.actors.GameServer.{
-  CreateNewGame,
+  GetGameId,
   GetSavedDecision,
   SaveDecision
 }
@@ -30,10 +30,7 @@ class GameServerInterpreter extends (Game ~> Future) {
 
   def apply[A](game: Game[A]): Future[A] = game match {
     case GetGameHandle(player, opponent) =>
-      askServer(server,
-                CreateNewGame(player, opponent),
-                maxRetries,
-                retryTimeout)
+      askServer(server, GetGameId(player, opponent), maxRetries, retryTimeout)
     case SendDecision(handle, player, decision) =>
       tellServer(server, SaveDecision(handle, player, decision))
     case GetOpponentDecision(handle, opponent) =>
