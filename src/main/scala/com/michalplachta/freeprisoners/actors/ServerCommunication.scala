@@ -5,14 +5,15 @@ import akka.pattern.ask
 import akka.util.Timeout
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
 object ServerCommunication {
-  def askServer[P[_], T: ClassTag](
-      server: ActorSelection,
-      message: P[T],
-      maxRetries: Int,
-      retryTimeout: Timeout)(implicit ec: ExecutionContext): Future[T] = {
+  def askServer[P[_], T: ClassTag](server: ActorSelection,
+                                   message: P[T],
+                                   maxRetries: Int = 0,
+                                   retryTimeout: Timeout = Timeout(1.second))(
+      implicit ec: ExecutionContext): Future[T] = {
     def loop(retries: Int = maxRetries): Future[T] = {
       val response = server.ask(message)(retryTimeout).mapTo[T]
       if (retries > 0) {
