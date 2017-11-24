@@ -15,9 +15,9 @@ import com.michalplachta.freeprisoners.testinterpreters.GameTestInterpreter.Game
 
 class GameTestInterpreter extends (Game ~> GameStateA) {
   def apply[A](game: Game[A]): GameStateA[A] = game match {
-    case GetGameHandle(player, opponent) =>
+    case GetGameHandle(_, _) =>
       State { state =>
-        (state, UUID.randomUUID().toString)
+        (state, UUID.randomUUID())
       }
     case SendDecision(_, player, decision) =>
       State { state =>
