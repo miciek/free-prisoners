@@ -9,8 +9,8 @@ scalaVersion := "2.12.3"
 resolvers += Resolver.jcenterRepo
 
 libraryDependencies ++= {
-  val catsV = "1.0.0-MF"
-  val akkaV = "2.5.6"
+  val catsV = "1.0.0-RC1"
+  val akkaV = "2.5.7"
   val configV = "1.3.1"
   val scalatestV = "3.0.1"
   Seq(
