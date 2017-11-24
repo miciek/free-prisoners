@@ -18,8 +18,8 @@ import scala.concurrent.duration._
 
 object Multiplayer {
   type Multiplayer0[A] = EitherK[Matchmaking, Game, A]
-  type Multiplayer1[A] = EitherK[Multiplayer0, Player, A]
-  type Multiplayer[A] = EitherK[Multiplayer1, Timing, A]
+  type Multiplayer1[A] = EitherK[Player, Multiplayer0, A]
+  type Multiplayer[A] = EitherK[Timing, Multiplayer1, A]
 
   sealed trait GameResult
   case object GameFinishedSuccessfully extends GameResult
@@ -46,7 +46,7 @@ object Multiplayer {
       waitingPlayers <- retry[S, Set[WaitingPlayer]](
         deferred(getWaitingPlayers(), 1.second),
         until = _.exists(_.prisoner != player),
-        maxRetries = 100)
+        maxRetries = 5)
       opponent <- waitingPlayers
         .filterNot(_.prisoner == player)
         .headOption
@@ -55,7 +55,7 @@ object Multiplayer {
           retry[S, Option[Prisoner]](
             deferred(checkIfOpponentJoined(player), 1.second),
             until = _.isDefined,
-            maxRetries = 100))
+            maxRetries = 20))
       _ <- unregisterPlayer(player)
     } yield opponent
   }

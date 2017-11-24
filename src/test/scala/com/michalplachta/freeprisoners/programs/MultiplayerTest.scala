@@ -63,7 +63,7 @@ class MultiplayerTest extends WordSpec with Matchers {
 
       "be able to create a match even when an opponent registers late" in {
         val player = Prisoner("Player")
-        val registeredOpponent = DelayedPrisoner(Prisoner("Opponent"), 10)
+        val registeredOpponent = DelayedPrisoner(Prisoner("Opponent"), 3)
 
         val initialState =
           MatchmakingState(waitingPlayers = Set(registeredOpponent),

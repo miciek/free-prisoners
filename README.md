@@ -6,7 +6,7 @@ The example implements a way to play [Prisoner's Dilemma](https://en.wikipedia.o
 
 - **[Hot Seat Game](src/main/scala/com/michalplachta/freeprisoners/programs/HotSeatGame.scala)** - two players play using one computer and console input/output,
 - **[Single Player Game](src/main/scala/com/michalplachta/freeprisoners/programs/SinglePlayerGame.scala)** - one player plays against a bot,
-- **[Multiplayer Game](src/main/scala/com/michalplachta/cats/freeprisoners/programs/MultiplayerGame.scala)** - one player plays against another player (or bot) on remote server.
+- **[Multiplayer Game](src/main/scala/com/michalplachta/freeprisoners/programs/Multiplayer.scala)** - one player plays against another player (or bot) on remote server.
 
 ## Running local games
 Use `sbt run` and choose `HotSeatGame` or `SinglePlayerGame`.
@@ -16,8 +16,8 @@ Use `sbt run` and choose `HotSeatGame` or `SinglePlayerGame`.
 
 To run [Multiplayer Game](src/main/scala/com/michalplachta/freeprisoners/programs/MultiplayerGame.scala) you will need three separate `sbt` sessions:
 
-1. `BIND_PORT=2552 sbt "runMain com.michalplachta.freeprisoners.MultiplayerServer"` - to run the server on specified server port,
-1. `sbt "runMain com.michalplachta.freeprisoners.programs.MultiplayerGame"` - to run the first player session,
-1. `sbt "runMain com.michalplachta.freeprisoners.programs.MultiplayerGame"` - to run the second player session.
+1. `BIND_PORT=2552 sbt "runMain com.michalplachta.freeprisoners.apps.MultiplayerServer"` - to run the server on specified server port,
+1. `sbt "runMain com.michalplachta.freeprisoners.apps.MultiplayerGame"` - to run the first player session,
+1. `sbt "runMain com.michalplachta.freeprisoners.apps.MultiplayerGame"` - to run the second player session.
 
 See [application.conf](src/main/resources/application.conf) for more details about the configuration of all 3 actor systems.

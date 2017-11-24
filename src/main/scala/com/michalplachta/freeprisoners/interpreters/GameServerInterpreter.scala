@@ -18,7 +18,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class GameServerInterpreter extends (Game ~> Future) {
   private val system = ActorSystem("gameClient")
-  private val config = ConfigFactory.load().atPath("app.game")
+  private val config = ConfigFactory.load().getConfig("app.game")
   private val maxRetries = config.getInt("client.max-retries")
   private val retryTimeout = Timeout(
     config.getDuration("client.retry-timeout").toMillis,
