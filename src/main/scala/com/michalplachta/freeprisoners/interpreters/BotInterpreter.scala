@@ -9,7 +9,7 @@ import com.michalplachta.freeprisoners.algebras.BotOps.{
   Strategy
 }
 
-object BotInterpreter extends (Bot ~> Id) {
+class BotInterpreter extends (Bot ~> Id) {
   var bots = Map.empty[Prisoner, Strategy]
 
   def apply[A](i: Bot[A]): Id[A] = i match {

@@ -15,5 +15,5 @@ object SinglePlayerGame extends App {
       new Player.Ops[SinglePlayer],
       new Bot.Ops[SinglePlayer]
     )
-    .foldMap(PlayerConsoleInterpreter or BotInterpreter)
+    .foldMap(PlayerConsoleInterpreter or new BotInterpreter)
 }

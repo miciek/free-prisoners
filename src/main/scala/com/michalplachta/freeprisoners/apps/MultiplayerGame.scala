@@ -22,11 +22,10 @@ object MultiplayerGame extends App {
   val playerInterpreter = PlayerConsoleInterpreter.andThen(IdToFuture)
   val matchmakingInterpreter = new MatchmakingServerInterpreter
   val gameInterpreter = new GameServerInterpreter
-  val timingInterpreter: Timing ~> Future = new TimingInterpreter
   val interpreter0: Multiplayer0 ~> Future =
     matchmakingInterpreter or gameInterpreter
   val interpreter1: Multiplayer1 ~> Future = playerInterpreter or interpreter0
-  val interpreter: Multiplayer ~> Future = timingInterpreter or interpreter1
+  val interpreter: Multiplayer ~> Future = TimingInterpreter or interpreter1
 
   try {
     val gameResult = Multiplayer
