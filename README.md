@@ -9,7 +9,8 @@ The example implements a way to play [Prisoner's Dilemma](https://en.wikipedia.o
 - **[Multiplayer Game](src/main/scala/com/michalplachta/freeprisoners/programs/Multiplayer.scala)** - one player plays against another player (or bot) on remote server.
 
 ## Running local games
-1. Run `sbt "runMain com.michalplachta.freeprisoners.apps.HotSeatGame"` to run Hot Seat Game.
+1. `sbt "runMain com.michalplachta.freeprisoners.apps.HotSeatGame"` - to run Hot Seat Game.
+1. `sbt "runMain com.michalplachta.freeprisoners.apps.SinglePlayerGame"` - to run Single Player Game.
 
 ## Running Multiplayer Game with the Remote Server
 `RemoteServerInterpreter` uses [Akka Remoting (codename Artery)](https://doc.akka.io/docs/akka/2.5.6/scala/remoting-artery.html).

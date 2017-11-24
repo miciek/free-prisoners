@@ -5,12 +5,8 @@ import cats.free.Free
 import com.michalplachta.freeprisoners.PrisonersDilemma
 import com.michalplachta.freeprisoners.algebras.BotOps.{Bot, Strategies}
 import com.michalplachta.freeprisoners.algebras.PlayerOps.Player
-import com.michalplachta.freeprisoners.interpreters.{
-  BotInterpreter,
-  PlayerConsoleInterpreter
-}
 
-object SinglePlayerGame extends App {
+object SinglePlayer {
   type SinglePlayer[A] = EitherK[Player, Bot, A]
 
   def program(playerOps: Player.Ops[SinglePlayer],
@@ -28,9 +24,4 @@ object SinglePlayerGame extends App {
                           PrisonersDilemma.verdict(botDecision, playerDecision))
     } yield ()
   }
-
-  program(
-    new Player.Ops[SinglePlayer],
-    new Bot.Ops[SinglePlayer]
-  ).foldMap(PlayerConsoleInterpreter or BotInterpreter)
 }
