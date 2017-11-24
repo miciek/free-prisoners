@@ -30,17 +30,23 @@ class MatchmakingServerInterpreter extends (Matchmaking ~> Future) {
     case RegisterAsWaiting(player) =>
       tellServer(server, AddToWaitingList(player.name))
     case UnregisterPlayer(player) =>
-      tellServer(server, RemoveFromMatchmaking(player.name))
+      tellServer(server, RemoveFromWaitingList(player.name))
     case GetWaitingPlayers() =>
       askServer(server, GetWaitingList(), maxRetries, retryTimeout)
         .map(_.map(name => WaitingPlayer(Prisoner(name))))
     case JoinWaitingPlayer(player, waitingPlayer) =>
       tellServer(server,
                  RegisterMatch(player.name, waitingPlayer.prisoner.name))
-      askServer(server, GetOpponentName(player.name), maxRetries, retryTimeout)
+      askServer(server,
+                GetOpponentNameFor(player.name),
+                maxRetries,
+                retryTimeout)
         .map(_.map(Prisoner))
     case CheckIfOpponentJoined(player) =>
-      askServer(server, GetOpponentName(player.name), maxRetries, retryTimeout)
+      askServer(server,
+                GetOpponentNameFor(player.name),
+                maxRetries,
+                retryTimeout)
         .map(_.map(Prisoner))
   }
 

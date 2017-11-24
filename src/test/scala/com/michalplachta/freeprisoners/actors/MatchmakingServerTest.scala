@@ -25,7 +25,7 @@ class MatchmakingServerTest
       val server = createServer()
       tellServer(server, AddToWaitingList("a"))
       tellServer(server, AddToWaitingList("b"))
-      tellServer(server, RemoveFromMatchmaking("a"))
+      tellServer(server, RemoveFromWaitingList("a"))
       askServer(server, GetWaitingList(), 1, 1.second)
         .map(_ should be(Set("b")))
     }
@@ -33,29 +33,29 @@ class MatchmakingServerTest
     "respond with the opponent after match is registered" in {
       val server = createServer()
       tellServer(server, RegisterMatch("a", "b"))
-      askServer(server, GetOpponentName("a"), 1, 1.second)
+      askServer(server, GetOpponentNameFor("a"), 1, 1.second)
         .map(_ should contain("b"))
 
-      askServer(server, GetOpponentName("b"), 1, 1.second)
+      askServer(server, GetOpponentNameFor("b"), 1, 1.second)
         .map(_ should contain("a"))
     }
 
     "respond with no opponent when the player is only on the waiting list" in {
       val server = createServer()
       tellServer(server, AddToWaitingList("a"))
-      askServer(server, GetOpponentName("a"), 1, 1.second)
+      askServer(server, GetOpponentNameFor("a"), 1, 1.second)
         .map(_ should be(None))
     }
 
-    "remove player names from the registered matches when one of them is removed from matchmaking" in {
+    "remove player names from the registered matches when one of them is added to waiting list" in {
       val server = createServer()
       tellServer(server, RegisterMatch("a", "b"))
-      tellServer(server, RemoveFromMatchmaking("a"))
+      tellServer(server, AddToWaitingList("a"))
 
-      askServer(server, GetOpponentName("a"), 1, 1.second)
+      askServer(server, GetOpponentNameFor("a"), 1, 1.second)
         .map(_ should be(None))
 
-      askServer(server, GetOpponentName("b"), 1, 1.second)
+      askServer(server, GetOpponentNameFor("b"), 1, 1.second)
         .map(_ should be(None))
     }
   }

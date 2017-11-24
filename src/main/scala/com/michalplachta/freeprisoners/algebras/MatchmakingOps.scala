@@ -40,6 +40,7 @@ object MatchmakingOps {
       def apply[S[_]](implicit s: Matchmaking :<: S): Ops[S] = new Ops[S]
     }
 
-    final case class WaitingPlayer private (prisoner: Prisoner)
+    final case class SessionId(id: Int)
+    final case class WaitingPlayer(prisoner: Prisoner)
   }
 }
