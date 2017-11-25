@@ -13,6 +13,8 @@ import com.michalplachta.freeprisoners.free.algebras.MatchmakingOps.Matchmaking
 import com.michalplachta.freeprisoners.free.algebras.MatchmakingOps.Matchmaking.WaitingPlayer
 import com.michalplachta.freeprisoners.free.algebras.PlayerOps.Player
 import com.michalplachta.freeprisoners.free.algebras.TimingOps.Timing
+import com.michalplachta.freeprisoners.free.programs.Defer.defer
+import com.michalplachta.freeprisoners.free.programs.Retry.retry
 
 import scala.concurrent.duration._
 
@@ -44,7 +46,7 @@ object Multiplayer {
     for {
       _ <- registerAsWaiting(player)
       waitingPlayers <- retry[S, List[WaitingPlayer]](
-        deferred(getWaitingPlayers(), 1.second),
+        defer(getWaitingPlayers(), 1.second),
         until = _.exists(_.prisoner != player),
         maxRetries = 5)
       opponent <- waitingPlayers
@@ -53,7 +55,7 @@ object Multiplayer {
         .map(joinWaitingPlayer(player, _))
         .getOrElse(
           retry[S, Option[Prisoner]](
-            deferred(checkIfOpponentJoined(player), 1.second),
+            defer(checkIfOpponentJoined(player), 1.second),
             until = _.isDefined,
             maxRetries = 20))
       _ <- unregisterPlayer(player)
@@ -71,7 +73,7 @@ object Multiplayer {
       decision <- questionPrisoner(player, opponent)
       _ <- sendDecision(handle, player, decision)
       maybeOpponentDecision <- retry[S, Option[Decision]](
-        deferred(getOpponentDecision(handle, opponent), 1.second),
+        defer(getOpponentDecision(handle, opponent), 1.second),
         until = _.isDefined,
         maxRetries = 100)
       result <- maybeOpponentDecision match {
@@ -81,28 +83,6 @@ object Multiplayer {
           } yield GameFinishedSuccessfully
         case None => pure[S, GameResult](NoDecisionFromOpponent)
       }
-    } yield result
-  }
-
-  def retry[S[_], A](program: Free[S, A],
-                     until: A => Boolean,
-                     maxRetries: Int): Free[S, A] = {
-    def loop(retries: Int): Free[S, A] =
-      for {
-        possibleResult <- program
-        result <- if (until(possibleResult) || retries <= 0)
-          pure[S, A](possibleResult)
-        else loop(retries - 1)
-      } yield result
-    loop(maxRetries)
-  }
-
-  def deferred[S[_], A](program: Free[S, A], deferFor: FiniteDuration)(
-      implicit timingOps: Timing.Ops[S]): Free[S, A] = {
-    import timingOps._
-    for {
-      _ <- pause(deferFor)
-      result <- program
     } yield result
   }
 }
