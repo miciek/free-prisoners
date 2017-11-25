@@ -9,7 +9,7 @@ import freestyle._
 import freestyle.implicits._
 
 class HotSeatTest extends WordSpec with Matchers with PlayerTestHandler {
-  "Hot Seat Freestyle program" should {
+  "Hot Seat (Freestyle) program" should {
     "question 2 prisoners and give verdicts" in {
       val blamingPrisoner = FakePrisoner(Prisoner("Blaming"), Guilty)
       val silentPrisoner = FakePrisoner(Prisoner("Silent"), Silence)

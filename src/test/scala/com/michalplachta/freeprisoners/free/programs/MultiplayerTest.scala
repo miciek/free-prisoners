@@ -32,8 +32,8 @@ import com.michalplachta.freeprisoners.states.PlayerState
 import org.scalatest.{Matchers, WordSpec}
 
 class MultiplayerTest extends WordSpec with Matchers {
-  "Multiplayer game" should {
-    "have matchmaking module which" should {
+  "Multiplayer program" should {
+    "have matchmaking module" which {
       type TimedMatchmaking[A] = EitherK[Timing, Matchmaking, A]
       implicit val matchmakingOps: Matchmaking.Ops[TimedMatchmaking] =
         new Matchmaking.Ops[TimedMatchmaking]
@@ -44,7 +44,7 @@ class MultiplayerTest extends WordSpec with Matchers {
       val interpreter: TimedMatchmaking ~> MatchmakingStateA =
         new TimingTestInterpreter[MatchmakingStateA] or new MatchmakingTestInterpreter
 
-      "be able to create a match when there is one opponent registered" in {
+      "is able to create a match when there is one opponent registered" in {
         val player = Prisoner("Player")
         val registeredOpponent = DelayedPrisoner(Prisoner("Opponent"), 0)
 
@@ -61,7 +61,7 @@ class MultiplayerTest extends WordSpec with Matchers {
         opponent should contain(registeredOpponent.prisoner)
       }
 
-      "be able to create a match even when an opponent registers late" in {
+      "is able to create a match even when an opponent registers late" in {
         val player = Prisoner("Player")
         val registeredOpponent = DelayedPrisoner(Prisoner("Opponent"), 3)
 
@@ -78,7 +78,7 @@ class MultiplayerTest extends WordSpec with Matchers {
         opponent should contain(registeredOpponent.prisoner)
       }
 
-      "not be able to create a match when there are no opponents" in {
+      "is not able to create a match when there are no opponents" in {
         val player = Prisoner("Player")
 
         val opponent: Option[Prisoner] = findOpponent(player)
@@ -89,7 +89,7 @@ class MultiplayerTest extends WordSpec with Matchers {
         opponent should be(None)
       }
 
-      "keep count of registered and unregistered players" in {
+      "keeps count of registered and unregistered players" in {
         val player = Prisoner("Player")
 
         val state: MatchmakingState = findOpponent(player)
@@ -101,7 +101,7 @@ class MultiplayerTest extends WordSpec with Matchers {
         state.metPlayers should be(Set(player))
       }
 
-      "wait for another player to join" in {
+      "waits for another player to join" in {
         val player = Prisoner("Player")
         val joiningOpponent = DelayedPrisoner(Prisoner("Opponent"), 0)
 
@@ -118,7 +118,7 @@ class MultiplayerTest extends WordSpec with Matchers {
         opponent should contain(joiningOpponent.prisoner)
       }
 
-      "wait for another player who joins late" in {
+      "waits for another player who joins late" in {
         val player = Prisoner("Player")
         val lateJoiningOpponent = DelayedPrisoner(Prisoner("Opponent"), 10)
 
@@ -136,13 +136,13 @@ class MultiplayerTest extends WordSpec with Matchers {
       }
     }
 
-    "have game module which" should {
+    "have game module" which {
       implicit val playerOps = new Player.Ops[PlayerGame]
       implicit val gameOps = new Game.Ops[PlayerGame]
       implicit val timingOps = new Timing.Ops[PlayerGame]
       val interpreter = new PlayerGameTestInterpreter
 
-      "be able to produce verdict if both players make decisions" in {
+      "is able to produce verdict if both players make decisions" in {
         val player = Prisoner("Player")
         val opponent = Prisoner("Opponent")
 
@@ -160,7 +160,7 @@ class MultiplayerTest extends WordSpec with Matchers {
         result.playerState.verdicts.get(player) should contain(Verdict(0))
       }
 
-      "be not able to produce verdict if the opponent doesn't make a decision" in {
+      "is not able to produce verdict if the opponent doesn't make a decision" in {
         val player = Prisoner("Player")
         val opponent = Prisoner("Opponent")
 
@@ -179,7 +179,7 @@ class MultiplayerTest extends WordSpec with Matchers {
         result.playerState.verdicts should be(Map.empty)
       }
 
-      "be able to produce verdict if the opponent makes a decision after some time" in {
+      "is able to produce verdict if the opponent makes a decision after some time" in {
         val player = Prisoner("Player")
         val opponent = Prisoner("Opponent")
 
