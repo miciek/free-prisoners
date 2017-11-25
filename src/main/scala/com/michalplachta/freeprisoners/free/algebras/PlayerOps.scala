@@ -13,7 +13,7 @@ object PlayerOps {
   final case class MeetPrisoner(introduction: String) extends Player[Prisoner]
   final case class QuestionPrisoner(prisoner: Prisoner, otherPrisoner: Prisoner)
       extends Player[Decision]
-  final case class DisplayVerdict(prisoner: Prisoner, verdict: Verdict)
+  final case class GiveVerdict(prisoner: Prisoner, verdict: Verdict)
       extends Player[Unit]
 
   object Player {
@@ -25,8 +25,8 @@ object PlayerOps {
                            otherPrisoner: Prisoner): Free[S, Decision] =
         Free.inject(QuestionPrisoner(prisoner, otherPrisoner))
 
-      def displayVerdict(prisoner: Prisoner, verdict: Verdict): Free[S, Unit] =
-        Free.inject(DisplayVerdict(prisoner, verdict))
+      def giveVerdict(prisoner: Prisoner, verdict: Verdict): Free[S, Unit] =
+        Free.inject(GiveVerdict(prisoner, verdict))
     }
   }
 }

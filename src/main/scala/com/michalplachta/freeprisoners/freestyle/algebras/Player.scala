@@ -13,5 +13,5 @@ import freestyle.free
   def questionPrisoner(prisoner: Prisoner,
                        otherPrisoner: Prisoner): FS[Decision]
 
-  def displayVerdict(prisoner: Prisoner, verdict: Verdict): FS[Unit]
+  def giveVerdict(prisoner: Prisoner, verdict: Verdict): FS[Unit]
 }

@@ -7,7 +7,7 @@ import com.michalplachta.freeprisoners.PrisonersDilemma.{
   Silence
 }
 import com.michalplachta.freeprisoners.free.algebras.PlayerOps.{
-  DisplayVerdict,
+  GiveVerdict,
   MeetPrisoner,
   Player,
   QuestionPrisoner
@@ -36,7 +36,7 @@ object PlayerConsoleInterpreter extends (Player ~> Id) {
       say(s"Your decision: $decision")
       decision
 
-    case DisplayVerdict(prisoner, verdict) =>
+    case GiveVerdict(prisoner, verdict) =>
       say(s"Verdict for ${prisoner.name} is $verdict")
   }
 }

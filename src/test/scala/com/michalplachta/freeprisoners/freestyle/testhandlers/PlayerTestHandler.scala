@@ -29,7 +29,7 @@ trait PlayerTestHandler {
       }
     }
 
-    override def displayVerdict(prisoner: Prisoner, verdict: Verdict) = {
+    override def giveVerdict(prisoner: Prisoner, verdict: Verdict) = {
       State { state =>
         (state.copy(verdicts = state.verdicts + (prisoner -> verdict)), ())
       }

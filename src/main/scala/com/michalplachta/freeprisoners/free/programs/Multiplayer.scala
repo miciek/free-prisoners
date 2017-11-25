@@ -79,7 +79,7 @@ object Multiplayer {
       result <- maybeOpponentDecision match {
         case Some(opponentDecision) =>
           for {
-            _ <- displayVerdict(player, verdict(decision, opponentDecision))
+            _ <- giveVerdict(player, verdict(decision, opponentDecision))
           } yield GameFinishedSuccessfully
         case None => pure[S, GameResult](NoDecisionFromOpponent)
       }

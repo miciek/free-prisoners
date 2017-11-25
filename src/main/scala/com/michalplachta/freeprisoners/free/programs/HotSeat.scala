@@ -13,10 +13,10 @@ object HotSeat {
       prisonerB <- meetPrisoner("Welcome to Free Hot Seat Game, Prisoner B!")
       decisionA <- questionPrisoner(prisonerA, prisonerB)
       decisionB <- questionPrisoner(prisonerB, prisonerA)
-      _ <- displayVerdict(prisonerA,
-                          PrisonersDilemma.verdict(decisionA, decisionB))
-      _ <- displayVerdict(prisonerB,
-                          PrisonersDilemma.verdict(decisionB, decisionA))
+      _ <- giveVerdict(prisonerA,
+                       PrisonersDilemma.verdict(decisionA, decisionB))
+      _ <- giveVerdict(prisonerB,
+                       PrisonersDilemma.verdict(decisionB, decisionA))
     } yield ()
   }
 }

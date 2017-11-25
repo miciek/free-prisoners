@@ -35,7 +35,7 @@ trait PlayerConsoleHandler {
       decision
     }
 
-    override def displayVerdict(prisoner: Prisoner, verdict: Verdict) = {
+    override def giveVerdict(prisoner: Prisoner, verdict: Verdict) = {
       say(s"Verdict for ${prisoner.name} is $verdict")
     }
   }

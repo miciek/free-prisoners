@@ -18,8 +18,8 @@ object SinglePlayer {
       botPrisoner <- createBot("Romain", Strategies.alwaysBlame)
       playerDecision <- questionPrisoner(playerPrisoner, botPrisoner)
       botDecision <- getDecision(botPrisoner, playerPrisoner)
-      _ <- displayVerdict(playerPrisoner, verdict(playerDecision, botDecision))
-      _ <- displayVerdict(botPrisoner, verdict(botDecision, playerDecision))
+      _ <- giveVerdict(playerPrisoner, verdict(playerDecision, botDecision))
+      _ <- giveVerdict(botPrisoner, verdict(botDecision, playerDecision))
     } yield ()
   }
 }

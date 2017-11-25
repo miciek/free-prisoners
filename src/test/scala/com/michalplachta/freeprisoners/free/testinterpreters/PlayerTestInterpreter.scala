@@ -4,7 +4,7 @@ import cats.data.State
 import cats.~>
 import com.michalplachta.freeprisoners.PrisonersDilemma.Silence
 import com.michalplachta.freeprisoners.free.algebras.PlayerOps.{
-  DisplayVerdict,
+  GiveVerdict,
   MeetPrisoner,
   Player,
   QuestionPrisoner
@@ -26,7 +26,7 @@ class PlayerTestInterpreter extends (Player ~> PlayerStateA) {
       State { state =>
         (state, state.playingPrisoners.getOrElse(prisoner, Silence))
       }
-    case DisplayVerdict(prisoner, verdict) =>
+    case GiveVerdict(prisoner, verdict) =>
       State { state =>
         (state.copy(verdicts = state.verdicts + (prisoner -> verdict)), ())
       }
