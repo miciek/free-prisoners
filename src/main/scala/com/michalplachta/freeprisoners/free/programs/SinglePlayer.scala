@@ -2,8 +2,8 @@ package com.michalplachta.freeprisoners.free.programs
 
 import cats.data.EitherK
 import cats.free.Free
-import com.michalplachta.freeprisoners.PrisonersDilemma
-import com.michalplachta.freeprisoners.free.algebras.BotOps.{Bot, Strategies}
+import com.michalplachta.freeprisoners.PrisonersDilemma.{Strategies, verdict}
+import com.michalplachta.freeprisoners.free.algebras.BotOps.Bot
 import com.michalplachta.freeprisoners.free.algebras.PlayerOps.Player
 
 object SinglePlayer {
@@ -18,10 +18,8 @@ object SinglePlayer {
       botPrisoner <- createBot("Romain", Strategies.alwaysBlame)
       playerDecision <- questionPrisoner(playerPrisoner, botPrisoner)
       botDecision <- getDecision(botPrisoner, playerPrisoner)
-      _ <- displayVerdict(playerPrisoner,
-                          PrisonersDilemma.verdict(playerDecision, botDecision))
-      _ <- displayVerdict(botPrisoner,
-                          PrisonersDilemma.verdict(botDecision, playerDecision))
+      _ <- displayVerdict(playerPrisoner, verdict(playerDecision, botDecision))
+      _ <- displayVerdict(botPrisoner, verdict(botDecision, playerDecision))
     } yield ()
   }
 }

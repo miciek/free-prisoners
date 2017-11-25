@@ -1,12 +1,15 @@
 package com.michalplachta.freeprisoners.free.interpreters
 
 import cats.{Id, ~>}
-import com.michalplachta.freeprisoners.PrisonersDilemma.{Prisoner, Silence}
+import com.michalplachta.freeprisoners.PrisonersDilemma.{
+  Prisoner,
+  Silence,
+  Strategy
+}
 import com.michalplachta.freeprisoners.free.algebras.BotOps.{
   Bot,
   CreateBot,
-  GetDecision,
-  Strategy
+  GetDecision
 }
 
 class BotInterpreter extends (Bot ~> Id) {
@@ -19,6 +22,6 @@ class BotInterpreter extends (Bot ~> Id) {
       prisoner
 
     case GetDecision(prisoner, otherPrisoner) =>
-      bots.get(prisoner).map(_(otherPrisoner)).getOrElse(Silence)
+      bots.get(prisoner).map(_.f(otherPrisoner)).getOrElse(Silence)
   }
 }

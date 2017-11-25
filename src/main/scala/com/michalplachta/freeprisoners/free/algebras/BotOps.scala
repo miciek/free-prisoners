@@ -21,10 +21,4 @@ object BotOps {
         Free.inject(GetDecision(prisoner, otherPrisoner))
     }
   }
-
-  type Strategy = Prisoner => Decision
-  object Strategies {
-    val alwaysBlame: Strategy = _ => Guilty
-    val alwaysSilent: Strategy = _ => Silence
-  }
 }
