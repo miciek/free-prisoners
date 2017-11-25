@@ -1,7 +1,7 @@
-package com.michalplachta.freeprisoners.interpreters
+package com.michalplachta.freeprisoners.free.interpreters
 
 import cats.~>
-import com.michalplachta.freeprisoners.algebras.TimingOps.{Pause, Timing}
+import com.michalplachta.freeprisoners.free.algebras.TimingOps.{Pause, Timing}
 
 import scala.concurrent.Future
 

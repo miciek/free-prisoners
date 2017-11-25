@@ -2,13 +2,13 @@ package com.michalplachta.freeprisoners.apps
 
 import cats.implicits.catsStdInstancesForFuture
 import cats.~>
-import com.michalplachta.freeprisoners.algebras.GameOps.Game
-import com.michalplachta.freeprisoners.algebras.MatchmakingOps.Matchmaking
-import com.michalplachta.freeprisoners.algebras.PlayerOps.Player
-import com.michalplachta.freeprisoners.algebras.TimingOps.Timing
-import com.michalplachta.freeprisoners.interpreters._
-import com.michalplachta.freeprisoners.programs.Multiplayer
-import com.michalplachta.freeprisoners.programs.Multiplayer.{
+import com.michalplachta.freeprisoners.free.algebras.GameOps.Game
+import com.michalplachta.freeprisoners.free.algebras.MatchmakingOps.Matchmaking
+import com.michalplachta.freeprisoners.free.algebras.PlayerOps.Player
+import com.michalplachta.freeprisoners.free.algebras.TimingOps.Timing
+import com.michalplachta.freeprisoners.free.interpreters._
+import com.michalplachta.freeprisoners.free.programs.Multiplayer
+import com.michalplachta.freeprisoners.free.programs.Multiplayer.{
   Multiplayer,
   Multiplayer0,
   Multiplayer1

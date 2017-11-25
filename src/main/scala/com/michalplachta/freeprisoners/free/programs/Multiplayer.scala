@@ -1,4 +1,4 @@
-package com.michalplachta.freeprisoners.programs
+package com.michalplachta.freeprisoners.free.programs
 
 import cats.data.EitherK
 import cats.free.Free
@@ -8,11 +8,11 @@ import com.michalplachta.freeprisoners.PrisonersDilemma.{
   Prisoner,
   verdict
 }
-import com.michalplachta.freeprisoners.algebras.GameOps.Game
-import com.michalplachta.freeprisoners.algebras.MatchmakingOps.Matchmaking
-import com.michalplachta.freeprisoners.algebras.MatchmakingOps.Matchmaking.WaitingPlayer
-import com.michalplachta.freeprisoners.algebras.PlayerOps.Player
-import com.michalplachta.freeprisoners.algebras.TimingOps.Timing
+import com.michalplachta.freeprisoners.free.algebras.GameOps.Game
+import com.michalplachta.freeprisoners.free.algebras.MatchmakingOps.Matchmaking
+import com.michalplachta.freeprisoners.free.algebras.MatchmakingOps.Matchmaking.WaitingPlayer
+import com.michalplachta.freeprisoners.free.algebras.PlayerOps.Player
+import com.michalplachta.freeprisoners.free.algebras.TimingOps.Timing
 
 import scala.concurrent.duration._
 

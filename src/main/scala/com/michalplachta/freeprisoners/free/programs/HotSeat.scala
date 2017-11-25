@@ -1,9 +1,9 @@
-package com.michalplachta.freeprisoners.programs
+package com.michalplachta.freeprisoners.free.programs
 
 import cats.free.Free
 import com.michalplachta.freeprisoners.PrisonersDilemma
-import com.michalplachta.freeprisoners.algebras.PlayerOps.Player
-import com.michalplachta.freeprisoners.algebras.PlayerOps.Player.Ops
+import com.michalplachta.freeprisoners.free.algebras.PlayerOps.Player
+import com.michalplachta.freeprisoners.free.algebras.PlayerOps.Player.Ops
 
 object HotSeat {
   def program(playerOps: Ops[Player]): Free[Player, Unit] = {

@@ -1,9 +1,9 @@
-package com.michalplachta.freeprisoners.algebras
+package com.michalplachta.freeprisoners.free.algebras
 
 import cats.:<:
 import cats.free.Free
 import com.michalplachta.freeprisoners.PrisonersDilemma.Prisoner
-import com.michalplachta.freeprisoners.algebras.MatchmakingOps.Matchmaking.WaitingPlayer
+import com.michalplachta.freeprisoners.free.algebras.MatchmakingOps.Matchmaking.WaitingPlayer
 
 object MatchmakingOps {
   sealed trait Matchmaking[A]

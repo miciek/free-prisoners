@@ -1,4 +1,4 @@
-package com.michalplachta.freeprisoners.programs
+package com.michalplachta.freeprisoners.free.programs
 
 import cats.data.EitherK
 import cats.~>
@@ -8,23 +8,23 @@ import com.michalplachta.freeprisoners.PrisonersDilemma.{
   Silence,
   Verdict
 }
-import com.michalplachta.freeprisoners.algebras.GameOps.Game
-import com.michalplachta.freeprisoners.algebras.MatchmakingOps._
-import com.michalplachta.freeprisoners.algebras.PlayerOps.Player
-import com.michalplachta.freeprisoners.algebras.TimingOps.Timing
-import com.michalplachta.freeprisoners.programs.Multiplayer.findOpponent
-import com.michalplachta.freeprisoners.testinterpreters.GameTestInterpreter.GameState
-import com.michalplachta.freeprisoners.testinterpreters.MatchmakingTestInterpreter.{
+import com.michalplachta.freeprisoners.free.algebras.GameOps.Game
+import com.michalplachta.freeprisoners.free.algebras.MatchmakingOps._
+import com.michalplachta.freeprisoners.free.algebras.PlayerOps.Player
+import com.michalplachta.freeprisoners.free.algebras.TimingOps.Timing
+import com.michalplachta.freeprisoners.free.programs.Multiplayer.findOpponent
+import com.michalplachta.freeprisoners.free.testinterpreters.GameTestInterpreter.GameState
+import com.michalplachta.freeprisoners.free.testinterpreters.MatchmakingTestInterpreter.{
   DelayedPrisoner,
   MatchmakingState,
   MatchmakingStateA
 }
-import com.michalplachta.freeprisoners.testinterpreters.PlayerGameTestInterpreter.{
+import com.michalplachta.freeprisoners.free.testinterpreters.PlayerGameTestInterpreter.{
   PlayerGame,
   PlayerGameState
 }
-import com.michalplachta.freeprisoners.testinterpreters.PlayerTestInterpreter.PlayerState
-import com.michalplachta.freeprisoners.testinterpreters.{
+import com.michalplachta.freeprisoners.free.testinterpreters.PlayerTestInterpreter.PlayerState
+import com.michalplachta.freeprisoners.free.testinterpreters.{
   MatchmakingTestInterpreter,
   PlayerGameTestInterpreter,
   TimingTestInterpreter

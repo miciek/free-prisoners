@@ -1,13 +1,13 @@
 package com.michalplachta.freeprisoners.apps
 
-import com.michalplachta.freeprisoners.algebras.BotOps.Bot
-import com.michalplachta.freeprisoners.algebras.PlayerOps.Player
-import com.michalplachta.freeprisoners.interpreters.{
+import com.michalplachta.freeprisoners.free.algebras.BotOps.Bot
+import com.michalplachta.freeprisoners.free.algebras.PlayerOps.Player
+import com.michalplachta.freeprisoners.free.interpreters.{
   BotInterpreter,
   PlayerConsoleInterpreter
 }
-import com.michalplachta.freeprisoners.programs.SinglePlayer
-import com.michalplachta.freeprisoners.programs.SinglePlayer.SinglePlayer
+import com.michalplachta.freeprisoners.free.programs.SinglePlayer
+import com.michalplachta.freeprisoners.free.programs.SinglePlayer.SinglePlayer
 
 object SinglePlayerGame extends App {
   SinglePlayer

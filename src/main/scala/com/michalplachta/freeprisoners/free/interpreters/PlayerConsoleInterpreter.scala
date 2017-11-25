@@ -1,4 +1,4 @@
-package com.michalplachta.freeprisoners.interpreters
+package com.michalplachta.freeprisoners.free.interpreters
 
 import cats.{Id, ~>}
 import com.michalplachta.freeprisoners.PrisonersDilemma.{
@@ -6,7 +6,7 @@ import com.michalplachta.freeprisoners.PrisonersDilemma.{
   Prisoner,
   Silence
 }
-import com.michalplachta.freeprisoners.algebras.PlayerOps.{
+import com.michalplachta.freeprisoners.free.algebras.PlayerOps.{
   DisplayVerdict,
   MeetPrisoner,
   Player,

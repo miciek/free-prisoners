@@ -1,17 +1,17 @@
-package com.michalplachta.freeprisoners.testinterpreters
+package com.michalplachta.freeprisoners.free.testinterpreters
 
 import java.util.UUID
 
 import cats.data.State
 import cats.~>
 import com.michalplachta.freeprisoners.PrisonersDilemma.{Decision, Prisoner}
-import com.michalplachta.freeprisoners.algebras.GameOps.{
+import com.michalplachta.freeprisoners.free.algebras.GameOps.{
   Game,
   GetGameHandle,
   GetOpponentDecision,
   SendDecision
 }
-import com.michalplachta.freeprisoners.testinterpreters.GameTestInterpreter.GameStateA
+import com.michalplachta.freeprisoners.free.testinterpreters.GameTestInterpreter.GameStateA
 
 class GameTestInterpreter extends (Game ~> GameStateA) {
   def apply[A](game: Game[A]): GameStateA[A] = game match {

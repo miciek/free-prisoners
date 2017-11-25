@@ -1,4 +1,4 @@
-package com.michalplachta.freeprisoners.interpreters
+package com.michalplachta.freeprisoners.free.interpreters
 
 import cats.{Id, ~>}
 

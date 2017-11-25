@@ -1,10 +1,10 @@
-package com.michalplachta.freeprisoners.programs
+package com.michalplachta.freeprisoners.free.programs
 
 import cats.data.EitherK
 import cats.free.Free
 import com.michalplachta.freeprisoners.PrisonersDilemma
-import com.michalplachta.freeprisoners.algebras.BotOps.{Bot, Strategies}
-import com.michalplachta.freeprisoners.algebras.PlayerOps.Player
+import com.michalplachta.freeprisoners.free.algebras.BotOps.{Bot, Strategies}
+import com.michalplachta.freeprisoners.free.algebras.PlayerOps.Player
 
 object SinglePlayer {
   type SinglePlayer[A] = EitherK[Player, Bot, A]

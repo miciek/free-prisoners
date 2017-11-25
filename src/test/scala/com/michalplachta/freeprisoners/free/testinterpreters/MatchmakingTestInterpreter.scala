@@ -1,13 +1,13 @@
-package com.michalplachta.freeprisoners.testinterpreters
+package com.michalplachta.freeprisoners.free.testinterpreters
 
 import cats.data.State
 import cats.implicits.catsStdInstancesForList
 import cats.implicits.catsStdInstancesForOption
 import cats.{Functor, ~>}
 import com.michalplachta.freeprisoners.PrisonersDilemma.Prisoner
-import com.michalplachta.freeprisoners.algebras.MatchmakingOps.Matchmaking.WaitingPlayer
-import com.michalplachta.freeprisoners.algebras.MatchmakingOps._
-import com.michalplachta.freeprisoners.testinterpreters.MatchmakingTestInterpreter.{
+import com.michalplachta.freeprisoners.free.algebras.MatchmakingOps.Matchmaking.WaitingPlayer
+import com.michalplachta.freeprisoners.free.algebras.MatchmakingOps._
+import com.michalplachta.freeprisoners.free.testinterpreters.MatchmakingTestInterpreter.{
   DelayedPrisoner,
   MatchmakingStateA
 }

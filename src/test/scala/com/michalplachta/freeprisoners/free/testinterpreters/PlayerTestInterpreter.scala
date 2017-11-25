@@ -1,4 +1,4 @@
-package com.michalplachta.freeprisoners.testinterpreters
+package com.michalplachta.freeprisoners.free.testinterpreters
 
 import cats.data.State
 import cats.~>
@@ -8,13 +8,13 @@ import com.michalplachta.freeprisoners.PrisonersDilemma.{
   Silence,
   Verdict
 }
-import com.michalplachta.freeprisoners.algebras.PlayerOps.{
+import com.michalplachta.freeprisoners.free.algebras.PlayerOps.{
   DisplayVerdict,
   MeetPrisoner,
   Player,
   QuestionPrisoner
 }
-import com.michalplachta.freeprisoners.testinterpreters.PlayerTestInterpreter.PlayerStateA
+import com.michalplachta.freeprisoners.free.testinterpreters.PlayerTestInterpreter.PlayerStateA
 
 class PlayerTestInterpreter extends (Player ~> PlayerStateA) {
   def apply[A](player: Player[A]): PlayerStateA[A] = player match {

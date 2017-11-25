@@ -1,4 +1,4 @@
-package com.michalplachta.freeprisoners.interpreters
+package com.michalplachta.freeprisoners.free.interpreters
 
 import java.util.concurrent.TimeUnit
 
@@ -11,7 +11,7 @@ import com.michalplachta.freeprisoners.actors.GameServer.{
   SaveDecision
 }
 import com.michalplachta.freeprisoners.actors.ServerCommunication._
-import com.michalplachta.freeprisoners.algebras.GameOps._
+import com.michalplachta.freeprisoners.free.algebras.GameOps._
 import com.typesafe.config.ConfigFactory
 
 import scala.concurrent.{ExecutionContext, Future}

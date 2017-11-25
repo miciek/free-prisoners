@@ -1,4 +1,4 @@
-package com.michalplachta.freeprisoners.interpreters
+package com.michalplachta.freeprisoners.free.interpreters
 
 import java.util.concurrent.TimeUnit
 
@@ -7,8 +7,8 @@ import akka.util.Timeout
 import cats.~>
 import com.michalplachta.freeprisoners.PrisonersDilemma.Prisoner
 import com.michalplachta.freeprisoners.actors.MatchmakingServer._
-import com.michalplachta.freeprisoners.algebras.MatchmakingOps.Matchmaking.WaitingPlayer
-import com.michalplachta.freeprisoners.algebras.MatchmakingOps._
+import com.michalplachta.freeprisoners.free.algebras.MatchmakingOps.Matchmaking.WaitingPlayer
+import com.michalplachta.freeprisoners.free.algebras.MatchmakingOps._
 import com.michalplachta.freeprisoners.actors.ServerCommunication._
 import com.typesafe.config.ConfigFactory
 

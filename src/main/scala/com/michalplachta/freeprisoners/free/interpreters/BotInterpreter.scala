@@ -1,8 +1,8 @@
-package com.michalplachta.freeprisoners.interpreters
+package com.michalplachta.freeprisoners.free.interpreters
 
 import cats.{Id, ~>}
 import com.michalplachta.freeprisoners.PrisonersDilemma.{Prisoner, Silence}
-import com.michalplachta.freeprisoners.algebras.BotOps.{
+import com.michalplachta.freeprisoners.free.algebras.BotOps.{
   Bot,
   CreateBot,
   GetDecision,

@@ -1,8 +1,8 @@
 package com.michalplachta.freeprisoners.apps
 
-import com.michalplachta.freeprisoners.algebras.PlayerOps.Player
-import com.michalplachta.freeprisoners.interpreters.PlayerConsoleInterpreter
-import com.michalplachta.freeprisoners.programs.HotSeat
+import com.michalplachta.freeprisoners.free.algebras.PlayerOps.Player
+import com.michalplachta.freeprisoners.free.interpreters.PlayerConsoleInterpreter
+import com.michalplachta.freeprisoners.free.programs.HotSeat
 
 object HotSeatGame extends App {
   HotSeat

@@ -1,4 +1,4 @@
-package com.michalplachta.freeprisoners.algebras
+package com.michalplachta.freeprisoners.free.algebras
 
 import cats.:<:
 import cats.free.Free
