@@ -1,27 +1,26 @@
-package com.michalplachta.freeprisoners.free.programs
+package com.michalplachta.freeprisoners.freestyle.programs
 
 import com.michalplachta.freeprisoners.PrisonersDilemma._
-import com.michalplachta.freeprisoners.free.algebras.PlayerOps.Player
 import com.michalplachta.freeprisoners.free.testinterpreters.PlayerTestInterpreter.{
   FakePrisoner,
-  PlayerState
+  PlayerState,
+  PlayerStateA
 }
-import com.michalplachta.freeprisoners.free.testinterpreters.PlayerTestInterpreter
+import com.michalplachta.freeprisoners.freestyle.testhandlers.PlayerTestHandler
 import org.scalatest.{Matchers, WordSpec}
+import freestyle._
+import freestyle.implicits._
 
-class HotSeatTest extends WordSpec with Matchers {
-  "Hot Seat Free program" should {
+class HotSeatTest extends WordSpec with Matchers with PlayerTestHandler {
+  "Hot Seat Freestyle program" should {
     "question 2 prisoners and give verdicts" in {
       val blamingPrisoner = FakePrisoner(Prisoner("Blaming"), Guilty)
       val silentPrisoner = FakePrisoner(Prisoner("Silent"), Silence)
       val inputState =
         PlayerState(Set(blamingPrisoner, silentPrisoner), Map.empty, Map.empty)
 
-      val result: PlayerState = HotSeat
-        .program(new Player.Ops[Player])
-        .foldMap(new PlayerTestInterpreter)
-        .runS(inputState)
-        .value
+      val result: PlayerState =
+        HotSeat.program.interpret[PlayerStateA].runS(inputState).value
 
       result.verdicts should be(
         Map(blamingPrisoner.prisoner -> Verdict(0),

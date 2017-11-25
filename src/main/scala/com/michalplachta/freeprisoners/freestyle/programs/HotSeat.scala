@@ -1,16 +1,17 @@
-package com.michalplachta.freeprisoners.free.programs
+package com.michalplachta.freeprisoners.freestyle.programs
 
-import cats.free.Free
 import com.michalplachta.freeprisoners.PrisonersDilemma
-import com.michalplachta.freeprisoners.free.algebras.PlayerOps.Player
-import com.michalplachta.freeprisoners.free.algebras.PlayerOps.Player.Ops
+import com.michalplachta.freeprisoners.freestyle.algebras.Player
+import freestyle._
 
 object HotSeat {
-  def program(implicit playerOps: Ops[Player]): Free[Player, Unit] = {
+  def program[F[_]](implicit playerOps: Player[F]): FreeS[F, Unit] = {
     import playerOps._
     for {
-      prisonerA <- meetPrisoner("Welcome to Free Hot Seat Game, Prisoner A!")
-      prisonerB <- meetPrisoner("Welcome to Free Hot Seat Game, Prisoner B!")
+      prisonerA <- meetPrisoner(
+        "Welcome to Freestyle Hot Seat Game, Prisoner A!")
+      prisonerB <- meetPrisoner(
+        "Welcome to Freestyle Hot Seat Game, Prisoner B!")
       decisionA <- questionPrisoner(prisonerA, prisonerB)
       decisionB <- questionPrisoner(prisonerB, prisonerA)
       _ <- displayVerdict(prisonerA,

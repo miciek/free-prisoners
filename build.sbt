@@ -10,11 +10,13 @@ resolvers += Resolver.jcenterRepo
 
 libraryDependencies ++= {
   val catsV = "1.0.0-RC1"
+  val freestyleV = "0.4.4"
   val akkaV = "2.5.7"
   val configV = "1.3.1"
   val scalatestV = "3.0.1"
   Seq(
     "org.typelevel" %% "cats-free" % catsV,
+    "io.frees" %% "frees-core" % freestyleV,
     "com.typesafe.akka" %% "akka-actor" % akkaV,
     "com.typesafe.akka" %% "akka-remote" % akkaV,
     "com.typesafe" % "config" % configV,
@@ -32,3 +34,6 @@ fork := true
 connectInput in run := true
 scalafmtVersion in ThisBuild := "1.3.0"
 scalafmtOnCompile in ThisBuild := true
+
+addCompilerPlugin(
+  "org.scalameta" % "paradise" % "3.0.0-M10" cross CrossVersion.full)
