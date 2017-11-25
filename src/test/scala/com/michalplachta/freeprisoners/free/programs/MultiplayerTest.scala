@@ -13,7 +13,7 @@ import com.michalplachta.freeprisoners.free.algebras.MatchmakingOps._
 import com.michalplachta.freeprisoners.free.algebras.PlayerOps.Player
 import com.michalplachta.freeprisoners.free.algebras.TimingOps.Timing
 import com.michalplachta.freeprisoners.free.programs.Multiplayer.findOpponent
-import com.michalplachta.freeprisoners.free.testinterpreters.GameTestInterpreter.GameState
+import com.michalplachta.freeprisoners.states.GameState
 import com.michalplachta.freeprisoners.free.testinterpreters.MatchmakingTestInterpreter.{
   DelayedPrisoner,
   MatchmakingState,

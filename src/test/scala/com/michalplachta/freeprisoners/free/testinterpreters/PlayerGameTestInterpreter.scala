@@ -5,17 +5,14 @@ import cats.~>
 import com.michalplachta.freeprisoners.free.algebras.GameOps.Game
 import com.michalplachta.freeprisoners.free.algebras.PlayerOps.Player
 import com.michalplachta.freeprisoners.free.algebras.TimingOps.Timing
-import com.michalplachta.freeprisoners.free.testinterpreters.GameTestInterpreter.{
-  GameState,
-  GameStateA
-}
 import com.michalplachta.freeprisoners.free.testinterpreters.PlayerGameTestInterpreter.{
   PlayerGame,
   PlayerGame0,
   PlayerGameState,
   PlayerGameStateA
 }
-import com.michalplachta.freeprisoners.states.PlayerState
+import com.michalplachta.freeprisoners.states.GameState.GameStateA
+import com.michalplachta.freeprisoners.states.{GameState, PlayerState}
 import com.michalplachta.freeprisoners.states.PlayerState.PlayerStateA
 
 class PlayerGameTestInterpreter extends (PlayerGame ~> PlayerGameStateA) {

@@ -4,14 +4,13 @@ import java.util.UUID
 
 import cats.data.State
 import cats.~>
-import com.michalplachta.freeprisoners.PrisonersDilemma.{Decision, Prisoner}
 import com.michalplachta.freeprisoners.free.algebras.GameOps.{
   Game,
   GetGameHandle,
   GetOpponentDecision,
   SendDecision
 }
-import com.michalplachta.freeprisoners.free.testinterpreters.GameTestInterpreter.GameStateA
+import com.michalplachta.freeprisoners.states.GameState.GameStateA
 
 class GameTestInterpreter extends (Game ~> GameStateA) {
   def apply[A](game: Game[A]): GameStateA[A] = game match {
@@ -33,10 +32,4 @@ class GameTestInterpreter extends (Game ~> GameStateA) {
         }
       }
   }
-}
-
-object GameTestInterpreter {
-  final case class GameState(decisions: Map[Prisoner, Decision],
-                             delayInCalls: Int = 0)
-  type GameStateA[A] = State[GameState, A]
 }
