@@ -1,18 +1,17 @@
 package com.michalplachta.freeprisoners.free.testinterpreters
 
-import cats.data.{EitherK, State}
+import cats.data.EitherK
 import cats.~>
 import com.michalplachta.freeprisoners.free.algebras.GameOps.Game
 import com.michalplachta.freeprisoners.free.algebras.PlayerOps.Player
 import com.michalplachta.freeprisoners.free.algebras.TimingOps.Timing
 import com.michalplachta.freeprisoners.free.testinterpreters.PlayerGameTestInterpreter.{
   PlayerGame,
-  PlayerGame0,
-  PlayerGameState,
-  PlayerGameStateA
+  PlayerGame0
 }
 import com.michalplachta.freeprisoners.states.GameState.GameStateA
-import com.michalplachta.freeprisoners.states.{GameState, PlayerState}
+import com.michalplachta.freeprisoners.states.PlayerGameState
+import com.michalplachta.freeprisoners.states.PlayerGameState.PlayerGameStateA
 import com.michalplachta.freeprisoners.states.PlayerState.PlayerStateA
 
 class PlayerGameTestInterpreter extends (PlayerGame ~> PlayerGameStateA) {
@@ -42,8 +41,4 @@ class PlayerGameTestInterpreter extends (PlayerGame ~> PlayerGameStateA) {
 object PlayerGameTestInterpreter {
   type PlayerGame0[A] = EitherK[Player, Game, A]
   type PlayerGame[A] = EitherK[Timing, PlayerGame0, A]
-
-  final case class PlayerGameState(playerState: PlayerState,
-                                   gameState: GameState)
-  type PlayerGameStateA[A] = State[PlayerGameState, A]
 }
