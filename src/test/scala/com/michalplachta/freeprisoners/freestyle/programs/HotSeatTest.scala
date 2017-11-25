@@ -1,12 +1,9 @@
 package com.michalplachta.freeprisoners.freestyle.programs
 
 import com.michalplachta.freeprisoners.PrisonersDilemma._
-import com.michalplachta.freeprisoners.free.testinterpreters.PlayerTestInterpreter.{
-  FakePrisoner,
-  PlayerState,
-  PlayerStateA
-}
 import com.michalplachta.freeprisoners.freestyle.testhandlers.PlayerTestHandler
+import com.michalplachta.freeprisoners.states.PlayerState.PlayerStateA
+import com.michalplachta.freeprisoners.states.{FakePrisoner, PlayerState}
 import org.scalatest.{Matchers, WordSpec}
 import freestyle._
 import freestyle.implicits._

@@ -23,12 +23,12 @@ import com.michalplachta.freeprisoners.free.testinterpreters.PlayerGameTestInter
   PlayerGame,
   PlayerGameState
 }
-import com.michalplachta.freeprisoners.free.testinterpreters.PlayerTestInterpreter.PlayerState
 import com.michalplachta.freeprisoners.free.testinterpreters.{
   MatchmakingTestInterpreter,
   PlayerGameTestInterpreter,
   TimingTestInterpreter
 }
+import com.michalplachta.freeprisoners.states.PlayerState
 import org.scalatest.{Matchers, WordSpec}
 
 class MultiplayerTest extends WordSpec with Matchers {

@@ -6,8 +6,8 @@ import com.michalplachta.freeprisoners.PrisonersDilemma.{
   Silence,
   Verdict
 }
-import com.michalplachta.freeprisoners.free.testinterpreters.PlayerTestInterpreter.PlayerStateA
 import com.michalplachta.freeprisoners.freestyle.algebras.Player
+import com.michalplachta.freeprisoners.states.PlayerState.PlayerStateA
 
 trait PlayerTestHandler {
   implicit val playerConsoleHandler = new Player.Handler[PlayerStateA] {

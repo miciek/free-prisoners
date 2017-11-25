@@ -15,10 +15,8 @@ import com.michalplachta.freeprisoners.free.testinterpreters.PlayerGameTestInter
   PlayerGameState,
   PlayerGameStateA
 }
-import com.michalplachta.freeprisoners.free.testinterpreters.PlayerTestInterpreter.{
-  PlayerState,
-  PlayerStateA
-}
+import com.michalplachta.freeprisoners.states.PlayerState
+import com.michalplachta.freeprisoners.states.PlayerState.PlayerStateA
 
 class PlayerGameTestInterpreter extends (PlayerGame ~> PlayerGameStateA) {
   private val playerInterpreter: Player ~> PlayerGameStateA =

@@ -2,11 +2,8 @@ package com.michalplachta.freeprisoners.free.programs
 
 import com.michalplachta.freeprisoners.PrisonersDilemma._
 import com.michalplachta.freeprisoners.free.algebras.PlayerOps.Player
-import com.michalplachta.freeprisoners.free.testinterpreters.PlayerTestInterpreter.{
-  FakePrisoner,
-  PlayerState
-}
 import com.michalplachta.freeprisoners.free.testinterpreters.PlayerTestInterpreter
+import com.michalplachta.freeprisoners.states.{FakePrisoner, PlayerState}
 import org.scalatest.{Matchers, WordSpec}
 
 class HotSeatTest extends WordSpec with Matchers {
