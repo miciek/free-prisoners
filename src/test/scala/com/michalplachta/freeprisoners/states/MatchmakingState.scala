@@ -18,8 +18,8 @@ object MatchmakingState {
   val empty = MatchmakingState(List.empty, None, Set.empty)
 
   def updateCalls[F[_]: Functor](
-      fakePrisoners: F[DelayedPrisoner]): F[DelayedPrisoner] = {
-    Functor[F].map(fakePrisoners)(p =>
+      delayedPrisoners: F[DelayedPrisoner]): F[DelayedPrisoner] = {
+    Functor[F].map(delayedPrisoners)(p =>
       p.copy(callsBeforeAvailable = Math.max(0, p.callsBeforeAvailable - 1)))
   }
 }
