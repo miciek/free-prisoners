@@ -3,13 +3,13 @@ package com.michalplachta.freeprisoners.free.testinterpreters
 import cats.data.State
 import cats.implicits.catsStdInstancesForList
 import cats.implicits.catsStdInstancesForOption
-import cats.{Functor, ~>}
-import com.michalplachta.freeprisoners.PrisonersDilemma.Prisoner
+import cats.~>
 import com.michalplachta.freeprisoners.free.algebras.MatchmakingOps.Matchmaking.WaitingPlayer
 import com.michalplachta.freeprisoners.free.algebras.MatchmakingOps._
-import com.michalplachta.freeprisoners.free.testinterpreters.MatchmakingTestInterpreter.{
+import com.michalplachta.freeprisoners.states.MatchmakingState.{
   DelayedPrisoner,
-  MatchmakingStateA
+  MatchmakingStateA,
+  updateCalls
 }
 
 class MatchmakingTestInterpreter extends (Matchmaking ~> MatchmakingStateA) {
@@ -52,25 +52,4 @@ class MatchmakingTestInterpreter extends (Matchmaking ~> MatchmakingStateA) {
              .map(_.prisoner))
         }
     }
-
-  def updateCalls[F[_]: Functor](
-      fakePrisoners: F[DelayedPrisoner]): F[DelayedPrisoner] = {
-    Functor[F].map(fakePrisoners)(p =>
-      p.copy(callsBeforeAvailable = Math.max(0, p.callsBeforeAvailable - 1)))
-  }
-}
-
-object MatchmakingTestInterpreter {
-  final case class DelayedPrisoner(prisoner: Prisoner,
-                                   callsBeforeAvailable: Int)
-
-  final case class MatchmakingState(waitingPlayers: List[DelayedPrisoner],
-                                    joiningPlayer: Option[DelayedPrisoner],
-                                    metPlayers: Set[Prisoner])
-
-  object MatchmakingState {
-    val empty = MatchmakingState(List.empty, None, Set.empty)
-  }
-
-  type MatchmakingStateA[A] = State[MatchmakingState, A]
 }

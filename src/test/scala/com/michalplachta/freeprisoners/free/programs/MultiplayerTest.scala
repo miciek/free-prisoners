@@ -13,11 +13,10 @@ import com.michalplachta.freeprisoners.free.algebras.MatchmakingOps._
 import com.michalplachta.freeprisoners.free.algebras.PlayerOps.Player
 import com.michalplachta.freeprisoners.free.algebras.TimingOps.Timing
 import com.michalplachta.freeprisoners.free.programs.Multiplayer.findOpponent
-import com.michalplachta.freeprisoners.states.GameState
-import com.michalplachta.freeprisoners.free.testinterpreters.MatchmakingTestInterpreter.{
-  DelayedPrisoner,
+import com.michalplachta.freeprisoners.states.{
+  GameState,
   MatchmakingState,
-  MatchmakingStateA
+  PlayerState
 }
 import com.michalplachta.freeprisoners.free.testinterpreters.PlayerGameTestInterpreter.{
   PlayerGame,
@@ -28,7 +27,10 @@ import com.michalplachta.freeprisoners.free.testinterpreters.{
   PlayerGameTestInterpreter,
   TimingTestInterpreter
 }
-import com.michalplachta.freeprisoners.states.PlayerState
+import com.michalplachta.freeprisoners.states.MatchmakingState.{
+  DelayedPrisoner,
+  MatchmakingStateA
+}
 import org.scalatest.{Matchers, WordSpec}
 
 class MultiplayerTest extends WordSpec with Matchers {
