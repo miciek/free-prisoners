@@ -14,7 +14,7 @@ object ServerCommunication {
                                    maxRetries: Int = 0,
                                    retryTimeout: Timeout = Timeout(1.second))(
       implicit ec: ExecutionContext): Future[T] = {
-    def loop(retries: Int = maxRetries): Future[T] = {
+    def loop(retries: Int): Future[T] = {
       val response = server.ask(message)(retryTimeout).mapTo[T]
       if (retries > 0) {
         response.recoverWith({ case _ => loop(retries - 1) })
@@ -23,8 +23,8 @@ object ServerCommunication {
     loop(maxRetries)
   }
 
-  def tellServer[P[_]](server: ActorSelection, message: P[Unit])(
-      implicit ec: ExecutionContext): Future[Unit] = {
+  def tellServer[P[_]](server: ActorSelection,
+                       message: P[Unit]): Future[Unit] = {
     server ! message
     Future.successful(())
   }

@@ -21,7 +21,6 @@ libraryDependencies ++= {
     "com.typesafe.akka" %% "akka-actor" % akkaV,
     "com.typesafe.akka" %% "akka-remote" % akkaV,
     "com.typesafe" % "config" % configV,
-    "org.scalameta" %% "scalameta" % "1.8.0",
     "org.scalatest" %% "scalatest" % scalatestV % Test,
     "com.typesafe.akka" %% "akka-testkit" % akkaV % Test
   )
@@ -31,7 +30,8 @@ scalacOptions ++= List("-unchecked",
                        "-Ywarn-unused-import",
                        "-Xfatal-warnings",
                        "-Ypartial-unification",
-                       "-language:higherKinds")
+                       "-language:higherKinds",
+                       "-Xlint")
 
 fork := true
 connectInput in run := true
