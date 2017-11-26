@@ -5,7 +5,7 @@ import com.michalplachta.freeprisoners.PrisonersDilemma.{
   Prisoner,
   Verdict
 }
-import freestyle.free
+import freestyle._
 
 @free trait Player {
   def meetPrisoner(introduction: String): FS[Prisoner]

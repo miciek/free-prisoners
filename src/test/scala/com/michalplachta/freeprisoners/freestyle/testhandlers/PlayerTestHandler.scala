@@ -10,7 +10,7 @@ import com.michalplachta.freeprisoners.freestyle.algebras.Player
 import com.michalplachta.freeprisoners.states.PlayerState.PlayerStateA
 
 trait PlayerTestHandler {
-  implicit val playerConsoleHandler = new Player.Handler[PlayerStateA] {
+  implicit val playerTestHandler = new Player.Handler[PlayerStateA] {
     override def meetPrisoner(introduction: String) = {
       State { state =>
         val fakePrisoner = state.fakePrisoners.head
