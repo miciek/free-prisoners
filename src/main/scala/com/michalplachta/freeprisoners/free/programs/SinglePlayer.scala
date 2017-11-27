@@ -7,10 +7,10 @@ import com.michalplachta.freeprisoners.free.algebras.BotOps.Bot
 import com.michalplachta.freeprisoners.free.algebras.PlayerOps.Player
 
 object SinglePlayer {
-  type SinglePlayer[A] = EitherK[Player, Bot, A]
+  type Ops[A] = EitherK[Player, Bot, A]
 
-  def program(playerOps: Player.Ops[SinglePlayer],
-              botOps: Bot.Ops[SinglePlayer]): Free[SinglePlayer, Unit] = {
+  def program(implicit playerOps: Player.Ops[Ops],
+              botOps: Bot.Ops[Ops]): Free[Ops, Unit] = {
     import botOps._
     import playerOps._
     for {

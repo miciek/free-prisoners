@@ -2,8 +2,7 @@ package com.michalplachta.freeprisoners.freestyle.testhandlers
 
 import cats.~>
 import com.michalplachta.freeprisoners.freestyle.algebras.{Bot, Player}
-import com.michalplachta.freeprisoners.freestyle.handlers.BotHandler
-import com.michalplachta.freeprisoners.freestyle.handlers.BotHandler.BotStateA
+import com.michalplachta.freeprisoners.states.BotHandler.BotStateA
 import com.michalplachta.freeprisoners.states.PlayerBotState.PlayerBotStateA
 import com.michalplachta.freeprisoners.states.PlayerState.PlayerStateA
 

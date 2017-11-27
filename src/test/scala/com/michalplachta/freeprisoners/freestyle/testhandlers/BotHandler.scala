@@ -1,14 +1,10 @@
-package com.michalplachta.freeprisoners.freestyle.handlers
+package com.michalplachta.freeprisoners.freestyle.testhandlers
 
 import cats.data.State
 import com.michalplachta.freeprisoners.PrisonersDilemma
-import com.michalplachta.freeprisoners.PrisonersDilemma.{
-  Prisoner,
-  Silence,
-  Strategy
-}
+import com.michalplachta.freeprisoners.PrisonersDilemma.{Prisoner, Silence}
 import com.michalplachta.freeprisoners.freestyle.algebras.Bot
-import com.michalplachta.freeprisoners.freestyle.handlers.BotHandler.BotStateA
+import com.michalplachta.freeprisoners.states.BotHandler.BotStateA
 
 trait BotHandler {
   implicit val botStateHandler = new Bot.Handler[BotStateA] {
@@ -25,10 +21,4 @@ trait BotHandler {
         _.bots.get(prisoner).map(_.f(otherPrisoner)).getOrElse(Silence))
     }
   }
-}
-
-object BotHandler {
-  final case class BotState(bots: Map[Prisoner, Strategy])
-
-  type BotStateA[A] = State[BotState, A]
 }

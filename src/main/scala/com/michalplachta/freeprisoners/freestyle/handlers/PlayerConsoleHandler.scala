@@ -13,7 +13,7 @@ trait PlayerConsoleHandler {
   private def say(what: String): Unit = println(what)
   private def hear(): String = scala.io.StdIn.readLine()
 
-  implicit val playerConsoleHandler = new Player.Handler[Id] {
+  implicit val playerIdHandler = new Player.Handler[Id] {
     override def meetPrisoner(introduction: String) = {
       say(introduction)
       say(s"What's your name?")

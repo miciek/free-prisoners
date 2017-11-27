@@ -7,13 +7,12 @@ import com.michalplachta.freeprisoners.free.interpreters.{
   PlayerConsoleInterpreter
 }
 import com.michalplachta.freeprisoners.free.programs.SinglePlayer
-import com.michalplachta.freeprisoners.free.programs.SinglePlayer.SinglePlayer
 
 object SinglePlayerGame extends App {
   SinglePlayer
     .program(
-      new Player.Ops[SinglePlayer],
-      new Bot.Ops[SinglePlayer]
+      new Player.Ops[SinglePlayer.Ops],
+      new Bot.Ops[SinglePlayer.Ops]
     )
     .foldMap(PlayerConsoleInterpreter or new BotInterpreter)
 }
