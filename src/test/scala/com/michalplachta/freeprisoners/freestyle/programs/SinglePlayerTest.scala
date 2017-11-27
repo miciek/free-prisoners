@@ -1,7 +1,6 @@
 package com.michalplachta.freeprisoners.freestyle.programs
 
 import com.michalplachta.freeprisoners.PrisonersDilemma._
-import com.michalplachta.freeprisoners.freestyle.SinglePlayer
 import com.michalplachta.freeprisoners.freestyle.testhandlers.PlayerBotTestHandler
 import com.michalplachta.freeprisoners.states.PlayerBotState.PlayerBotStateA
 import com.michalplachta.freeprisoners.states.{

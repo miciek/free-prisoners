@@ -1,4 +1,4 @@
-package com.michalplachta.freeprisoners.freestyle
+package com.michalplachta.freeprisoners.freestyle.programs
 
 import com.michalplachta.freeprisoners.PrisonersDilemma.{Strategies, verdict}
 import com.michalplachta.freeprisoners.freestyle.algebras.{Bot, Player}
@@ -11,8 +11,8 @@ object SinglePlayer {
   }
 
   def program[F[_]](implicit ops: Ops[F]): FreeS[F, Unit] = {
-    import ops.player._
     import ops.bot._
+    import ops.player._
     for {
       playerPrisoner <- meetPrisoner("Welcome to Single Player Game")
       botPrisoner <- createBot("Romain", Strategies.alwaysBlame)
