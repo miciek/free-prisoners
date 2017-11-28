@@ -13,11 +13,13 @@ addCompilerPlugin(
 
 libraryDependencies ++= {
   val freestyleV = "0.4.4"
+  val catsEffectV = "0.4"
   val akkaV = "2.5.7"
-  val configV = "1.3.1"
+  val configV = "1.3.2"
   val scalatestV = "3.0.1"
   Seq(
     "io.frees" %% "frees-core" % freestyleV,
+    "org.typelevel" %% "cats-effect" % catsEffectV,
     "com.typesafe.akka" %% "akka-actor" % akkaV,
     "com.typesafe.akka" %% "akka-remote" % akkaV,
     "com.typesafe" % "config" % configV,

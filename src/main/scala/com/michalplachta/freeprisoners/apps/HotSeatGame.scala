@@ -1,6 +1,6 @@
 package com.michalplachta.freeprisoners.apps
 
-import cats.Id
+import cats.effect.IO
 import com.michalplachta.freeprisoners.free.algebras.PlayerOps.Player
 import com.michalplachta.freeprisoners.free.interpreters.PlayerConsoleInterpreter
 import com.michalplachta.freeprisoners.free.programs.{HotSeat => FreeHotSeat}
@@ -15,7 +15,9 @@ object HotSeatGame extends App with PlayerConsoleHandler {
   FreeHotSeat
     .program(new Player.Ops[Player])
     .foldMap(PlayerConsoleInterpreter)
+    .unsafeRunSync()
 
   FreestyleHotSeat.program
-    .interpret[Id]
+    .interpret[IO]
+    .unsafeRunSync()
 }

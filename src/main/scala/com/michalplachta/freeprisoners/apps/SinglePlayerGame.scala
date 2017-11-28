@@ -15,4 +15,5 @@ object SinglePlayerGame extends App {
       new Bot.Ops[SinglePlayer.Ops]
     )
     .foldMap(PlayerConsoleInterpreter or new BotInterpreter)
+    .unsafeRunSync()
 }

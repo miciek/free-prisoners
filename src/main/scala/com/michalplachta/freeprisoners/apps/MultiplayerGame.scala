@@ -19,7 +19,7 @@ import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 
 object MultiplayerGame extends App {
-  val playerInterpreter = PlayerConsoleInterpreter.andThen(IdToFuture)
+  val playerInterpreter = PlayerConsoleInterpreter.andThen(IoToFuture)
   val matchmakingInterpreter = new MatchmakingServerInterpreter
   val gameInterpreter = new GameServerInterpreter
   val interpreter0: Multiplayer0 ~> Future =

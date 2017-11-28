@@ -1,6 +1,7 @@
 package com.michalplachta.freeprisoners.free.interpreters
 
-import cats.{Id, ~>}
+import cats.effect.IO
+import cats.~>
 import com.michalplachta.freeprisoners.PrisonersDilemma.{
   Prisoner,
   Silence,
@@ -12,16 +13,20 @@ import com.michalplachta.freeprisoners.free.algebras.BotOps.{
   GetDecision
 }
 
-class BotInterpreter extends (Bot ~> Id) {
+class BotInterpreter extends (Bot ~> IO) {
   var bots = Map.empty[Prisoner, Strategy]
 
-  def apply[A](i: Bot[A]): Id[A] = i match {
+  def apply[A](i: Bot[A]): IO[A] = i match {
     case CreateBot(name, strategy) =>
-      val prisoner = Prisoner(name)
-      bots += (prisoner -> strategy)
-      prisoner
+      IO {
+        val prisoner = Prisoner(name)
+        bots += (prisoner -> strategy)
+        prisoner
+      }
 
     case GetDecision(prisoner, otherPrisoner) =>
-      bots.get(prisoner).map(_.f(otherPrisoner)).getOrElse(Silence)
+      IO {
+        bots.get(prisoner).map(_.f(otherPrisoner)).getOrElse(Silence)
+      }
   }
 }
