@@ -14,8 +14,8 @@ object SinglePlayer {
     import ops.bot._
     import ops.player._
     for {
-      playerPrisoner <- meetPrisoner("Welcome to Single Player Game")
-      botPrisoner <- createBot("Romain", Strategies.alwaysBlame)
+      playerPrisoner <- meetPrisoner("Welcome to Freestyle Single Player Game")
+      botPrisoner <- createBot("WALL-E", Strategies.alwaysBlame)
       playerDecision <- questionPrisoner(playerPrisoner, botPrisoner)
       botDecision <- getDecision(botPrisoner, playerPrisoner)
       _ <- giveVerdict(playerPrisoner, verdict(playerDecision, botDecision))
