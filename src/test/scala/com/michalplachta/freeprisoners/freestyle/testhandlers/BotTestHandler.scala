@@ -6,8 +6,8 @@ import com.michalplachta.freeprisoners.PrisonersDilemma.{Prisoner, Silence}
 import com.michalplachta.freeprisoners.freestyle.algebras.Bot
 import com.michalplachta.freeprisoners.states.BotHandler.BotStateA
 
-trait BotHandler {
-  implicit val botStateHandler = new Bot.Handler[BotStateA] {
+trait BotTestHandler {
+  implicit val botTestHandler = new Bot.Handler[BotStateA] {
     def createBot(name: String, strategy: PrisonersDilemma.Strategy) = {
       State { state =>
         val prisoner = Prisoner(name)
