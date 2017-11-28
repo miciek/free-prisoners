@@ -1,6 +1,6 @@
 package com.michalplachta.freeprisoners.apps
 
-import cats.implicits.catsStdInstancesForFuture
+import cats.effect.IO
 import cats.~>
 import com.michalplachta.freeprisoners.free.algebras.GameOps.Game
 import com.michalplachta.freeprisoners.free.algebras.MatchmakingOps.Matchmaking
@@ -14,31 +14,26 @@ import com.michalplachta.freeprisoners.free.programs.Multiplayer.{
   Multiplayer1
 }
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration._
-import scala.concurrent.{Await, Future}
-
 object MultiplayerGame extends App {
-  val playerInterpreter = PlayerConsoleInterpreter.andThen(IoToFuture)
   val matchmakingInterpreter = new MatchmakingServerInterpreter
   val gameInterpreter = new GameServerInterpreter
-  val interpreter0: Multiplayer0 ~> Future =
+  val interpreter0: Multiplayer0 ~> IO =
     matchmakingInterpreter or gameInterpreter
-  val interpreter1: Multiplayer1 ~> Future = playerInterpreter or interpreter0
-  val interpreter: Multiplayer ~> Future = TimingInterpreter or interpreter1
+  val interpreter1
+    : Multiplayer1 ~> IO = PlayerConsoleInterpreter or interpreter0
+  val interpreter: Multiplayer ~> IO = TimingInterpreter or interpreter1
 
-  try {
-    val gameResult = Multiplayer
-      .program(
-        new Player.Ops[Multiplayer],
-        new Matchmaking.Ops[Multiplayer],
-        new Game.Ops[Multiplayer],
-        new Timing.Ops[Multiplayer]
-      )
-      .foldMap(interpreter)
-    Await.result(gameResult, 360.seconds)
-  } finally {
-    matchmakingInterpreter.terminate()
-    gameInterpreter.terminate()
-  }
+  Multiplayer
+    .program(
+      new Player.Ops[Multiplayer],
+      new Matchmaking.Ops[Multiplayer],
+      new Game.Ops[Multiplayer],
+      new Timing.Ops[Multiplayer]
+    )
+    .foldMap(interpreter)
+    .attempt
+    .unsafeRunSync()
+
+  matchmakingInterpreter.terminate()
+  gameInterpreter.terminate()
 }

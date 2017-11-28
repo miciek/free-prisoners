@@ -14,48 +14,53 @@ class MatchmakingServerTest
   "MatchmakingServer actor" should {
     "add player names to the waiting list" in {
       val server = createServer()
-      tellServer(server, AddToWaitingList("a"))
-      tellServer(server, AddToWaitingList("b"))
-      askServer(server, GetWaitingList())
-        .map(_.toSet should be(Set("a", "b")))
+      val program = for {
+        _ <- tellServer(server, AddToWaitingList("a"))
+        _ <- tellServer(server, AddToWaitingList("b"))
+        result <- askServer(server, GetWaitingList())
+      } yield result.toSet should be(Set("a", "b"))
+      program.unsafeToFuture()
     }
 
     "remove the player name from the waiting list" in {
       val server = createServer()
-      tellServer(server, AddToWaitingList("a"))
-      tellServer(server, AddToWaitingList("b"))
-      tellServer(server, RemoveFromWaitingList("a"))
-      askServer(server, GetWaitingList())
-        .map(_.toSet should be(Set("b")))
+      val program = for {
+        _ <- tellServer(server, AddToWaitingList("a"))
+        _ <- tellServer(server, AddToWaitingList("b"))
+        _ <- tellServer(server, RemoveFromWaitingList("a"))
+        result <- askServer(server, GetWaitingList())
+      } yield result.toSet should be(Set("b"))
+      program.unsafeToFuture()
     }
 
     "respond with the opponent name after match is registered" in {
       val server = createServer()
-      tellServer(server, RegisterMatch("a", "b"))
-      askServer(server, GetOpponentNameFor("a"))
-        .map(_ should contain("b"))
-
-      askServer(server, GetOpponentNameFor("b"))
-        .map(_ should contain("a"))
+      val program = for {
+        _ <- tellServer(server, RegisterMatch("a", "b"))
+        opponentOfA <- askServer(server, GetOpponentNameFor("a"))
+        opponentOfB <- askServer(server, GetOpponentNameFor("b"))
+      } yield (opponentOfA, opponentOfB) should be((Some("b"), Some("a")))
+      program.unsafeToFuture()
     }
 
     "respond with no opponent name when only one player is on the waiting list" in {
       val server = createServer()
-      tellServer(server, AddToWaitingList("a"))
-      askServer(server, GetOpponentNameFor("a"))
-        .map(_ should be(None))
+      val program = for {
+        _ <- tellServer(server, AddToWaitingList("a"))
+        opponent <- askServer(server, GetOpponentNameFor("a"))
+      } yield opponent should be(None)
+      program.unsafeToFuture()
     }
 
     "remove player names from the registered matches when one of them is added back to the waiting list" in {
       val server = createServer()
-      tellServer(server, RegisterMatch("a", "b"))
-      tellServer(server, AddToWaitingList("a"))
-
-      askServer(server, GetOpponentNameFor("a"))
-        .map(_ should be(None))
-
-      askServer(server, GetOpponentNameFor("b"))
-        .map(_ should be(None))
+      val program = for {
+        _ <- tellServer(server, RegisterMatch("a", "b"))
+        _ <- tellServer(server, AddToWaitingList("a"))
+        opponentOfA <- askServer(server, GetOpponentNameFor("a"))
+        opponentOfB <- askServer(server, GetOpponentNameFor("b"))
+      } yield (opponentOfA, opponentOfB) should be((None, None))
+      program.unsafeToFuture()
     }
   }
 

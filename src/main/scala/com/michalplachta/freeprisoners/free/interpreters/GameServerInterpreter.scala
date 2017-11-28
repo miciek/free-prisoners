@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit
 
 import akka.actor.ActorSystem
 import akka.util.Timeout
+import cats.effect.IO
 import cats.~>
 import com.michalplachta.freeprisoners.actors.GameServer.{
   GetGameId,
@@ -14,9 +15,9 @@ import com.michalplachta.freeprisoners.actors.ServerCommunication._
 import com.michalplachta.freeprisoners.free.algebras.GameOps._
 import com.typesafe.config.ConfigFactory
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
-class GameServerInterpreter extends (Game ~> Future) {
+class GameServerInterpreter extends (Game ~> IO) {
   private val system = ActorSystem("gameClient")
   private val config = ConfigFactory.load().getConfig("app.game")
   private val maxRetries = config.getInt("client.max-retries")
@@ -28,7 +29,7 @@ class GameServerInterpreter extends (Game ~> Future) {
   private val server =
     system.actorSelection(config.getString("server.path"))
 
-  def apply[A](game: Game[A]): Future[A] = game match {
+  def apply[A](game: Game[A]): IO[A] = game match {
     case GetGameHandle(player, opponent) =>
       askServer(server, GetGameId(player, opponent), maxRetries, retryTimeout)
     case SendDecision(handle, player, decision) =>
