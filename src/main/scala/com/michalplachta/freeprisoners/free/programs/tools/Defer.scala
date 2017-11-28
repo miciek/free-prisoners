@@ -1,4 +1,4 @@
-package com.michalplachta.freeprisoners.free.programs
+package com.michalplachta.freeprisoners.free.programs.tools
 
 import cats.free.Free
 import com.michalplachta.freeprisoners.free.algebras.TimingOps.Timing

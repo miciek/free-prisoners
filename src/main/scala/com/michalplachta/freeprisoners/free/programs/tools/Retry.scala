@@ -1,4 +1,4 @@
-package com.michalplachta.freeprisoners.free.programs
+package com.michalplachta.freeprisoners.free.programs.tools
 
 import cats.free.Free
 import cats.free.Free.pure

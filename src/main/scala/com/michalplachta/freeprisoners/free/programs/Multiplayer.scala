@@ -13,8 +13,8 @@ import com.michalplachta.freeprisoners.free.algebras.MatchmakingOps.Matchmaking
 import com.michalplachta.freeprisoners.free.algebras.MatchmakingOps.Matchmaking.WaitingPlayer
 import com.michalplachta.freeprisoners.free.algebras.PlayerOps.Player
 import com.michalplachta.freeprisoners.free.algebras.TimingOps.Timing
-import com.michalplachta.freeprisoners.free.programs.Defer.defer
-import com.michalplachta.freeprisoners.free.programs.Retry.retry
+import com.michalplachta.freeprisoners.free.programs.tools.Defer.defer
+import com.michalplachta.freeprisoners.free.programs.tools.Retry.retry
 
 import scala.concurrent.duration._
 
