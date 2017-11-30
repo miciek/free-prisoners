@@ -32,7 +32,7 @@ object Multiplayer {
                     timingOps: Timing[F]): FreeS[F, Unit] = {
     import playerOps._
     for {
-      player <- meetPrisoner("Welcome to Multiplayer Game")
+      player <- meetPrisoner("Welcome to Freestyle Multiplayer Game")
       maybeOpponent <- findOpponent(player)
       _ <- maybeOpponent.map(playTheGame(player, _)).getOrElse(program)
     } yield ()

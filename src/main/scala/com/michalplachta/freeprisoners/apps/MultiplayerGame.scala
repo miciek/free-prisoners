@@ -7,14 +7,30 @@ import com.michalplachta.freeprisoners.free.algebras.MatchmakingOps.Matchmaking
 import com.michalplachta.freeprisoners.free.algebras.PlayerOps.Player
 import com.michalplachta.freeprisoners.free.algebras.TimingOps.Timing
 import com.michalplachta.freeprisoners.free.interpreters._
-import com.michalplachta.freeprisoners.free.programs.Multiplayer
+import com.michalplachta.freeprisoners.free.programs.{
+  Multiplayer => FreeMultiplayer
+}
+import com.michalplachta.freeprisoners.freestyle.programs.{
+  Multiplayer => FreestyleMultiplayer
+}
 import com.michalplachta.freeprisoners.free.programs.Multiplayer.{
   Multiplayer,
   Multiplayer0,
   Multiplayer1
 }
+import com.michalplachta.freeprisoners.freestyle.handlers.{
+  GameServerHandler,
+  MatchmakingServerHandler,
+  PlayerConsoleHandler,
+  TimingHandler
+}
+import freestyle._
+import freestyle.implicits._
 
-object MultiplayerGame extends App {
+object MultiplayerGame
+    extends App
+    with PlayerConsoleHandler
+    with TimingHandler {
   val matchmakingInterpreter = new MatchmakingServerInterpreter
   val gameInterpreter = new GameServerInterpreter
   val interpreter0: Multiplayer0 ~> IO =
@@ -23,7 +39,7 @@ object MultiplayerGame extends App {
     : Multiplayer1 ~> IO = PlayerConsoleInterpreter or interpreter0
   val interpreter: Multiplayer ~> IO = TimingInterpreter or interpreter1
 
-  Multiplayer
+  FreeMultiplayer
     .program(
       new Player.Ops[Multiplayer],
       new Matchmaking.Ops[Multiplayer],
@@ -36,4 +52,15 @@ object MultiplayerGame extends App {
 
   matchmakingInterpreter.terminate()
   gameInterpreter.terminate()
+
+  implicit val matchmakingHandler = new MatchmakingServerHandler
+  implicit val gameHandler = new GameServerHandler
+  FreestyleMultiplayer
+    .program[FreestyleMultiplayer.Ops.Op]
+    .interpret[IO]
+    .attempt
+    .unsafeRunSync()
+
+  matchmakingHandler.terminate()
+  gameHandler.terminate()
 }
