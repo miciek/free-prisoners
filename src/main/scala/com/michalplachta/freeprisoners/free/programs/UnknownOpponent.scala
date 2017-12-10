@@ -16,7 +16,7 @@ object UnknownOpponent {
     for {
       playerPrisoner <- meetPrisoner("Welcome to Free Unknown Opponent Game")
       opponentPrisoner <- meetOpponent()
-      playerDecision <- getPrisonerDecision(playerPrisoner, opponentPrisoner)
+      playerDecision <- getPlayerDecision(playerPrisoner, opponentPrisoner)
       opponentDecision <- getOpponentDecision(opponentPrisoner, playerPrisoner)
       _ <- giveVerdict(playerPrisoner,
                        verdict(playerDecision, opponentDecision))

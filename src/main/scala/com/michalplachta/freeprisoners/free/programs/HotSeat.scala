@@ -11,8 +11,8 @@ object HotSeat {
     for {
       prisonerA <- meetPrisoner("Welcome to Free Hot Seat Game, Prisoner A!")
       prisonerB <- meetPrisoner("Welcome to Free Hot Seat Game, Prisoner B!")
-      decisionA <- getPrisonerDecision(prisonerA, prisonerB)
-      decisionB <- getPrisonerDecision(prisonerB, prisonerA)
+      decisionA <- getPlayerDecision(prisonerA, prisonerB)
+      decisionB <- getPlayerDecision(prisonerB, prisonerA)
       _ <- giveVerdict(prisonerA, verdict(decisionA, decisionB))
       _ <- giveVerdict(prisonerB, verdict(decisionB, decisionA))
     } yield ()

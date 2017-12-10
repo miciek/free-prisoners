@@ -22,7 +22,8 @@ trait PlayerConsoleHandler {
       Prisoner(name)
     }
 
-    override def questionPrisoner(prisoner: Prisoner, otherPrisoner: Prisoner) =
+    override def getPlayerDecision(prisoner: Prisoner,
+                                   otherPrisoner: Prisoner) =
       IO {
         say(
           s"${prisoner.name}, is ${otherPrisoner.name} guilty? (y if guilty, anything if silent)")

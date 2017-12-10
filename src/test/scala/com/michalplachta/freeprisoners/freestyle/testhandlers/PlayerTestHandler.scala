@@ -22,8 +22,8 @@ trait PlayerTestHandler {
       }
     }
 
-    override def questionPrisoner(prisoner: Prisoner,
-                                  otherPrisoner: Prisoner) = {
+    override def getPlayerDecision(prisoner: Prisoner,
+                                   otherPrisoner: Prisoner) = {
       State { state =>
         (state, state.playingPrisoners.getOrElse(prisoner, Silence))
       }

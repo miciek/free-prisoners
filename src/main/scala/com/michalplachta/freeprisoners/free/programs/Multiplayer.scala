@@ -70,7 +70,7 @@ object Multiplayer {
     import playerOps._
     for {
       handle <- getGameHandle(player, opponent)
-      decision <- getPrisonerDecision(player, opponent)
+      decision <- getPlayerDecision(player, opponent)
       _ <- sendDecision(handle, player, decision)
       maybeOpponentDecision <- retry[S, Option[Decision]](
         defer(getOpponentDecision(handle, opponent), 1.second),

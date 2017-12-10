@@ -22,8 +22,8 @@ object PlayerOps {
       def meetPrisoner(introduction: String): Free[S, Prisoner] =
         Free.inject(MeetPrisoner(introduction))
 
-      def getPrisonerDecision(prisoner: Prisoner,
-                              otherPrisoner: Prisoner): Free[S, Decision] =
+      def getPlayerDecision(prisoner: Prisoner,
+                            otherPrisoner: Prisoner): Free[S, Decision] =
         Free.inject(GetPrisonerDecision(prisoner, otherPrisoner))
 
       def giveVerdict(prisoner: Prisoner, verdict: Verdict): Free[S, Unit] =

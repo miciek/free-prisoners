@@ -12,8 +12,8 @@ object HotSeat {
         "Welcome to Freestyle Hot Seat Game, Prisoner A!")
       prisonerB <- meetPrisoner(
         "Welcome to Freestyle Hot Seat Game, Prisoner B!")
-      decisionA <- questionPrisoner(prisonerA, prisonerB)
-      decisionB <- questionPrisoner(prisonerB, prisonerA)
+      decisionA <- getPlayerDecision(prisonerA, prisonerB)
+      decisionB <- getPlayerDecision(prisonerB, prisonerA)
       _ <- giveVerdict(prisonerA,
                        PrisonersDilemma.verdict(decisionA, decisionB))
       _ <- giveVerdict(prisonerB,
