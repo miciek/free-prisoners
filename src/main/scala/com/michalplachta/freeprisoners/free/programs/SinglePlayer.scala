@@ -2,22 +2,22 @@ package com.michalplachta.freeprisoners.free.programs
 
 import cats.data.EitherK
 import cats.free.Free
-import com.michalplachta.freeprisoners.PrisonersDilemma.{Strategies, verdict}
-import com.michalplachta.freeprisoners.free.algebras.BotOps.Bot
+import com.michalplachta.freeprisoners.PrisonersDilemma.verdict
+import com.michalplachta.freeprisoners.free.algebras.OpponentOps.Opponent
 import com.michalplachta.freeprisoners.free.algebras.PlayerOps.Player
 
 object SinglePlayer {
-  type Ops[A] = EitherK[Player, Bot, A]
+  type Ops[A] = EitherK[Player, Opponent, A]
 
   def program(implicit playerOps: Player.Ops[Ops],
-              botOps: Bot.Ops[Ops]): Free[Ops, Unit] = {
-    import botOps._
+              opponentOps: Opponent.Ops[Ops]): Free[Ops, Unit] = {
+    import opponentOps._
     import playerOps._
     for {
       playerPrisoner <- meetPrisoner("Welcome to Free Single Player Game")
-      botPrisoner <- createBot("WALL-E", Strategies.alwaysBlame)
+      botPrisoner <- meetOpponent()
       playerDecision <- getPlayerDecision(playerPrisoner, botPrisoner)
-      botDecision <- getDecision(botPrisoner, playerPrisoner)
+      botDecision <- getOpponentDecision(botPrisoner, playerPrisoner)
       _ <- giveVerdict(playerPrisoner, verdict(playerDecision, botDecision))
       _ <- giveVerdict(botPrisoner, verdict(botDecision, playerDecision))
     } yield ()

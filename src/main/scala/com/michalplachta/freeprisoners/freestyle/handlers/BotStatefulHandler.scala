@@ -3,29 +3,35 @@ package com.michalplachta.freeprisoners.freestyle.handlers
 import cats.effect.IO
 import com.michalplachta.freeprisoners.PrisonersDilemma
 import com.michalplachta.freeprisoners.PrisonersDilemma.{
+  Guilty,
   Prisoner,
   Silence,
   Strategy
 }
-import com.michalplachta.freeprisoners.freestyle.algebras.Bot
+import com.michalplachta.freeprisoners.freestyle.algebras.Opponent
+
+import scala.util.Random
 
 trait BotStatefulHandler {
-  private var bots = Map.empty[Prisoner, Strategy]
+  val names = Array("Wall-E", "R2-D2", "Megatron", "T-800")
+  val strategies = Array(Strategy(_ => Guilty), Strategy(_ => Silence))
+  val r = new Random()
 
-  implicit val botStateHandler = new Bot.Handler[IO] {
-    def createBot(name: String, strategy: PrisonersDilemma.Strategy) = {
-      IO {
-        val prisoner = Prisoner(name)
-        bots = bots + (prisoner -> strategy)
-        prisoner
-      }
+  var bots = Map.empty[Prisoner, Strategy]
+
+  implicit val botStateHandler = new Opponent.Handler[IO] {
+    def meetOpponent = IO {
+      val n = r.nextInt(names.length)
+      val prisoner = Prisoner(names(n))
+
+      val s = r.nextInt(strategies.length)
+      bots += (prisoner -> strategies(s))
+      prisoner
     }
 
-    def getDecision(prisoner: PrisonersDilemma.Prisoner,
-                    otherPrisoner: PrisonersDilemma.Prisoner) = {
-      IO {
-        bots.get(prisoner).map(_.f(otherPrisoner)).getOrElse(Silence)
-      }
+    def getOpponentDecision(prisoner: PrisonersDilemma.Prisoner,
+                            otherPrisoner: PrisonersDilemma.Prisoner) = IO {
+      bots.get(prisoner).map(_.f(otherPrisoner)).getOrElse(Silence)
     }
   }
 }

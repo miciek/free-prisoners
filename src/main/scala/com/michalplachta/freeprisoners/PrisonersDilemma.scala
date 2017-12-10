@@ -10,10 +10,6 @@ object PrisonersDilemma {
   final case class Verdict(years: Int)
 
   final case class Strategy(f: Prisoner => Decision)
-  object Strategies {
-    val alwaysBlame = Strategy(_ => Guilty)
-    val alwaysSilent = Strategy(_ => Silence)
-  }
 
   def verdict(prisonerDecision: Decision,
               otherPrisonerDecision: Decision): Verdict = {

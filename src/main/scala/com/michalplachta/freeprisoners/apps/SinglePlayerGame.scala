@@ -1,7 +1,7 @@
 package com.michalplachta.freeprisoners.apps
 
 import cats.effect.IO
-import com.michalplachta.freeprisoners.free.algebras.BotOps.Bot
+import com.michalplachta.freeprisoners.free.algebras.OpponentOps.Opponent
 import com.michalplachta.freeprisoners.free.algebras.PlayerOps.Player
 import com.michalplachta.freeprisoners.free.interpreters.{
   BotInterpreter,
@@ -27,7 +27,7 @@ object SinglePlayerGame
   FreeSinglePlayer
     .program(
       new Player.Ops[FreeSinglePlayer.Ops],
-      new Bot.Ops[FreeSinglePlayer.Ops]
+      new Opponent.Ops[FreeSinglePlayer.Ops]
     )
     .foldMap(PlayerConsoleInterpreter or new BotInterpreter)
     .unsafeRunSync()
