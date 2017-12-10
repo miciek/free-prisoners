@@ -13,11 +13,11 @@ import freestyle.implicits._
 
 object HotSeatGame extends App with PlayerConsoleHandler {
   FreeHotSeat
-    .program(new Player.Ops[Player])
-    .foldMap(PlayerConsoleInterpreter)
-    .unsafeRunSync()
+    .program(new Player.Ops[Player]) // Free[Player, Unit]
+    .foldMap(PlayerConsoleInterpreter) // IO[Unit]
+    .unsafeRunSync() // Unit + 💥
 
-  FreestyleHotSeat.program
-    .interpret[IO]
-    .unsafeRunSync()
+  FreestyleHotSeat.program // FreeS[F, Unit]
+    .interpret[IO] // IO[Unit]
+    .unsafeRunSync() // Unit + 💥
 }
