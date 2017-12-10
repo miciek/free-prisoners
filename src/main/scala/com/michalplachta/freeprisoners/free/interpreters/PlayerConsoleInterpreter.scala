@@ -15,35 +15,33 @@ import com.michalplachta.freeprisoners.free.algebras.PlayerOps.{
 }
 
 object PlayerConsoleInterpreter extends (Player ~> IO) {
-  def say(what: String): Unit = println(what)
-  def hear(): String = scala.io.StdIn.readLine()
+  def say(what: String): IO[Unit] = IO { println(what) }
+  def hear(): IO[String] = IO { scala.io.StdIn.readLine() }
 
+  /*_*/
   def apply[A](i: Player[A]): IO[A] = i match {
     case MeetPrisoner(introduction) =>
-      IO {
-        say(introduction)
-        say(s"What's your name?")
-        val name = hear()
-        say(s"Hello, $name!")
-        Prisoner(name)
-      }
+      for {
+        _ <- say(introduction)
+        _ <- say(s"What's your name?")
+        name <- hear()
+        _ <- say(s"Hello, $name!")
+      } yield Prisoner(name)
 
     case GetPrisonerDecision(prisoner, otherPrisoner) =>
-      IO {
-        say(
-          s"${prisoner.name}, is ${otherPrisoner.name} guilty? (y if guilty, anything if silent)")
-        val answer = hear()
-        val decision = answer match {
+      for {
+        _ <- say(
+          s"${prisoner.name}, is ${otherPrisoner.name} guilty?" +
+            s" (y if guilty, anything if silent)")
+        answer <- hear()
+        decision = answer match {
           case "y" => Guilty
           case _   => Silence
         }
-        say(s"Your decision: $decision")
-        decision
-      }
+        _ <- say(s"Your decision: $decision")
+      } yield decision
 
     case GiveVerdict(prisoner, verdict) =>
-      IO {
-        say(s"Verdict for ${prisoner.name} is $verdict")
-      }
+      say(s"Verdict for ${prisoner.name} is $verdict")
   }
 }

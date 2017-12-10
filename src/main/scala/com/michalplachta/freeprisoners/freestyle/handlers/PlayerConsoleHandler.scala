@@ -10,34 +10,33 @@ import com.michalplachta.freeprisoners.PrisonersDilemma.{
 import com.michalplachta.freeprisoners.freestyle.algebras.Player
 
 trait PlayerConsoleHandler {
-  private def say(what: String): Unit = println(what)
-  private def hear(): String = scala.io.StdIn.readLine()
+  def say(what: String): IO[Unit] = IO { println(what) }
+  def hear(): IO[String] = IO { scala.io.StdIn.readLine() }
 
   implicit val playerIdHandler = new Player.Handler[IO] {
-    override def meetPrisoner(introduction: String) = IO {
-      say(introduction)
-      say(s"What's your name?")
-      val name = hear()
-      say(s"Hello, $name!")
-      Prisoner(name)
-    }
+    override def meetPrisoner(introduction: String) =
+      for {
+        _ <- say(introduction)
+        _ <- say(s"What's your name?")
+        name <- hear()
+        _ <- say(s"Hello, $name!")
+      } yield Prisoner(name)
 
     override def getPlayerDecision(prisoner: Prisoner,
                                    otherPrisoner: Prisoner) =
-      IO {
-        say(
-          s"${prisoner.name}, is ${otherPrisoner.name} guilty? (y if guilty, anything if silent)")
-        val answer = hear()
-        val decision = answer match {
+      for {
+        _ <- say(
+          s"${prisoner.name}, is ${otherPrisoner.name} guilty?" +
+            s" (y if guilty, anything if silent)")
+        answer <- hear()
+        decision = answer match {
           case "y" => Guilty
           case _   => Silence
         }
-        say(s"Your decision: $decision")
-        decision
-      }
+        _ <- say(s"Your decision: $decision")
+      } yield decision
 
-    override def giveVerdict(prisoner: Prisoner, verdict: Verdict) = {
-      IO(say(s"Verdict for ${prisoner.name} is $verdict"))
-    }
+    override def giveVerdict(prisoner: Prisoner, verdict: Verdict) =
+      say(s"Verdict for ${prisoner.name} is $verdict")
   }
 }
