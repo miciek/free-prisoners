@@ -4,7 +4,7 @@ import com.michalplachta.freeprisoners.PrisonersDilemma.verdict
 import com.michalplachta.freeprisoners.freestyle.algebras.{Opponent, Player}
 import freestyle._
 
-object SinglePlayer {
+object UnknownOpponent {
   @module trait Ops {
     val player: Player
     val opponent: Opponent

@@ -13,7 +13,7 @@ import com.michalplachta.freeprisoners.states.{
 }
 import org.scalatest.{Matchers, WordSpec}
 
-class SinglePlayerTest extends WordSpec with Matchers {
+class UnknownOpponentTest extends WordSpec with Matchers {
   "Single Player (Free) program" should {
     "question the player and give verdict" in {
       val player = FakePrisoner(Prisoner("Player"), Guilty)
@@ -21,7 +21,7 @@ class SinglePlayerTest extends WordSpec with Matchers {
         PlayerOpponentState(PlayerState(Set(player), Map.empty, Map.empty),
                             OpponentState(Map.empty))
 
-      val result: PlayerState = SinglePlayer
+      val result: PlayerState = UnknownOpponent
         .program(new Player.Ops[PlayerOpponent],
                  new Opponent.Ops[PlayerOpponent])
         .foldMap(new PlayerOpponentTestInterpreter)

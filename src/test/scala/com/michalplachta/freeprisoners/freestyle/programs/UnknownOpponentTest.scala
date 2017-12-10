@@ -13,7 +13,7 @@ import org.scalatest.{Matchers, WordSpec}
 import freestyle._
 import freestyle.implicits._
 
-class SinglePlayerTest
+class UnknownOpponentTest
     extends WordSpec
     with Matchers
     with PlayerOpponentTestHandler {
@@ -24,8 +24,8 @@ class SinglePlayerTest
         PlayerOpponentState(PlayerState(Set(player), Map.empty, Map.empty),
                             OpponentState(Map.empty))
 
-      val result: PlayerState = SinglePlayer
-        .program[SinglePlayer.Ops.Op]
+      val result: PlayerState = UnknownOpponent
+        .program[UnknownOpponent.Ops.Op]
         .interpret[PlayerOpponentStateA]
         .runS(inputState)
         .value

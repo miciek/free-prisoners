@@ -8,14 +8,14 @@ import com.michalplachta.freeprisoners.free.interpreters.{
   PlayerConsoleInterpreter
 }
 import com.michalplachta.freeprisoners.free.programs.{
-  SinglePlayer => FreeSinglePlayer
+  UnknownOpponent => FreeSinglePlayer
 }
 import com.michalplachta.freeprisoners.freestyle.handlers.{
   BotStatefulHandler,
   PlayerConsoleHandler
 }
 import com.michalplachta.freeprisoners.freestyle.programs.{
-  SinglePlayer => FreestyleSinglePlayer
+  UnknownOpponent => FreestyleSinglePlayer
 }
 import freestyle._
 import freestyle.implicits._
