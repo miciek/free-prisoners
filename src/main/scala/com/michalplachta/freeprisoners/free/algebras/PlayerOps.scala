@@ -11,7 +11,8 @@ import com.michalplachta.freeprisoners.PrisonersDilemma.{
 object PlayerOps {
   sealed trait Player[A]
   final case class MeetPrisoner(introduction: String) extends Player[Prisoner]
-  final case class QuestionPrisoner(prisoner: Prisoner, otherPrisoner: Prisoner)
+  final case class GetPrisonerDecision(prisoner: Prisoner,
+                                       otherPrisoner: Prisoner)
       extends Player[Decision]
   final case class GiveVerdict(prisoner: Prisoner, verdict: Verdict)
       extends Player[Unit]
@@ -21,9 +22,9 @@ object PlayerOps {
       def meetPrisoner(introduction: String): Free[S, Prisoner] =
         Free.inject(MeetPrisoner(introduction))
 
-      def questionPrisoner(prisoner: Prisoner,
-                           otherPrisoner: Prisoner): Free[S, Decision] =
-        Free.inject(QuestionPrisoner(prisoner, otherPrisoner))
+      def getPrisonerDecision(prisoner: Prisoner,
+                              otherPrisoner: Prisoner): Free[S, Decision] =
+        Free.inject(GetPrisonerDecision(prisoner, otherPrisoner))
 
       def giveVerdict(prisoner: Prisoner, verdict: Verdict): Free[S, Unit] =
         Free.inject(GiveVerdict(prisoner, verdict))

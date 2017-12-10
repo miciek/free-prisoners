@@ -11,7 +11,7 @@ import com.michalplachta.freeprisoners.free.algebras.PlayerOps.{
   GiveVerdict,
   MeetPrisoner,
   Player,
-  QuestionPrisoner
+  GetPrisonerDecision
 }
 
 object PlayerConsoleInterpreter extends (Player ~> IO) {
@@ -28,7 +28,7 @@ object PlayerConsoleInterpreter extends (Player ~> IO) {
         Prisoner(name)
       }
 
-    case QuestionPrisoner(prisoner, otherPrisoner) =>
+    case GetPrisonerDecision(prisoner, otherPrisoner) =>
       IO {
         say(
           s"${prisoner.name}, is ${otherPrisoner.name} guilty? (y if guilty, anything if silent)")

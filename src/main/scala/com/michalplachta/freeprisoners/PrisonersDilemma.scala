@@ -24,4 +24,5 @@ object PrisonersDilemma {
     else
       Verdict(3)
   }
+
 }

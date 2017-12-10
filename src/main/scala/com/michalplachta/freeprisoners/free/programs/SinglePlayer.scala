@@ -16,7 +16,7 @@ object SinglePlayer {
     for {
       playerPrisoner <- meetPrisoner("Welcome to Free Single Player Game")
       botPrisoner <- createBot("WALL-E", Strategies.alwaysBlame)
-      playerDecision <- questionPrisoner(playerPrisoner, botPrisoner)
+      playerDecision <- getPrisonerDecision(playerPrisoner, botPrisoner)
       botDecision <- getDecision(botPrisoner, playerPrisoner)
       _ <- giveVerdict(playerPrisoner, verdict(playerDecision, botDecision))
       _ <- giveVerdict(botPrisoner, verdict(botDecision, playerDecision))

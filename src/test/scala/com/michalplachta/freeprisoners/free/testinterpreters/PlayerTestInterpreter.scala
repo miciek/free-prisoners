@@ -7,7 +7,7 @@ import com.michalplachta.freeprisoners.free.algebras.PlayerOps.{
   GiveVerdict,
   MeetPrisoner,
   Player,
-  QuestionPrisoner
+  GetPrisonerDecision
 }
 import com.michalplachta.freeprisoners.states.PlayerState.PlayerStateA
 
@@ -22,7 +22,7 @@ class PlayerTestInterpreter extends (Player ~> PlayerStateA) {
             state.playingPrisoners + (fakePrisoner.prisoner -> fakePrisoner.decision))
         (newState, fakePrisoner.prisoner)
       }
-    case QuestionPrisoner(prisoner, otherPrisoner) =>
+    case GetPrisonerDecision(prisoner, otherPrisoner) =>
       State { state =>
         (state, state.playingPrisoners.getOrElse(prisoner, Silence))
       }
