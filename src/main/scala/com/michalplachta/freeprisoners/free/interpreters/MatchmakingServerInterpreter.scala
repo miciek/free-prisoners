@@ -30,7 +30,7 @@ class MatchmakingServerInterpreter extends (Matchmaking ~> IO) {
   def apply[A](matchmaking: Matchmaking[A]): IO[A] = matchmaking match {
     case RegisterAsWaiting(player) =>
       tellServer(server, AddToWaitingList(player.name))
-    case UnregisterPlayer(player) =>
+    case UnregisterWaiting(player) =>
       tellServer(server, RemoveFromWaitingList(player.name))
     case GetWaitingPlayers() =>
       askServer(server, GetWaitingList(), maxRetries, retryTimeout)

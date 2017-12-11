@@ -22,7 +22,7 @@ class MatchmakingTestInterpreter extends (Matchmaking ~> MatchmakingStateA) {
              metPlayers = (state.metPlayers + player)),
            ())
         }
-      case UnregisterPlayer(player) =>
+      case UnregisterWaiting(player) =>
         State { state =>
           (state.copy(
              waitingPlayers =

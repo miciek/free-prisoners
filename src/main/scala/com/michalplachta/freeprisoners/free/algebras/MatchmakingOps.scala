@@ -8,7 +8,7 @@ import com.michalplachta.freeprisoners.free.algebras.MatchmakingOps.Matchmaking.
 object MatchmakingOps {
   sealed trait Matchmaking[A]
   final case class RegisterAsWaiting(player: Prisoner) extends Matchmaking[Unit]
-  final case class UnregisterPlayer(player: Prisoner) extends Matchmaking[Unit]
+  final case class UnregisterWaiting(player: Prisoner) extends Matchmaking[Unit]
   final case class GetWaitingPlayers() extends Matchmaking[List[WaitingPlayer]]
   final case class JoinWaitingPlayer(player: Prisoner,
                                      waitingPlayer: WaitingPlayer)
@@ -21,8 +21,8 @@ object MatchmakingOps {
       def registerAsWaiting(player: Prisoner): Free[S, Unit] =
         Free.inject(RegisterAsWaiting(player))
 
-      def unregisterPlayer(player: Prisoner): Free[S, Unit] =
-        Free.inject(UnregisterPlayer(player))
+      def unregisterWaiting(player: Prisoner): Free[S, Unit] =
+        Free.inject(UnregisterWaiting(player))
 
       def getWaitingPlayers(): Free[S, List[WaitingPlayer]] =
         Free.inject(GetWaitingPlayers())
