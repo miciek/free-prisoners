@@ -17,17 +17,17 @@ import com.michalplachta.freeprisoners.states.OpponentState.OpponentStateA
 
 class OpponentTestInterpreter extends (Opponent ~> OpponentStateA) {
   /*_*/
-  override def apply[A](opponent: Opponent[A]) = opponent match {
-    case MeetOpponent() =>
+  override def apply[A](opponentA: Opponent[A]) = opponentA match {
+    case MeetOpponent(_) =>
       State { state =>
         val prisoner = Prisoner("Test")
         (state.copy(
            opponents = state.opponents + (prisoner -> Strategy(_ => Guilty))),
-         prisoner)
+         Some(prisoner))
       }
 
-    case GetOpponentDecision(prisoner, otherPrisoner) =>
+    case GetOpponentDecision(player, opponent) =>
       State.inspect(
-        _.opponents.get(prisoner).map(_.f(otherPrisoner)).getOrElse(Silence))
+        _.opponents.get(opponent).map(_.f(player)).getOrElse(Silence))
   }
 }

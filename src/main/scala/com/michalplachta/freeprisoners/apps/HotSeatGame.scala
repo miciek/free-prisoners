@@ -11,12 +11,13 @@ import com.michalplachta.freeprisoners.freestyle.handlers.PlayerConsoleHandler
 import freestyle._
 import freestyle.implicits._
 
-object HotSeatGame extends App with PlayerConsoleHandler {
+object HotSeatGame extends App {
   FreeHotSeat
     .program(new Player.Ops[Player]) // Free[Player, Unit]
     .foldMap(PlayerConsoleInterpreter) // IO[Unit]
     .unsafeRunSync() // Unit + 💥
 
+  implicit val playerHandler = new PlayerConsoleHandler
   FreestyleHotSeat.program // FreeS[F, Unit]
     .interpret[IO] // IO[Unit]
     .unsafeRunSync() // Unit + 💥

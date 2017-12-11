@@ -4,7 +4,7 @@ import com.michalplachta.freeprisoners.PrisonersDilemma._
 import freestyle._
 
 @free trait Opponent {
-  def meetOpponent(): FS[Prisoner]
+  def meetOpponent(player: Prisoner): FS[Option[Prisoner]]
 
   def getOpponentDecision(prisoner: Prisoner,
                           otherPrisoner: Prisoner): FS[Decision]

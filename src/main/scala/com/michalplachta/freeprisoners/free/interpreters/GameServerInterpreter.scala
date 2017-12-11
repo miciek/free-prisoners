@@ -7,7 +7,7 @@ import akka.util.Timeout
 import cats.effect.IO
 import cats.~>
 import com.michalplachta.freeprisoners.actors.GameServer.{
-  GetGameId,
+  ClearSavedDecision,
   GetSavedDecision,
   SaveDecision
 }
@@ -29,16 +29,14 @@ class GameServerInterpreter extends (Game ~> IO) {
   private val server =
     system.actorSelection(config.getString("server.path"))
 
+  /*_*/
   def apply[A](game: Game[A]): IO[A] = game match {
-    case GetGameHandle(player, opponent) =>
-      askServer(server, GetGameId(player, opponent), maxRetries, retryTimeout)
-    case SendDecision(handle, player, decision) =>
-      tellServer(server, SaveDecision(handle, player, decision))
-    case GetOpponentDecision(handle, opponent) =>
-      askServer(server,
-                GetSavedDecision(handle, opponent),
-                maxRetries,
-                retryTimeout)
+    case RegisterDecision(prisoner, decision) =>
+      tellServer(server, SaveDecision(prisoner, decision))
+    case GetRegisteredDecision(prisoner) =>
+      askServer(server, GetSavedDecision(prisoner), maxRetries, retryTimeout)
+    case ClearRegisteredDecision(prisoner) =>
+      tellServer(server, ClearSavedDecision(prisoner))
   }
 
   def terminate(): Unit = system.terminate()

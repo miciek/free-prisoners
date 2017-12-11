@@ -10,26 +10,27 @@ class BotInterpreterTest extends WordSpec with Matchers {
     import opponentOps._
 
     "be able to create 3 bots" in {
+      val player = Prisoner("Test Player")
       val createThreeOpponents = for {
-        opp1 <- meetOpponent()
-        opp2 <- meetOpponent()
-        opp3 <- meetOpponent()
+        opp1 <- meetOpponent(player)
+        opp2 <- meetOpponent(player)
+        opp3 <- meetOpponent(player)
       } yield Seq(opp1, opp2, opp3)
 
-      val result: Seq[Prisoner] =
+      val result: Seq[Option[Prisoner]] =
         createThreeOpponents
           .foldMap(new BotInterpreter)
           .unsafeRunSync()
 
-      result.length should be(3)
+      result.count(_.isDefined) should be(3)
     }
 
     "provide the same answer for the same game" in {
-      val player = Prisoner("player")
+      val player = Prisoner("Test Player")
       val getTwoDecisions = for {
-        opp <- meetOpponent()
-        decision1 <- getOpponentDecision(player, opp)
-        decision2 <- getOpponentDecision(player, opp)
+        opp <- meetOpponent(player)
+        decision1 <- getOpponentDecision(player, opp.get)
+        decision2 <- getOpponentDecision(player, opp.get)
       } yield (decision1, decision2)
 
       val result: (Decision, Decision) =

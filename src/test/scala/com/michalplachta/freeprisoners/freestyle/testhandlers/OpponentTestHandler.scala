@@ -1,7 +1,6 @@
 package com.michalplachta.freeprisoners.freestyle.testhandlers
 
 import cats.data.State
-import com.michalplachta.freeprisoners.PrisonersDilemma
 import com.michalplachta.freeprisoners.PrisonersDilemma.{
   Guilty,
   Prisoner,
@@ -13,19 +12,18 @@ import com.michalplachta.freeprisoners.states.OpponentState.OpponentStateA
 
 trait OpponentTestHandler {
   implicit val opponentTestHandler = new Opponent.Handler[OpponentStateA] {
-    def meetOpponent = {
+    def meetOpponent(player: Prisoner) = {
       State { state =>
         val prisoner = Prisoner("Test")
         (state.copy(
            opponents = state.opponents + (prisoner -> Strategy(_ => Guilty))),
-         prisoner)
+         Some(prisoner))
       }
     }
 
-    def getOpponentDecision(prisoner: PrisonersDilemma.Prisoner,
-                            otherPrisoner: PrisonersDilemma.Prisoner) = {
+    def getOpponentDecision(player: Prisoner, opponent: Prisoner) = {
       State.inspect(
-        _.opponents.get(prisoner).map(_.f(otherPrisoner)).getOrElse(Silence))
+        _.opponents.get(opponent).map(_.f(player)).getOrElse(Silence))
     }
   }
 }

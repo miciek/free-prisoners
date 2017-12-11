@@ -1,37 +1,31 @@
 package com.michalplachta.freeprisoners.freestyle.testhandlers
 
-import java.util.UUID
-
 import cats.data.State
-import com.michalplachta.freeprisoners.PrisonersDilemma
+import com.michalplachta.freeprisoners.PrisonersDilemma.{Decision, Prisoner}
 import com.michalplachta.freeprisoners.freestyle.algebras.Game
 import com.michalplachta.freeprisoners.states.GameState.GameStateA
 
 trait GameTestHandler {
   implicit val gameTestHandler = new Game.Handler[GameStateA] {
-    override def getGameHandle(player: PrisonersDilemma.Prisoner,
-                               opponent: PrisonersDilemma.Prisoner) = {
+    override def registerDecision(prisoner: Prisoner, decision: Decision) = {
       State { state =>
-        (state, UUID.randomUUID())
+        (state.copy(decisions = state.decisions + (prisoner -> decision)), ())
       }
     }
 
-    override def sendDecision(gameHandle: UUID,
-                              player: PrisonersDilemma.Prisoner,
-                              decision: PrisonersDilemma.Decision) = {
-      State { state =>
-        (state.copy(decisions = state.decisions + (player -> decision)), ())
-      }
-    }
-
-    override def getOpponentDecision(gameHandle: UUID,
-                                     opponent: PrisonersDilemma.Prisoner) = {
+    override def getRegisteredDecision(prisoner: Prisoner) = {
       State { state =>
         if (state.delayInCalls <= 0) {
-          (state, state.decisions.get(opponent))
+          (state, state.decisions.get(prisoner))
         } else {
           (state.copy(delayInCalls = state.delayInCalls - 1), None)
         }
+      }
+    }
+
+    override def clearRegisteredDecision(prisoner: Prisoner) = {
+      State { state =>
+        (state.copy(decisions = state.decisions - prisoner), ())
       }
     }
   }

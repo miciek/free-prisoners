@@ -5,10 +5,8 @@ import com.michalplachta.freeprisoners.freestyle.algebras.Timing
 
 import scala.concurrent.duration.FiniteDuration
 
-trait TimingHandler {
-  implicit val timingHandler = new Timing.Handler[IO] {
-    override def pause(duration: FiniteDuration) = {
-      IO { Thread.sleep(duration.toMillis) }
-    }
+class TimingHandler extends Timing.Handler[IO] {
+  override def pause(duration: FiniteDuration) = {
+    IO { Thread.sleep(duration.toMillis) }
   }
 }

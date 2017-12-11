@@ -1,35 +1,29 @@
 package com.michalplachta.freeprisoners.free.algebras
 
-import java.util.UUID
-
 import cats.:<:
 import cats.free.Free
 import com.michalplachta.freeprisoners.PrisonersDilemma.{Decision, Prisoner}
 
 object GameOps {
   sealed trait Game[A]
-  final case class GetGameHandle(player: Prisoner, opponent: Prisoner)
-      extends Game[UUID]
-  final case class SendDecision(gameHandle: UUID,
-                                player: Prisoner,
-                                decision: Decision)
+  final case class RegisterDecision(prisoner: Prisoner, decision: Decision)
       extends Game[Unit]
-  final case class GetOpponentDecision(gameHandle: UUID, opponent: Prisoner)
+  final case class GetRegisteredDecision(prisoner: Prisoner)
       extends Game[Option[Decision]]
+  final case class ClearRegisteredDecision(prisoner: Prisoner)
+      extends Game[Unit]
 
   object Game {
     class Ops[S[_]](implicit s: Game :<: S) {
-      def getGameHandle(player: Prisoner, opponent: Prisoner): Free[S, UUID] =
-        Free.inject(GetGameHandle(player, opponent))
+      def registerDecision(prisoner: Prisoner,
+                           decision: Decision): Free[S, Unit] =
+        Free.inject(RegisterDecision(prisoner, decision))
 
-      def sendDecision(gameHandle: UUID,
-                       player: Prisoner,
-                       decision: Decision): Free[S, Unit] =
-        Free.inject(SendDecision(gameHandle, player, decision))
+      def getRegisteredDecision(prisoner: Prisoner): Free[S, Option[Decision]] =
+        Free.inject(GetRegisteredDecision(prisoner))
 
-      def getOpponentDecision(gameHandle: UUID,
-                              opponent: Prisoner): Free[S, Option[Decision]] =
-        Free.inject(GetOpponentDecision(gameHandle, opponent))
+      def clearRegisteredDecision(prisoner: Prisoner): Free[S, Unit] =
+        Free.inject(ClearRegisteredDecision(prisoner))
     }
   }
 }

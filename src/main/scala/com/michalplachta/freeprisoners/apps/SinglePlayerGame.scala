@@ -20,10 +20,7 @@ import com.michalplachta.freeprisoners.freestyle.programs.{
 import freestyle._
 import freestyle.implicits._
 
-object SinglePlayerGame
-    extends App
-    with PlayerConsoleHandler
-    with BotStatefulHandler {
+object SinglePlayerGame extends App {
   FreeSinglePlayer
     .program(
       new Player.Ops[FreeSinglePlayer.Ops],
@@ -32,6 +29,8 @@ object SinglePlayerGame
     .foldMap(PlayerConsoleInterpreter or new BotInterpreter)
     .unsafeRunSync()
 
+  implicit val playerHandler = new PlayerConsoleHandler
+  implicit val opponentHandler = new BotStatefulHandler
   FreestyleSinglePlayer
     .program[FreestyleSinglePlayer.Ops.Op]
     .interpret[IO]

@@ -7,9 +7,12 @@ version := "1.0-SNAPSHOT"
 scalaVersion := "2.12.3"
 
 resolvers += Resolver.jcenterRepo
+resolvers += Resolver.sonatypeRepo("releases")
 
 addCompilerPlugin(
   "org.scalameta" % "paradise" % "3.0.0-M10" cross CrossVersion.full)
+
+addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.4")
 
 libraryDependencies ++= {
   val freestyleV = "0.4.4"

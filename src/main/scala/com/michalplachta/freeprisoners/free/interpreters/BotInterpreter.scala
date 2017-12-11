@@ -25,19 +25,19 @@ class BotInterpreter extends (Opponent ~> IO) {
 
   /*_*/
   def apply[A](i: Opponent[A]): IO[A] = i match {
-    case MeetOpponent() =>
+    case MeetOpponent(_) =>
       IO {
         val n = r.nextInt(names.length)
         val prisoner = Prisoner(names(n))
 
         val s = r.nextInt(strategies.length)
         bots += (prisoner -> strategies(s))
-        prisoner
+        Some(prisoner)
       }
 
-    case GetOpponentDecision(prisoner, otherPrisoner) =>
+    case GetOpponentDecision(player, opponent) =>
       IO {
-        bots.get(prisoner).map(_.f(otherPrisoner)).getOrElse(Silence)
+        bots.get(opponent).map(_.f(player)).getOrElse(Silence)
       }
   }
 }

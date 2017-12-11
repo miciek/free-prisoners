@@ -2,33 +2,21 @@ package com.michalplachta.freeprisoners.free.programs
 
 import cats.data.EitherK
 import cats.~>
-import com.michalplachta.freeprisoners.PrisonersDilemma.{
-  Guilty,
-  Prisoner,
-  Silence,
-  Verdict
-}
+import com.michalplachta.freeprisoners.PrisonersDilemma._
 import com.michalplachta.freeprisoners.free.algebras.GameOps.Game
 import com.michalplachta.freeprisoners.free.algebras.MatchmakingOps._
-import com.michalplachta.freeprisoners.free.algebras.PlayerOps.Player
 import com.michalplachta.freeprisoners.free.algebras.TimingOps.Timing
 import com.michalplachta.freeprisoners.free.programs.Multiplayer.findOpponent
-import com.michalplachta.freeprisoners.free.testinterpreters.PlayerGameTestInterpreter.PlayerGame
-import com.michalplachta.freeprisoners.states.{
-  GameState,
-  MatchmakingState,
-  PlayerGameState,
-  PlayerState
-}
 import com.michalplachta.freeprisoners.free.testinterpreters.{
+  GameTestInterpreter,
   MatchmakingTestInterpreter,
-  PlayerGameTestInterpreter,
   TimingTestInterpreter
 }
 import com.michalplachta.freeprisoners.states.MatchmakingState.{
   DelayedPrisoner,
   MatchmakingStateA
 }
+import com.michalplachta.freeprisoners.states.{GameState, MatchmakingState}
 import org.scalatest.{Matchers, WordSpec}
 
 class MultiplayerTest extends WordSpec with Matchers {
@@ -47,23 +35,6 @@ class MultiplayerTest extends WordSpec with Matchers {
       "is able to create a match when there is one opponent registered" in {
         val player = Prisoner("Player")
         val registeredOpponent = DelayedPrisoner(Prisoner("Opponent"), 0)
-
-        val initialState =
-          MatchmakingState(waitingPlayers = List(registeredOpponent),
-                           joiningPlayer = None,
-                           metPlayers = Set.empty)
-
-        val opponent: Option[Prisoner] = findOpponent(player)
-          .foldMap(interpreter)
-          .runA(initialState)
-          .value
-
-        opponent should contain(registeredOpponent.prisoner)
-      }
-
-      "is able to create a match even when an opponent registers late" in {
-        val player = Prisoner("Player")
-        val registeredOpponent = DelayedPrisoner(Prisoner("Opponent"), 3)
 
         val initialState =
           MatchmakingState(waitingPlayers = List(registeredOpponent),
@@ -136,66 +107,67 @@ class MultiplayerTest extends WordSpec with Matchers {
       }
     }
 
-    "have game module" which {
-      implicit val playerOps = new Player.Ops[PlayerGame]
-      implicit val gameOps = new Game.Ops[PlayerGame]
-      implicit val timingOps = new Timing.Ops[PlayerGame]
-      val interpreter = new PlayerGameTestInterpreter
+    "have decision registry module" which {
+      type GameTiming[A] = EitherK[Game, Timing, A]
+      implicit val gameOps = new Game.Ops[GameTiming]
+      implicit val timingOps = new Timing.Ops[GameTiming]
+      val interpreter = new GameTestInterpreter or new TimingTestInterpreter
 
-      "is able to produce verdict if both players make decisions" in {
-        val player = Prisoner("Player")
+      "is able to get opponent's decision" in {
         val opponent = Prisoner("Opponent")
 
-        val initialState =
-          PlayerGameState(PlayerState(Set.empty,
-                                      Map(player -> Guilty),
-                                      Map.empty),
-                          GameState(Map(opponent -> Silence)))
-        val result: PlayerGameState = Multiplayer
-          .playTheGame(player, opponent)
+        val initialState = GameState(Map(opponent -> Silence))
+        val result: Option[Decision] = Multiplayer
+          .getRemoteOpponentDecision(opponent)
           .foldMap(interpreter)
-          .runS(initialState)
+          .runA(initialState)
           .value
 
-        result.playerState.verdicts.get(player) should contain(Verdict(0))
+        result should contain(Silence)
       }
 
-      "is not able to produce verdict if the opponent doesn't make a decision" in {
-        val player = Prisoner("Player")
+      "is able to get opponent's decision only once" in {
         val opponent = Prisoner("Opponent")
 
-        val initialState =
-          PlayerGameState(PlayerState(Set.empty,
-                                      Map(player -> Guilty),
-                                      Map.empty),
-                          GameState(Map.empty))
+        val initialState = GameState(Map(opponent -> Guilty))
+        val getDecisionTwice = for {
+          _ <- Multiplayer.getRemoteOpponentDecision(opponent)
+          decision <- Multiplayer.getRemoteOpponentDecision(opponent)
+        } yield decision
 
-        val result: PlayerGameState = Multiplayer
-          .playTheGame(player, opponent)
-          .foldMap(interpreter)
-          .runS(initialState)
-          .value
+        val result: Option[Decision] =
+          getDecisionTwice
+            .foldMap(interpreter)
+            .runA(initialState)
+            .value
 
-        result.playerState.verdicts should be(Map.empty)
+        result should be(None)
       }
 
-      "is able to produce verdict if the opponent makes a decision after some time" in {
-        val player = Prisoner("Player")
+      "is not able to get opponent's decision if he hasn't decided" in {
         val opponent = Prisoner("Opponent")
 
-        val initialState =
-          PlayerGameState(PlayerState(Set.empty,
-                                      Map(player -> Guilty),
-                                      Map.empty),
-                          GameState(Map(opponent -> Guilty), delayInCalls = 10))
-
-        val result: PlayerGameState = Multiplayer
-          .playTheGame(player, opponent)
+        val initialState = GameState(Map.empty)
+        val result: Option[Decision] = Multiplayer
+          .getRemoteOpponentDecision(opponent)
           .foldMap(interpreter)
-          .runS(initialState)
+          .runA(initialState)
           .value
 
-        result.playerState.verdicts.get(player) should contain(Verdict(3))
+        result should be(None)
+      }
+
+      "is able to get opponent's decision if he decides after some time" in {
+        val opponent = Prisoner("Opponent")
+
+        val initialState = GameState(Map(opponent -> Guilty), delayInCalls = 10)
+        val result: Option[Decision] = Multiplayer
+          .getRemoteOpponentDecision(opponent)
+          .foldMap(interpreter)
+          .runA(initialState)
+          .value
+
+        result should contain(Guilty)
       }
     }
   }

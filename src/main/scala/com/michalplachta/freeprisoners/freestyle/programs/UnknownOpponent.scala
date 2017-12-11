@@ -14,12 +14,17 @@ object UnknownOpponent {
     import ops.player._
     import ops.opponent._
     for {
-      playerPrisoner <- meetPrisoner("Welcome to Freestyle Single Player Game")
-      botPrisoner <- meetOpponent()
-      playerDecision <- getPlayerDecision(playerPrisoner, botPrisoner)
-      botDecision <- getOpponentDecision(botPrisoner, playerPrisoner)
-      _ <- giveVerdict(playerPrisoner, verdict(playerDecision, botDecision))
-      _ <- giveVerdict(botPrisoner, verdict(botDecision, playerDecision))
+      player <- meetPrisoner("Welcome to Game vs Unknown Opponent (Freestyle)")
+      maybeOpponent <- meetOpponent(player)
+      _ <- maybeOpponent
+        .map(opponent => {
+          for {
+            playerDecision <- getPlayerDecision(player, opponent)
+            opponentDecision <- getOpponentDecision(player, opponent)
+            _ <- giveVerdict(player, verdict(playerDecision, opponentDecision))
+          } yield ()
+        })
+        .getOrElse(program)
     } yield ()
   }
 }

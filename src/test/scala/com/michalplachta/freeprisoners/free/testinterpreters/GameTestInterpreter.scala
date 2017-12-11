@@ -1,35 +1,35 @@
 package com.michalplachta.freeprisoners.free.testinterpreters
 
-import java.util.UUID
-
 import cats.data.State
 import cats.~>
 import com.michalplachta.freeprisoners.free.algebras.GameOps.{
+  ClearRegisteredDecision,
   Game,
-  GetGameHandle,
-  GetOpponentDecision,
-  SendDecision
+  GetRegisteredDecision,
+  RegisterDecision
 }
 import com.michalplachta.freeprisoners.states.GameState.GameStateA
 
 class GameTestInterpreter extends (Game ~> GameStateA) {
+  /*_*/
   def apply[A](game: Game[A]): GameStateA[A] = game match {
-    case GetGameHandle(_, _) =>
+    case RegisterDecision(prisoner, decision) =>
       State { state =>
-        (state, UUID.randomUUID())
-      }
-    case SendDecision(_, player, decision) =>
-      State { state =>
-        (state.copy(decisions = state.decisions + (player -> decision)), ())
+        (state.copy(decisions = state.decisions + (prisoner -> decision)), ())
       }
 
-    case GetOpponentDecision(_, opponent) =>
+    case GetRegisteredDecision(prisoner) =>
       State { state =>
         if (state.delayInCalls <= 0) {
-          (state, state.decisions.get(opponent))
+          (state, state.decisions.get(prisoner))
         } else {
           (state.copy(delayInCalls = state.delayInCalls - 1), None)
         }
+      }
+
+    case ClearRegisteredDecision(prisoner) =>
+      State { state =>
+        (state.copy(decisions = state.decisions - prisoner), ())
       }
   }
 }
