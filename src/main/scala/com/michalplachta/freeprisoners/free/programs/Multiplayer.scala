@@ -5,12 +5,14 @@ import com.michalplachta.freeprisoners.PrisonersDilemma._
 import com.michalplachta.freeprisoners.free.algebras.DecisionRegistryOps.DecisionRegistry
 import com.michalplachta.freeprisoners.free.algebras.MatchmakingOps.Matchmaking
 import com.michalplachta.freeprisoners.free.algebras.TimingOps.Timing
-import com.michalplachta.freeprisoners.free.programs.tools.Defer.defer
-import com.michalplachta.freeprisoners.free.programs.tools.Retry.retry
+import com.michalplachta.freeprisoners.free.programs.tools.DeferredRetry
 
 import scala.concurrent.duration._
 
 object Multiplayer {
+  val deferredRetry = new DeferredRetry(100, 1.second)
+  import deferredRetry._
+
   def findOpponent[S[_]](player: Prisoner)(
       implicit matchmakingOps: Matchmaking.Ops[S],
       timingOps: Timing.Ops[S]): Free[S, Option[Prisoner]] = {
@@ -30,10 +32,8 @@ object Multiplayer {
     import matchmakingOps._
     for {
       _ <- registerAsWaiting(player)
-      maybeOpponent <- retry[S, Option[Prisoner]](
-        defer(checkIfOpponentJoined(player), 1.second),
-        until = _.isDefined,
-        maxRetries = 20)
+      maybeOpponent <- retry[S, Option[Prisoner]](checkIfOpponentJoined(player),
+                                                  until = _.isDefined)
       _ <- unregisterPlayer(player)
     } yield maybeOpponent
   }
@@ -44,9 +44,8 @@ object Multiplayer {
     import gameOps._
     for {
       maybeOpponentDecision <- retry[S, Option[Decision]](
-        defer(getRegisteredDecision(opponent), 1.second),
-        until = _.isDefined,
-        maxRetries = 100)
+        getRegisteredDecision(opponent),
+        until = _.isDefined)
       _ <- clearRegisteredDecision(opponent)
     } yield maybeOpponentDecision
   }
