@@ -2,7 +2,7 @@ package com.michalplachta.freeprisoners.free.interpreters
 
 import cats.free.Free
 import cats.~>
-import com.michalplachta.freeprisoners.free.algebras.GameOps.Game
+import com.michalplachta.freeprisoners.free.algebras.DecisionRegistryOps.DecisionRegistry
 import com.michalplachta.freeprisoners.free.algebras.PlayerOps.{
   GetPrisonerDecision,
   GiveVerdict,
@@ -10,7 +10,7 @@ import com.michalplachta.freeprisoners.free.algebras.PlayerOps.{
   Player
 }
 
-class PlayerLocalInterpreter[S[_]](implicit gameOps: Game.Ops[S],
+class PlayerLocalInterpreter[S[_]](implicit gameOps: DecisionRegistry.Ops[S],
                                    playerOps: Player.Ops[S])
     extends (Player ~> Free[S, ?]) {
   import gameOps._

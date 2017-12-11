@@ -3,7 +3,7 @@ package com.michalplachta.freeprisoners.free.programs
 import cats.data.EitherK
 import cats.~>
 import com.michalplachta.freeprisoners.PrisonersDilemma._
-import com.michalplachta.freeprisoners.free.algebras.GameOps.Game
+import com.michalplachta.freeprisoners.free.algebras.DecisionRegistryOps.DecisionRegistry
 import com.michalplachta.freeprisoners.free.algebras.MatchmakingOps._
 import com.michalplachta.freeprisoners.free.algebras.TimingOps.Timing
 import com.michalplachta.freeprisoners.free.programs.Multiplayer.findOpponent
@@ -108,8 +108,8 @@ class MultiplayerTest extends WordSpec with Matchers {
     }
 
     "have decision registry module" which {
-      type GameTiming[A] = EitherK[Game, Timing, A]
-      implicit val gameOps = new Game.Ops[GameTiming]
+      type GameTiming[A] = EitherK[DecisionRegistry, Timing, A]
+      implicit val gameOps = new DecisionRegistry.Ops[GameTiming]
       implicit val timingOps = new Timing.Ops[GameTiming]
       val interpreter = new GameTestInterpreter or new TimingTestInterpreter
 

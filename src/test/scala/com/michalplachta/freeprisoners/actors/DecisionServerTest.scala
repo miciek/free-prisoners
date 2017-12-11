@@ -3,7 +3,7 @@ package com.michalplachta.freeprisoners.actors
 import akka.actor.{ActorSelection, ActorSystem, Props}
 import akka.testkit.TestKit
 import com.michalplachta.freeprisoners.PrisonersDilemma.{Guilty, Prisoner}
-import com.michalplachta.freeprisoners.actors.GameServer.{
+import com.michalplachta.freeprisoners.actors.DecisionServer.{
   ClearSavedDecision,
   GetSavedDecision,
   SaveDecision
@@ -11,12 +11,12 @@ import com.michalplachta.freeprisoners.actors.GameServer.{
 import com.michalplachta.freeprisoners.actors.ServerCommunication._
 import org.scalatest.{AsyncWordSpecLike, BeforeAndAfterAll, Matchers}
 
-class GameServerTest
-    extends TestKit(ActorSystem("gameServerTest"))
+class DecisionServerTest
+    extends TestKit(ActorSystem("decisionServerTest"))
     with AsyncWordSpecLike
     with Matchers
     with BeforeAndAfterAll {
-  "GameServer actor" should {
+  "DecisionServer actor" should {
     "save the decision of the player" in {
       val player = Prisoner("Player")
       val server = createServer()
@@ -42,5 +42,5 @@ class GameServerTest
   override def afterAll(): Unit = system.terminate()
 
   private def createServer() =
-    ActorSelection(system.actorOf(Props[GameServer]), "/")
+    ActorSelection(system.actorOf(Props[DecisionServer]), "/")
 }

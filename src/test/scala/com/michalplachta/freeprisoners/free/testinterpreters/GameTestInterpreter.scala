@@ -2,17 +2,17 @@ package com.michalplachta.freeprisoners.free.testinterpreters
 
 import cats.data.State
 import cats.~>
-import com.michalplachta.freeprisoners.free.algebras.GameOps.{
+import com.michalplachta.freeprisoners.free.algebras.DecisionRegistryOps.{
   ClearRegisteredDecision,
-  Game,
+  DecisionRegistry,
   GetRegisteredDecision,
   RegisterDecision
 }
 import com.michalplachta.freeprisoners.states.GameState.GameStateA
 
-class GameTestInterpreter extends (Game ~> GameStateA) {
+class GameTestInterpreter extends (DecisionRegistry ~> GameStateA) {
   /*_*/
-  def apply[A](game: Game[A]): GameStateA[A] = game match {
+  def apply[A](game: DecisionRegistry[A]): GameStateA[A] = game match {
     case RegisterDecision(prisoner, decision) =>
       State { state =>
         (state.copy(decisions = state.decisions + (prisoner -> decision)), ())

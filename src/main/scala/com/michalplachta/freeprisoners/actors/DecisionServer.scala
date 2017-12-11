@@ -2,9 +2,9 @@ package com.michalplachta.freeprisoners.actors
 
 import akka.actor.Actor
 import com.michalplachta.freeprisoners.PrisonersDilemma.{Decision, Prisoner}
-import com.michalplachta.freeprisoners.actors.GameServer._
+import com.michalplachta.freeprisoners.actors.DecisionServer._
 
-class GameServer extends Actor {
+class DecisionServer extends Actor {
   private var savedDecisions = Map.empty[Prisoner, Decision]
 
   def receive: Receive = {
@@ -19,7 +19,7 @@ class GameServer extends Actor {
   }
 }
 
-object GameServer {
+object DecisionServer {
   sealed trait ServerProtocol[A]
   final case class SaveDecision(prisoner: Prisoner, decision: Decision)
       extends ServerProtocol[Unit]

@@ -6,20 +6,20 @@ import akka.actor.ActorSystem
 import akka.util.Timeout
 import cats.effect.IO
 import com.michalplachta.freeprisoners.PrisonersDilemma.{Decision, Prisoner}
-import com.michalplachta.freeprisoners.actors.GameServer.{
+import com.michalplachta.freeprisoners.actors.DecisionServer.{
   GetSavedDecision,
   SaveDecision
 }
-import com.michalplachta.freeprisoners.freestyle.algebras.Game
+import com.michalplachta.freeprisoners.freestyle.algebras.DecisionRegistry
 import com.typesafe.config.ConfigFactory
 import com.michalplachta.freeprisoners.actors.ServerCommunication._
-import com.michalplachta.freeprisoners.free.algebras.GameOps.ClearRegisteredDecision
+import com.michalplachta.freeprisoners.free.algebras.DecisionRegistryOps.ClearRegisteredDecision
 
 import scala.concurrent.ExecutionContext
 
-class GameServerHandler extends Game.Handler[IO] {
-  private val system = ActorSystem("gameClient")
-  private val config = ConfigFactory.load().getConfig("app.game")
+class DecisionServerHandler extends DecisionRegistry.Handler[IO] {
+  private val system = ActorSystem("decisionClient")
+  private val config = ConfigFactory.load().getConfig("app.decision")
   private val maxRetries = config.getInt("client.max-retries")
   private val retryTimeout = Timeout(
     config.getDuration("client.retry-timeout").toMillis,

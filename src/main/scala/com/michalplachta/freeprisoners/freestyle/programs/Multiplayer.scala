@@ -37,7 +37,7 @@ object Multiplayer {
   }
 
   def getRemoteOpponentDecision[S[_]](opponent: Prisoner)(
-      implicit gameOps: Game[S],
+      implicit gameOps: DecisionRegistry[S],
       timingOps: Timing[S]): FreeS[S, Option[Decision]] = {
     import gameOps._
     for {

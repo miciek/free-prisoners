@@ -4,17 +4,17 @@ import cats.:<:
 import cats.free.Free
 import com.michalplachta.freeprisoners.PrisonersDilemma.{Decision, Prisoner}
 
-object GameOps {
-  sealed trait Game[A]
+object DecisionRegistryOps {
+  sealed trait DecisionRegistry[A]
   final case class RegisterDecision(prisoner: Prisoner, decision: Decision)
-      extends Game[Unit]
+      extends DecisionRegistry[Unit]
   final case class GetRegisteredDecision(prisoner: Prisoner)
-      extends Game[Option[Decision]]
+      extends DecisionRegistry[Option[Decision]]
   final case class ClearRegisteredDecision(prisoner: Prisoner)
-      extends Game[Unit]
+      extends DecisionRegistry[Unit]
 
-  object Game {
-    class Ops[S[_]](implicit s: Game :<: S) {
+  object DecisionRegistry {
+    class Ops[S[_]](implicit s: DecisionRegistry :<: S) {
       def registerDecision(prisoner: Prisoner,
                            decision: Decision): Free[S, Unit] =
         Free.inject(RegisterDecision(prisoner, decision))

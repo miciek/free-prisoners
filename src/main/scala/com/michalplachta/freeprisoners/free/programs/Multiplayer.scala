@@ -2,7 +2,7 @@ package com.michalplachta.freeprisoners.free.programs
 
 import cats.free.Free
 import com.michalplachta.freeprisoners.PrisonersDilemma._
-import com.michalplachta.freeprisoners.free.algebras.GameOps.Game
+import com.michalplachta.freeprisoners.free.algebras.DecisionRegistryOps.DecisionRegistry
 import com.michalplachta.freeprisoners.free.algebras.MatchmakingOps.Matchmaking
 import com.michalplachta.freeprisoners.free.algebras.TimingOps.Timing
 import com.michalplachta.freeprisoners.free.programs.tools.Defer.defer
@@ -39,7 +39,7 @@ object Multiplayer {
   }
 
   def getRemoteOpponentDecision[S[_]](opponent: Prisoner)(
-      implicit gameOps: Game.Ops[S],
+      implicit gameOps: DecisionRegistry.Ops[S],
       timingOps: Timing.Ops[S]): Free[S, Option[Decision]] = {
     import gameOps._
     for {

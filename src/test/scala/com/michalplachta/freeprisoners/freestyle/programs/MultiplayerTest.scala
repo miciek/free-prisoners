@@ -2,7 +2,7 @@ package com.michalplachta.freeprisoners.freestyle.programs
 
 import com.michalplachta.freeprisoners.PrisonersDilemma._
 import com.michalplachta.freeprisoners.freestyle.algebras.{
-  Game,
+  DecisionRegistry,
   Matchmaking,
   Timing
 }
@@ -117,7 +117,7 @@ class MultiplayerTest
 
     "have decision registry module" which {
       @module trait GameTiming {
-        val game: Game
+        val game: DecisionRegistry
         val timing: Timing
       }
 
