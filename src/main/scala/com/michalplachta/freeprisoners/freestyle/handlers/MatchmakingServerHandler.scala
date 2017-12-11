@@ -32,7 +32,7 @@ class MatchmakingServerHandler extends Matchmaking.Handler[IO] {
     tellServer(server, AddToWaitingList(player.name))
   }
 
-  override def unregisterPlayer(player: Prisoner) = {
+  override def unregisterWaiting(player: Prisoner) = {
     tellServer(server, RemoveFromWaitingList(player.name))
   }
 

@@ -6,7 +6,7 @@ import freestyle.free
 @free trait Matchmaking {
   def registerAsWaiting(player: Prisoner): FS[Unit]
 
-  def unregisterPlayer(player: Prisoner): FS[Unit]
+  def unregisterWaiting(player: Prisoner): FS[Unit]
 
   def getWaitingPlayers(): FS[List[WaitingPlayer]]
 

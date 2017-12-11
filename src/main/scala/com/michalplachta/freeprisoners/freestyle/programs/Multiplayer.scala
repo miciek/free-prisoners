@@ -14,7 +14,7 @@ object Multiplayer {
       timingOps: Timing[S]): FreeS[S, Option[Prisoner]] = {
     import matchmakingOps._
     for {
-      _ <- unregisterPlayer(player)
+      _ <- unregisterWaiting(player)
       waitingPlayers <- getWaitingPlayers()
       maybeOpponent <- waitingPlayers.headOption
         .map(joinWaitingPlayer(player, _).freeS)
@@ -32,7 +32,7 @@ object Multiplayer {
         defer(checkIfOpponentJoined(player), 1.second),
         until = _.isDefined,
         maxRetries = 20)
-      _ <- unregisterPlayer(player)
+      _ <- unregisterWaiting(player)
     } yield maybeOpponent
   }
 

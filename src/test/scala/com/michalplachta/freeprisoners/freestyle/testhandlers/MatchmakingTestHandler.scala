@@ -26,7 +26,7 @@ trait MatchmakingTestHandler {
         }
       }
 
-      override def unregisterPlayer(player: Prisoner) = {
+      override def unregisterWaiting(player: Prisoner) = {
         State { state =>
           (state.copy(
              waitingPlayers =
