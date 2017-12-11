@@ -16,7 +16,7 @@ object SinglePlayerApp extends App {
     .program(
       new Player.Ops[UnknownOpponentOps],
       new Opponent.Ops[UnknownOpponentOps]
-    )
-    .foldMap(PlayerConsoleInterpreter or new BotInterpreter)
-    .unsafeRunSync()
+    ) // Free[UnknownOpponentOps, Unit]
+    .foldMap(PlayerConsoleInterpreter or new BotInterpreter) // IO[Unit]
+    .unsafeRunSync() // Unit + 💥
 }
