@@ -1,20 +1,17 @@
 package com.michalplachta.freeprisoners.free.programs
 
-import cats.data.EitherK
 import cats.free.Free
 import com.michalplachta.freeprisoners.PrisonersDilemma.verdict
 import com.michalplachta.freeprisoners.free.algebras.OpponentOps.Opponent
 import com.michalplachta.freeprisoners.free.algebras.PlayerOps.Player
 
 object UnknownOpponent {
-  type Ops[A] = EitherK[Player, Opponent, A]
-
-  def program(implicit playerOps: Player.Ops[Ops],
-              opponentOps: Opponent.Ops[Ops]): Free[Ops, Unit] = {
+  def program[S[_]](implicit playerOps: Player.Ops[S],
+                    opponentOps: Opponent.Ops[S]): Free[S, Unit] = {
     import opponentOps._
     import playerOps._
     for {
-      player <- meetPrisoner("Welcome to Game vs Unknown Opponent (Free)")
+      player <- meetPrisoner("Welcome to Prisoner's Dilemma (Free)")
       maybeOpponent <- meetOpponent(player)
       _ <- maybeOpponent
         .map(opponent => {

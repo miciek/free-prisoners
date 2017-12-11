@@ -50,5 +50,4 @@ object Multiplayer {
       _ <- clearRegisteredDecision(opponent)
     } yield maybeOpponentDecision
   }
-
 }
