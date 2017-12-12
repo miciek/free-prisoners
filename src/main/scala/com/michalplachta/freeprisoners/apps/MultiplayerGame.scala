@@ -44,10 +44,10 @@ object MultiplayerGameFree extends App {
     .program(
       new Player.Ops[Multiplayer],
       new Opponent.Ops[Multiplayer]
-    )
-    .foldMap(interpreter)
-    .foldMap(lowLevelInterpreter)
-    .unsafeRunSync()
+    ) // Free[Multiplayer, Unit]
+    .foldMap(interpreter) // Free[LowLevelMultiplayer, Unit]
+    .foldMap(lowLevelInterpreter) // IO[Unit]
+    .unsafeRunSync() // Unit + 💥
 
   matchmakingInterpreter.terminate()
   decisionServerInterpreter.terminate()
