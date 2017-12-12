@@ -27,6 +27,7 @@ class MatchmakingServerInterpreter extends (Matchmaking ~> IO) {
   private val server =
     system.actorSelection(config.getString("server.path"))
 
+  /*_*/
   def apply[A](matchmaking: Matchmaking[A]): IO[A] = matchmaking match {
     case RegisterAsWaiting(player) =>
       tellServer(server, AddToWaitingList(player.name))

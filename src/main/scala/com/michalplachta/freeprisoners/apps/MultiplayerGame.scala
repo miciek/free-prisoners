@@ -1,5 +1,9 @@
 package com.michalplachta.freeprisoners.apps
 
+import cats.effect.IO
+import cats.free.Free
+import cats.~>
+
 object MultiplayerGame {
   def main(args: Array[String]): Unit = {
     MultiplayerGameFree.main(args)
@@ -17,9 +21,6 @@ object MultiplayerGameFree extends App {
   import com.michalplachta.freeprisoners.free.interpreters._
   import com.michalplachta.freeprisoners.free.programs.UnknownOpponent
 
-  val matchmakingInterpreter = new MatchmakingServerInterpreter
-  val decisionServerInterpreter = new DecisionServerInterpreter
-
   type Multiplayer[A] = EitherK[Player, Opponent, A]
   type LowLevelMultiplayer0[A] = EitherK[DecisionRegistry, Timing, A]
   type LowLevelMultiplayer1[A] = EitherK[Matchmaking, LowLevelMultiplayer0, A]
@@ -31,8 +32,13 @@ object MultiplayerGameFree extends App {
     new DecisionRegistry.Ops[LowLevelMultiplayer]
   implicit val timingOps = new Timing.Ops[LowLevelMultiplayer]
 
-  val interpreter = new PlayerLocalInterpreter[LowLevelMultiplayer] or new RemoteOpponentInterpreter
-  val lowLevelInterpreter = PlayerConsoleInterpreter or (matchmakingInterpreter or (decisionServerInterpreter or TimingInterpreter))
+  val interpreter: (Multiplayer ~> Free[LowLevelMultiplayer, ?]) =
+    new PlayerLocalInterpreter[LowLevelMultiplayer] or new RemoteOpponentInterpreter
+
+  val matchmakingInterpreter = new MatchmakingServerInterpreter
+  val decisionServerInterpreter = new DecisionServerInterpreter
+  val lowLevelInterpreter: (LowLevelMultiplayer ~> IO) =
+    PlayerConsoleInterpreter or (matchmakingInterpreter or (decisionServerInterpreter or TimingInterpreter))
 
   UnknownOpponent
     .program(
