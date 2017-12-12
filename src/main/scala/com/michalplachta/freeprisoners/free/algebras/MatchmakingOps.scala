@@ -35,7 +35,6 @@ object MatchmakingOps {
       def checkIfOpponentJoined(player: Prisoner): Free[S, Option[Prisoner]] =
         Free.inject(CheckIfOpponentJoined(player))
     }
-
     final case class WaitingPlayer(prisoner: Prisoner)
   }
 }

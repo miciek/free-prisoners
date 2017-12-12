@@ -11,7 +11,7 @@ import com.michalplachta.freeprisoners.free.algebras.OpponentOps.{
   Opponent
 }
 import com.michalplachta.freeprisoners.free.algebras.TimingOps.Timing
-import com.michalplachta.freeprisoners.free.programs.Multiplayer
+import com.michalplachta.freeprisoners.free.programs.Multiplayer._
 
 class RemoteOpponentInterpreter[
     S[_]: Matchmaking.Ops: DecisionRegistry.Ops: Timing.Ops]
@@ -19,8 +19,8 @@ class RemoteOpponentInterpreter[
   /*_*/
   override def apply[A](fa: Opponent[A]) = fa match {
     case MeetOpponent(player) =>
-      Multiplayer.findOpponent[S](player)
+      findOpponent[S](player)
     case GetOpponentDecision(_, opponent) =>
-      Multiplayer.getRemoteOpponentDecision(opponent).map(_.getOrElse(Silence))
+      getRemoteOpponentDecision(opponent).map(_.getOrElse(Silence))
   }
 }

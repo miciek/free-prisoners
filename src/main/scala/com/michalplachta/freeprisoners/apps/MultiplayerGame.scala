@@ -18,7 +18,7 @@ object MultiplayerGameFree extends App {
   import com.michalplachta.freeprisoners.free.programs.UnknownOpponent
 
   val matchmakingInterpreter = new MatchmakingServerInterpreter
-  val gameInterpreter = new DecisionServerInterpreter
+  val decisionServerInterpreter = new DecisionServerInterpreter
 
   type Multiplayer[A] = EitherK[Player, Opponent, A]
   type LowLevelMultiplayer0[A] = EitherK[DecisionRegistry, Timing, A]
@@ -27,11 +27,12 @@ object MultiplayerGameFree extends App {
 
   implicit val playerOps = new Player.Ops[LowLevelMultiplayer]
   implicit val matchmakingOps = new Matchmaking.Ops[LowLevelMultiplayer]
-  implicit val gameOps = new DecisionRegistry.Ops[LowLevelMultiplayer]
+  implicit val decisionRegistryOps =
+    new DecisionRegistry.Ops[LowLevelMultiplayer]
   implicit val timingOps = new Timing.Ops[LowLevelMultiplayer]
 
   val interpreter = new PlayerLocalInterpreter[LowLevelMultiplayer] or new RemoteOpponentInterpreter
-  val lowLevelInterpreter = PlayerConsoleInterpreter or (matchmakingInterpreter or (gameInterpreter or TimingInterpreter))
+  val lowLevelInterpreter = PlayerConsoleInterpreter or (matchmakingInterpreter or (decisionServerInterpreter or TimingInterpreter))
 
   UnknownOpponent
     .program(
@@ -43,7 +44,7 @@ object MultiplayerGameFree extends App {
     .unsafeRunSync()
 
   matchmakingInterpreter.terminate()
-  gameInterpreter.terminate()
+  decisionServerInterpreter.terminate()
 }
 
 /*_*/
@@ -89,7 +90,7 @@ object MultiplayerGameFreestyle extends App {
 
   implicit val playerHandler = new PlayerConsoleHandler
   implicit val matchmakingHandler = new MatchmakingServerHandler
-  implicit val gameHandler = new DecisionServerHandler
+  implicit val decisionServerHandler = new DecisionServerHandler
   implicit val timingHandler = new TimingHandler
   UnknownOpponent
     .program[Multiplayer.Op]
@@ -98,5 +99,5 @@ object MultiplayerGameFreestyle extends App {
     .unsafeRunSync()
 
   matchmakingHandler.terminate()
-  gameHandler.terminate()
+  decisionServerHandler.terminate()
 }
