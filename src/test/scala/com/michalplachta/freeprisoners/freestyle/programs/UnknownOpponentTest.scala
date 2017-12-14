@@ -1,11 +1,12 @@
 package com.michalplachta.freeprisoners.freestyle.programs
 
 import com.michalplachta.freeprisoners.PrisonersDilemma._
+import com.michalplachta.freeprisoners.freestyle.algebras.{Opponent, Player}
 import com.michalplachta.freeprisoners.freestyle.testhandlers.PlayerOpponentTestHandler
 import com.michalplachta.freeprisoners.states.PlayerOpponentState.PlayerOpponentStateA
 import com.michalplachta.freeprisoners.states.{
-  OpponentState,
   FakePrisoner,
+  OpponentState,
   PlayerOpponentState,
   PlayerState
 }
@@ -17,6 +18,11 @@ class UnknownOpponentTest
     extends WordSpec
     with Matchers
     with PlayerOpponentTestHandler {
+  @module trait UnknownOpponentOps {
+    val player: Player
+    val opponent: Opponent
+  }
+
   "Single Player (Freestyle) program" should {
     "question the player and give verdict" in {
       val player = FakePrisoner(Prisoner("Player"), Guilty)
@@ -25,7 +31,7 @@ class UnknownOpponentTest
                             OpponentState(Map.empty))
 
       val result: PlayerState = UnknownOpponent
-        .program[UnknownOpponent.Ops.Op]
+        .program[UnknownOpponentOps.Op]
         .interpret[PlayerOpponentStateA]
         .runS(inputState)
         .value

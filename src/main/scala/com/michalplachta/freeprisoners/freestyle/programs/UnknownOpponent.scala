@@ -6,14 +6,10 @@ import freestyle._
 
 /*_*/
 object UnknownOpponent {
-  @module trait Ops {
-    val player: Player
-    val opponent: Opponent
-  }
-
-  def program[F[_]](implicit ops: Ops[F]): FreeS[F, Unit] = {
-    import ops.player._
-    import ops.opponent._
+  def program[F[_]](implicit playerOps: Player[F],
+                    opponentOps: Opponent[F]): FreeS[F, Unit] = {
+    import playerOps._
+    import opponentOps._
     for {
       player <- meetPrisoner("Welcome to Prisoner's Dilemma (Freestyle)")
       maybeOpponent <- meetOpponent(player)
