@@ -10,16 +10,16 @@ import com.michalplachta.freeprisoners.freestyle.programs.UnknownOpponent
 import freestyle._
 import freestyle.implicits._
 
-object SinglePlayerApp extends App {
-  @module trait UnknownOpponentM {
-    val player: Player
-    val opponent: Opponent
-  }
+@module trait UnknownOpponentOps {
+  val player: Player
+  val opponent: Opponent
+}
 
+object SinglePlayerApp extends App {
   implicit val playerHandler = new PlayerConsoleHandler
   implicit val opponentHandler = new BotStatefulHandler
   UnknownOpponent
-    .program[UnknownOpponentM.Op]
-    .interpret[IO]
-    .unsafeRunSync()
+    .program[UnknownOpponentOps.Op] // FreeS[UnknownOpponentOps, Unit]
+    .interpret[IO] // IO[Unit]
+    .unsafeRunSync() // Unit + 💥
 }

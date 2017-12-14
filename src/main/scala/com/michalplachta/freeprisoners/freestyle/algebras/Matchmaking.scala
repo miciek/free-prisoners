@@ -8,7 +8,7 @@ import freestyle.free
 
   def unregisterWaiting(player: Prisoner): FS[Unit]
 
-  def getWaitingPlayers(): FS[List[WaitingPlayer]]
+  def getWaitingPlayers: FS[List[WaitingPlayer]]
 
   def joinWaitingPlayer(player: Prisoner,
                         waitingPlayer: WaitingPlayer): FS[Option[Prisoner]]

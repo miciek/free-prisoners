@@ -8,14 +8,14 @@ import freestyle._
 
 import scala.concurrent.duration._
 
+/*_*/
 object Multiplayer {
   def findOpponent[S[_]](player: Prisoner)(
       implicit matchmakingOps: Matchmaking[S],
       timingOps: Timing[S]): FreeS[S, Option[Prisoner]] = {
     import matchmakingOps._
     for {
-      _ <- unregisterWaiting(player)
-      waitingPlayers <- getWaitingPlayers()
+      waitingPlayers <- getWaitingPlayers
       maybeOpponent <- waitingPlayers.headOption
         .map(joinWaitingPlayer(player, _).freeS)
         .getOrElse(waitForOpponent(player))
