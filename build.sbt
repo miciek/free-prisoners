@@ -22,6 +22,7 @@ libraryDependencies ++= {
   val scalatestV = "3.0.1"
   Seq(
     "io.frees" %% "frees-core" % freestyleV,
+    "io.frees" %% "frees-tagless" % freestyleV,
     "org.typelevel" %% "cats-effect" % catsEffectV,
     "com.typesafe.akka" %% "akka-actor" % akkaV,
     "com.typesafe.akka" %% "akka-remote" % akkaV,
